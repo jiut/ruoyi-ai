@@ -35,7 +35,7 @@ import java.util.List;
  *
  * @author ruoyi
  */
-@Tag(name = "用户身份注册", description = "用户注册设计师、企业、院校身份并进行绑定")
+@Tag(name = "用户身份管理", description = "用户注册设计师、企业、院校身份，支持创建新实体或绑定已有实体")
 @Validated
 @RequiredArgsConstructor
 @RestController
@@ -235,7 +235,15 @@ public class UserRegistrationController extends BaseController {
     /**
      * 获取当前用户的绑定信息
      */
-    @Operation(summary = "获取用户绑定信息", description = "获取当前用户的所有身份绑定信息")
+    @Operation(
+        summary = "获取用户绑定信息", 
+        description = "获取当前用户的所有身份绑定信息，包括设计师、企业、院校等身份",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "获取成功",
+                        content = @Content(schema = @Schema(implementation = UserBinding.class))),
+            @ApiResponse(responseCode = "401", description = "用户未登录")
+        }
+    )
     @GetMapping("/bindings")
     public R<List<UserBinding>> getCurrentUserBindings() {
         Long userId = LoginHelper.getUserId();
@@ -246,7 +254,15 @@ public class UserRegistrationController extends BaseController {
     /**
      * 获取当前用户绑定的设计师信息
      */
-    @Operation(summary = "获取设计师档案", description = "获取当前用户绑定的设计师信息")
+    @Operation(
+        summary = "获取设计师档案", 
+        description = "获取当前用户绑定的设计师信息",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "获取成功",
+                        content = @Content(schema = @Schema(implementation = Designer.class))),
+            @ApiResponse(responseCode = "400", description = "用户未绑定设计师身份")
+        }
+    )
     @GetMapping("/designer/profile")
     public R<Designer> getCurrentDesignerProfile() {
         Long userId = LoginHelper.getUserId();
@@ -263,6 +279,15 @@ public class UserRegistrationController extends BaseController {
     /**
      * 获取当前用户绑定的企业信息
      */
+    @Operation(
+        summary = "获取企业档案",
+        description = "获取当前用户绑定的企业信息",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "获取成功",
+                        content = @Content(schema = @Schema(implementation = Enterprise.class))),
+            @ApiResponse(responseCode = "400", description = "用户未绑定企业身份")
+        }
+    )
     @GetMapping("/enterprise/profile")
     public R<Enterprise> getCurrentEnterpriseProfile() {
         Long userId = LoginHelper.getUserId();
@@ -279,6 +304,15 @@ public class UserRegistrationController extends BaseController {
     /**
      * 获取当前用户绑定的院校信息
      */
+    @Operation(
+        summary = "获取院校档案",
+        description = "获取当前用户绑定的院校信息",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "获取成功",
+                        content = @Content(schema = @Schema(implementation = School.class))),
+            @ApiResponse(responseCode = "400", description = "用户未绑定院校身份")
+        }
+    )
     @GetMapping("/school/profile")
     public R<School> getCurrentSchoolProfile() {
         Long userId = LoginHelper.getUserId();
@@ -296,6 +330,20 @@ public class UserRegistrationController extends BaseController {
      * 解绑用户身份
      * 用户可以自行解绑自己的身份，无需特殊权限
      */
+    @Operation(
+        summary = "解绑用户身份",
+        description = "用户可以自行解绑自己的身份，支持解绑企业或院校身份",
+        parameters = {
+            @Parameter(name = "entityType", description = "实体类型", required = true, 
+                      example = "enterprise", 
+                      schema = @Schema(allowableValues = {"enterprise", "school"}))
+        },
+        responses = {
+            @ApiResponse(responseCode = "200", description = "解绑成功"),
+            @ApiResponse(responseCode = "400", description = "用户未绑定该身份或已处于解绑状态"),
+            @ApiResponse(responseCode = "500", description = "解绑失败")
+        }
+    )
     @SaCheckLogin
     @Log(title = "解绑用户身份", businessType = BusinessType.UPDATE)
     @PutMapping("/unbind/{entityType}")
@@ -325,6 +373,23 @@ public class UserRegistrationController extends BaseController {
     /**
      * 管理员绑定用户与实体
      */
+    @Operation(
+        summary = "管理员绑定用户实体",
+        description = "管理员可以将任意用户绑定到指定的实体（设计师、企业或院校）",
+        parameters = {
+            @Parameter(name = "userId", description = "用户ID", required = true, example = "123"),
+            @Parameter(name = "entityType", description = "实体类型", required = true, 
+                      example = "enterprise",
+                      schema = @Schema(allowableValues = {"designer", "enterprise", "school"})),
+            @Parameter(name = "entityId", description = "实体ID", required = true, example = "1")
+        },
+        responses = {
+            @ApiResponse(responseCode = "200", description = "绑定成功"),
+            @ApiResponse(responseCode = "400", description = "无效的实体类型"),
+            @ApiResponse(responseCode = "403", description = "权限不足"),
+            @ApiResponse(responseCode = "500", description = "绑定失败")
+        }
+    )
     @SaCheckPermission("designer:user:bind")
     @Log(title = "绑定用户实体", businessType = BusinessType.INSERT)
     @PostMapping("/bind")
@@ -353,6 +418,11 @@ public class UserRegistrationController extends BaseController {
         parameters = {
             @Parameter(name = "enterpriseId", description = "企业ID", required = true, example = "1"),
             @Parameter(name = "inviteCode", description = "企业邀请码（可选）", example = "INVITE123")
+        },
+        responses = {
+            @ApiResponse(responseCode = "200", description = "绑定企业成功"),
+            @ApiResponse(responseCode = "400", description = "用户已绑定企业身份或企业不存在"),
+            @ApiResponse(responseCode = "500", description = "绑定失败")
         }
     )
     @Log(title = "绑定已有企业", businessType = BusinessType.INSERT)
@@ -397,6 +467,11 @@ public class UserRegistrationController extends BaseController {
         parameters = {
             @Parameter(name = "schoolId", description = "院校ID", required = true, example = "1"),
             @Parameter(name = "studentId", description = "学号（可选）", example = "2020001234")
+        },
+        responses = {
+            @ApiResponse(responseCode = "200", description = "绑定院校成功"),
+            @ApiResponse(responseCode = "400", description = "用户已绑定院校身份或院校不存在"),
+            @ApiResponse(responseCode = "500", description = "绑定失败")
         }
     )
     @Log(title = "绑定已有院校", businessType = BusinessType.INSERT)
@@ -437,11 +512,16 @@ public class UserRegistrationController extends BaseController {
      */
     @Operation(
         summary = "获取可绑定企业列表",
-        description = "获取系统中所有可用的企业列表",
+        description = "获取系统中所有可用的企业列表，支持分页查询和名称模糊搜索",
         parameters = {
             @Parameter(name = "pageNum", description = "页码", example = "1"),
             @Parameter(name = "pageSize", description = "每页大小", example = "10"),
-            @Parameter(name = "enterpriseName", description = "企业名称（模糊查询）")
+            @Parameter(name = "enterpriseName", description = "企业名称（模糊查询）", example = "科技")
+        },
+        responses = {
+            @ApiResponse(responseCode = "200", description = "查询成功",
+                        content = @Content(schema = @Schema(implementation = Enterprise.class))),
+            @ApiResponse(responseCode = "401", description = "用户未登录")
         }
     )
     @GetMapping("/available/enterprises")
@@ -467,11 +547,16 @@ public class UserRegistrationController extends BaseController {
      */
     @Operation(
         summary = "获取可绑定院校列表",
-        description = "获取系统中所有可用的院校列表",
+        description = "获取系统中所有可用的院校列表，支持分页查询和名称模糊搜索",
         parameters = {
             @Parameter(name = "pageNum", description = "页码", example = "1"),
             @Parameter(name = "pageSize", description = "每页大小", example = "10"),
-            @Parameter(name = "schoolName", description = "院校名称（模糊查询）")
+            @Parameter(name = "schoolName", description = "院校名称（模糊查询）", example = "设计")
+        },
+        responses = {
+            @ApiResponse(responseCode = "200", description = "查询成功",
+                        content = @Content(schema = @Schema(implementation = School.class))),
+            @ApiResponse(responseCode = "401", description = "用户未登录")
         }
     )
     @GetMapping("/available/schools")
