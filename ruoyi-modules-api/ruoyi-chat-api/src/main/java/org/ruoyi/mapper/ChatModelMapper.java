@@ -6,7 +6,7 @@ import org.ruoyi.domain.vo.ChatModelVo;
 
 /**
  * 聊天模型Mapper接口
- *
+ * 
  * @author ageerle
  * @date 2025-04-08
  */

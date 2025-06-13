@@ -37,7 +37,11 @@ public class ChatModelServiceImpl implements IChatModelService {
      */
     @Override
     public ChatModelVo queryById(Long id){
-        return baseMapper.selectVoById(id);
+        ChatModel chatModel = baseMapper.selectById(id);
+        if (chatModel == null) {
+            return null;
+        }
+        return convertToVo(chatModel);
     }
 
     /**
@@ -46,8 +50,14 @@ public class ChatModelServiceImpl implements IChatModelService {
     @Override
     public TableDataInfo<ChatModelVo> queryPageList(ChatModelBo bo, PageQuery pageQuery) {
         LambdaQueryWrapper<ChatModel> lqw = buildQueryWrapper(bo);
-        Page<ChatModelVo> result = baseMapper.selectVoPage(pageQuery.build(), lqw);
-        return TableDataInfo.build(result);
+        Page<ChatModel> page = baseMapper.selectPage(pageQuery.build(), lqw);
+        List<ChatModelVo> voList = page.getRecords().stream()
+            .map(this::convertToVo)
+            .toList();
+        
+        Page<ChatModelVo> voPage = new Page<>(page.getCurrent(), page.getSize(), page.getTotal());
+        voPage.setRecords(voList);
+        return TableDataInfo.build(voPage);
     }
 
     /**
@@ -56,7 +66,8 @@ public class ChatModelServiceImpl implements IChatModelService {
     @Override
     public List<ChatModelVo> queryList(ChatModelBo bo) {
         LambdaQueryWrapper<ChatModel> lqw = buildQueryWrapper(bo);
-        return baseMapper.selectVoList(lqw);
+        List<ChatModel> list = baseMapper.selectList(lqw);
+        return list.stream().map(this::convertToVo).toList();
     }
 
     private LambdaQueryWrapper<ChatModel> buildQueryWrapper(ChatModelBo bo) {
@@ -127,14 +138,42 @@ public class ChatModelServiceImpl implements IChatModelService {
      */
     @Override
     public ChatModelVo selectModelByName(String modelName) {
-        return baseMapper.selectVoOne(Wrappers.<ChatModel>lambdaQuery().eq(ChatModel::getModelName, modelName));
+        ChatModel chatModel = baseMapper.selectOne(Wrappers.<ChatModel>lambdaQuery().eq(ChatModel::getModelName, modelName));
+        if (chatModel == null) {
+            return null;
+        }
+        return convertToVo(chatModel);
     }
+    
     /**
      * 通过模型分类获取模型信息
      */
     @Override
-    public ChatModelVo selectModelByCategory(String  category) {
-        return baseMapper.selectVoOne(Wrappers.<ChatModel>lambdaQuery().eq(ChatModel::getCategory, category));
+    public ChatModelVo selectModelByCategory(String category) {
+        ChatModel chatModel = baseMapper.selectOne(Wrappers.<ChatModel>lambdaQuery().eq(ChatModel::getCategory, category));
+        if (chatModel == null) {
+            return null;
+        }
+        return convertToVo(chatModel);
+    }
+    
+    /**
+     * 手动转换ChatModel到ChatModelVo
+     */
+    private ChatModelVo convertToVo(ChatModel chatModel) {
+        ChatModelVo vo = new ChatModelVo();
+        vo.setId(chatModel.getId());
+        vo.setCategory(chatModel.getCategory());
+        vo.setModelName(chatModel.getModelName());
+        vo.setModelDescribe(chatModel.getModelDescribe());
+        vo.setModelPrice(chatModel.getModelPrice());
+        vo.setModelType(chatModel.getModelType());
+        vo.setModelShow(chatModel.getModelShow());
+        vo.setSystemPrompt(chatModel.getSystemPrompt());
+        vo.setApiHost(chatModel.getApiHost());
+        vo.setApiKey(chatModel.getApiKey());
+        vo.setRemark(chatModel.getRemark());
+        return vo;
     }
 
     @Override

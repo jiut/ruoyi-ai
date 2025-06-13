@@ -18,6 +18,12 @@
 
     <dependencies>
 
+        <!-- 通用核心模块 -->
+        <dependency>
+            <groupId>org.ruoyi</groupId>
+            <artifactId>ruoyi-common-core</artifactId>
+        </dependency>
+
         <!-- Mysql驱动包 -->
         <dependency>
             <groupId>com.mysql</groupId>
@@ -50,6 +56,11 @@
         <dependency>
             <groupId>org.ruoyi</groupId>
             <artifactId>ruoyi-chat</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ruoyi</groupId>
+            <artifactId>ruoyi-designer</artifactId>
         </dependency>
 
         <dependency>

@@ -21,7 +21,7 @@ import java.util.Date;
  */
 @Data
 @ExcelIgnoreUnannotated
-@AutoMapper(target = SysOperLog.class)
+@AutoMapper(target = SysOperLog.class, reverseConvertGenerate = true)
 public class SysOperLogVo implements Serializable {
 
     @Serial

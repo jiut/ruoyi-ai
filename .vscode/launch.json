@@ -1,0 +1,20 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "RuoYiAIApplication",
+            "request": "launch",
+            "mainClass": "org.ruoyi.RuoYiAIApplication",
+            "projectName": "ruoyi-admin"
+        },
+        {
+            "type": "java",
+            "name": "Build Project",
+            "request": "launch",
+            "mainClass": "org.ruoyi.RuoYiApplication",
+            "projectName": "ruoyi-admin",
+            "vmArgs": "-Dspring.profiles.active=dev"
+        }
+    ]
+} 

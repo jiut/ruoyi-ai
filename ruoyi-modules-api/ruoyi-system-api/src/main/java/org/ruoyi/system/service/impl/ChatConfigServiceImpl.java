@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.ruoyi.common.core.service.ConfigService;
 import org.ruoyi.common.core.utils.MapstructUtils;
 import org.ruoyi.common.core.utils.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.ruoyi.core.page.PageQuery;
 import org.ruoyi.core.page.TableDataInfo;
 import org.ruoyi.system.domain.ChatConfig;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 /**
@@ -46,7 +48,11 @@ public class ChatConfigServiceImpl implements ConfigService, IChatConfigService 
         bo.setCategory(category);
         bo.setConfigName(configKey);
         LambdaQueryWrapper<ChatConfig> lqw = buildQueryWrapper(bo);
-        ChatConfigVo chatConfigVo = baseMapper.selectVoOne(lqw);
+        ChatConfig chatConfig = baseMapper.selectOne(lqw);
+        if (chatConfig == null) {
+            return null;
+        }
+        ChatConfigVo chatConfigVo = convertToVo(chatConfig);
         return chatConfigVo.getConfigValue();
     }
 
@@ -55,7 +61,8 @@ public class ChatConfigServiceImpl implements ConfigService, IChatConfigService 
      */
     @Override
     public ChatConfigVo queryById(Long id){
-        return baseMapper.selectVoById(id);
+        ChatConfig chatConfig = baseMapper.selectById(id);
+        return convertToVo(chatConfig);
     }
 
     /**
@@ -64,8 +71,16 @@ public class ChatConfigServiceImpl implements ConfigService, IChatConfigService 
     @Override
     public TableDataInfo<ChatConfigVo> queryPageList(ChatConfigBo bo, PageQuery pageQuery) {
         LambdaQueryWrapper<ChatConfig> lqw = buildQueryWrapper(bo);
-        Page<ChatConfigVo> result = baseMapper.selectVoPage(pageQuery.build(), lqw);
-        return TableDataInfo.build(result);
+        Page<ChatConfig> page = baseMapper.selectPage(pageQuery.build(), lqw);
+        
+        // 手动转换Page内容
+        Page<ChatConfigVo> voPage = new Page<>(page.getCurrent(), page.getSize(), page.getTotal());
+        List<ChatConfigVo> voList = page.getRecords().stream()
+                .map(this::convertToVo)
+                .collect(Collectors.toList());
+        voPage.setRecords(voList);
+        
+        return TableDataInfo.build(voPage);
     }
 
     /**
@@ -74,7 +89,8 @@ public class ChatConfigServiceImpl implements ConfigService, IChatConfigService 
     @Override
     public List<ChatConfigVo> queryList(ChatConfigBo bo) {
         LambdaQueryWrapper<ChatConfig> lqw = buildQueryWrapper(bo);
-        return baseMapper.selectVoList(lqw);
+        List<ChatConfig> list = baseMapper.selectList(lqw);
+        return convertToVoList(list);
     }
 
     private LambdaQueryWrapper<ChatConfig> buildQueryWrapper(ChatConfigBo bo) {
@@ -140,7 +156,32 @@ public class ChatConfigServiceImpl implements ConfigService, IChatConfigService 
         ChatConfigBo bo = new ChatConfigBo();
         bo.setCategory(category);
         LambdaQueryWrapper<ChatConfig> lqw = buildQueryWrapper(bo);
-        return baseMapper.selectVoList(lqw);
+        List<ChatConfig> list = baseMapper.selectList(lqw);
+        return convertToVoList(list);
+    }
+
+    /**
+     * ChatConfig 转 ChatConfigVo
+     */
+    private ChatConfigVo convertToVo(ChatConfig chatConfig) {
+        if (chatConfig == null) {
+            return null;
+        }
+        ChatConfigVo vo = new ChatConfigVo();
+        BeanUtils.copyProperties(chatConfig, vo);
+        return vo;
+    }
+
+    /**
+     * ChatConfig列表 转 ChatConfigVo列表
+     */
+    private List<ChatConfigVo> convertToVoList(List<ChatConfig> chatConfigs) {
+        if (chatConfigs == null) {
+            return null;
+        }
+        return chatConfigs.stream()
+                .map(this::convertToVo)
+                .collect(Collectors.toList());
     }
 
 }
