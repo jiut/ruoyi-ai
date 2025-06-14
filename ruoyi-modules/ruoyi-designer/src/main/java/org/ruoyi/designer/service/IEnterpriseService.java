@@ -62,4 +62,12 @@ public interface IEnterpriseService extends IService<Enterprise> {
      * @return 企业信息
      */
     Enterprise selectEnterpriseByUserId(Long userId);
+
+    /**
+     * 根据企业名称查询企业是否存在
+     *
+     * @param enterpriseName 企业名称
+     * @return 是否存在
+     */
+    boolean existsByEnterpriseName(String enterpriseName);
 } 

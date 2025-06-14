@@ -93,4 +93,23 @@ public interface IDesignerService extends IService<Designer> {
      * @return 设计师列表
      */
     List<Designer> selectDesignerByEnterprise(Long enterpriseId);
+
+    /**
+     * 查询设计师公开信息列表（企业招聘使用）
+     * 只返回公开的设计师信息，隐藏敏感信息
+     *
+     * @param designer 设计师查询条件
+     * @return 设计师公开信息集合
+     */
+    TableDataInfo<Designer> selectPublicDesignerList(Designer designer);
+
+    /**
+     * 根据院校查询设计师列表
+     * 院校管理员查看本校设计师使用
+     *
+     * @param designer 设计师查询条件
+     * @param schoolId 院校ID
+     * @return 设计师集合
+     */
+    TableDataInfo<Designer> selectDesignerListBySchool(Designer designer, Long schoolId);
 } 

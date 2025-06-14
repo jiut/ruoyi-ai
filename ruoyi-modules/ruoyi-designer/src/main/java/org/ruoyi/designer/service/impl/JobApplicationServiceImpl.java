@@ -9,6 +9,7 @@ import org.ruoyi.core.page.TableDataInfo;
 import org.ruoyi.common.core.utils.StringUtils;
 import org.ruoyi.core.page.PageQuery;
 import org.ruoyi.designer.domain.JobApplication;
+import org.ruoyi.designer.enums.ApplicationStatus;
 import org.ruoyi.designer.mapper.JobApplicationMapper;
 import org.ruoyi.designer.service.IJobApplicationService;
 import org.springframework.stereotype.Service;
@@ -106,7 +107,10 @@ public class JobApplicationServiceImpl extends ServiceImpl<JobApplicationMapper,
             throw new ServiceException("该申请已经被处理过");
         }
         
-        jobApplication.setStatus(status);
+        // 转换状态：如果传入的是英文名称（如APPROVED），转换为数据库代码（如1）
+        String dbStatus = ApplicationStatus.convertEnumNameToCode(status);
+        
+        jobApplication.setStatus(dbStatus);
         jobApplication.setFeedback(feedback);
         
         return updateById(jobApplication);

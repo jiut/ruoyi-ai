@@ -1,6 +1,8 @@
 package org.ruoyi.designer.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaCheckRole;
+import cn.dev33.satoken.annotation.SaMode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -11,8 +13,11 @@ import org.ruoyi.core.page.PageQuery;
 import org.ruoyi.common.log.annotation.Log;
 import org.ruoyi.common.log.enums.BusinessType;
 import org.ruoyi.common.web.core.BaseController;
+import org.ruoyi.common.satoken.utils.LoginHelper;
 import org.ruoyi.designer.domain.School;
 import org.ruoyi.designer.service.ISchoolService;
+import org.ruoyi.designer.service.IUserBindingService;
+import org.ruoyi.designer.domain.enums.UserEntityType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +27,10 @@ import java.util.Map;
 
 /**
  * 院校管理Controller
+ * 
+ * 权限说明：
+ * - 管理员：可以访问所有院校数据和管理功能
+ * - 院校管理员：只能访问自己绑定的院校数据
  *
  * @author ruoyi
  */
@@ -33,32 +42,64 @@ import java.util.Map;
 public class SchoolController extends BaseController {
 
     private final ISchoolService schoolService;
+    private final IUserBindingService userBindingService;
 
     /**
      * 查询院校列表
+     * 管理员可以查看所有院校，院校管理员只能查看自己绑定的院校
      */
     @Operation(summary = "查询院校列表", description = "分页查询院校信息列表")
     @SaCheckPermission("designer:school:list")
     @GetMapping("/list")
     public TableDataInfo<School> list(School school, PageQuery pageQuery) {
-        return schoolService.selectSchoolList(school, pageQuery);
+        Long userId = LoginHelper.getUserId();
+        
+        // 检查用户是否为管理员
+        if (LoginHelper.isSuperAdmin()) {
+            // 管理员可以查看所有院校
+            return schoolService.selectSchoolList(school, pageQuery);
+        } else {
+            // 非管理员用户，检查是否绑定了院校
+            Long schoolId = userBindingService.getSchoolIdByUserId(userId);
+            if (schoolId != null) {
+                // 院校管理员只能查看自己绑定的院校
+                return schoolService.selectSchoolListBySchoolId(schoolId, school, pageQuery);
+            } else {
+                // 没有绑定院校的用户无权访问
+                return TableDataInfo.build();
+            }
+        }
     }
 
     /**
      * 获取院校详细信息
+     * 管理员可以查看任意院校，院校管理员只能查看自己绑定的院校
      */
     @Operation(summary = "获取院校详情", description = "根据院校ID获取详细信息")
     @Parameter(name = "schoolId", description = "院校ID", required = true)
     @SaCheckPermission("designer:school:query")
     @GetMapping("/{schoolId}")
     public R<School> getInfo(@PathVariable Long schoolId) {
+        Long userId = LoginHelper.getUserId();
+        
+        // 检查用户是否为管理员
+        if (!LoginHelper.isSuperAdmin()) {
+            // 非管理员用户，检查是否有权限访问该院校
+            Long userSchoolId = userBindingService.getSchoolIdByUserId(userId);
+            if (userSchoolId == null || !userSchoolId.equals(schoolId)) {
+                return R.fail("无权访问该院校信息");
+            }
+        }
+        
         return R.ok(schoolService.selectSchoolById(schoolId));
     }
 
     /**
      * 新增院校
+     * 仅管理员可以访问
      */
     @Operation(summary = "新增院校", description = "添加新的院校信息")
+    @SaCheckRole("admin")
     @SaCheckPermission("designer:school:add")
     @Log(title = "院校管理", businessType = BusinessType.INSERT)
     @PostMapping
@@ -68,20 +109,34 @@ public class SchoolController extends BaseController {
 
     /**
      * 修改院校
+     * 管理员可以修改任意院校，院校管理员只能修改自己绑定的院校
      */
     @Operation(summary = "修改院校", description = "更新院校信息")
     @SaCheckPermission("designer:school:edit")
     @Log(title = "院校管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public R<Void> edit(@Validated @RequestBody School school) {
+        Long userId = LoginHelper.getUserId();
+        
+        // 检查用户是否为管理员
+        if (!LoginHelper.isSuperAdmin()) {
+            // 非管理员用户，检查是否有权限修改该院校
+            Long userSchoolId = userBindingService.getSchoolIdByUserId(userId);
+            if (userSchoolId == null || !userSchoolId.equals(school.getSchoolId())) {
+                return R.fail("无权修改该院校信息");
+            }
+        }
+        
         return toAjax(schoolService.updateSchool(school));
     }
 
     /**
      * 删除院校
+     * 仅管理员可以访问
      */
     @Operation(summary = "删除院校", description = "批量删除院校")
     @Parameter(name = "schoolIds", description = "院校ID数组", required = true)
+    @SaCheckRole("admin")
     @SaCheckPermission("designer:school:remove")
     @Log(title = "院校管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{schoolIds}")
@@ -91,9 +146,11 @@ public class SchoolController extends BaseController {
 
     /**
      * 根据用户ID查询院校
+     * 仅管理员可以访问
      */
     @Operation(summary = "根据用户ID查询院校", description = "获取用户绑定的院校信息")
     @Parameter(name = "userId", description = "用户ID", required = true)
+    @SaCheckRole("admin")
     @SaCheckPermission("designer:school:query")
     @GetMapping("/user/{userId}")
     public R<School> getByUserId(@PathVariable Long userId) {
@@ -101,24 +158,48 @@ public class SchoolController extends BaseController {
     }
 
     /**
-     * 获取院校就业统计
+     * 获取院校就业统计 
+     * 管理员可以查看任意院校，院校管理员只能查看自己绑定的院校
      */
     @Operation(summary = "获取就业统计", description = "获取院校毕业生就业统计数据")
     @Parameter(name = "schoolId", description = "院校ID", required = true)
     @SaCheckPermission("designer:school:statistics")
     @GetMapping("/{schoolId}/employment/statistics")
     public R<Map<String, Object>> getEmploymentStatistics(@PathVariable Long schoolId) {
+        Long userId = LoginHelper.getUserId();
+        
+        // 检查用户是否为管理员
+        if (!LoginHelper.isSuperAdmin()) {
+            // 非管理员用户，检查是否有权限访问该院校
+            Long userSchoolId = userBindingService.getSchoolIdByUserId(userId);
+            if (userSchoolId == null || !userSchoolId.equals(schoolId)) {
+                return R.fail("无权访问该院校统计信息");
+            }
+        }
+        
         return R.ok(schoolService.getEmploymentStatistics(schoolId));
     }
 
     /**
      * 获取院校就业分布
+     * 管理员可以查看任意院校，院校管理员只能查看自己绑定的院校
      */
     @Operation(summary = "获取就业分布", description = "获取院校毕业生企业分布数据")
     @Parameter(name = "schoolId", description = "院校ID", required = true)
     @SaCheckPermission("designer:school:statistics")
     @GetMapping("/{schoolId}/employment/distribution")
     public R<List<Map<String, Object>>> getEmploymentDistribution(@PathVariable Long schoolId) {
+        Long userId = LoginHelper.getUserId();
+        
+        // 检查用户是否为管理员
+        if (!LoginHelper.isSuperAdmin()) {
+            // 非管理员用户，检查是否有权限访问该院校
+            Long userSchoolId = userBindingService.getSchoolIdByUserId(userId);
+            if (userSchoolId == null || !userSchoolId.equals(schoolId)) {
+                return R.fail("无权访问该院校分布信息");
+            }
+        }
+        
         return R.ok(schoolService.getEmploymentDistribution(schoolId));
     }
 }

@@ -78,4 +78,12 @@ public class EnterpriseServiceImpl extends ServiceImpl<EnterpriseMapper, Enterpr
                 .eq(Enterprise::getStatus, "0");
         return enterpriseMapper.selectOne(wrapper);
     }
+
+    @Override
+    public boolean existsByEnterpriseName(String enterpriseName) {
+        LambdaQueryWrapper<Enterprise> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Enterprise::getEnterpriseName, enterpriseName)
+                .eq(Enterprise::getStatus, "0");
+        return enterpriseMapper.selectCount(wrapper) > 0;
+    }
 } 

@@ -104,36 +104,68 @@ public class JobApplicationController extends BaseController {
     /**
      * 设计师申请岗位
      */
+    @Operation(
+        summary = "申请岗位",
+        description = "设计师申请指定的岗位"
+    )
     @SaCheckPermission("designer:application:apply")
     @Log(title = "申请岗位", businessType = BusinessType.INSERT)
     @PostMapping("/apply")
-    public R<Void> applyForJob(@RequestParam Long jobId, 
-                               @RequestParam Long designerId,
-                               @RequestParam(required = false) String coverLetter,
-                               @RequestParam(required = false) String resumeUrl) {
+    public R<Void> applyForJob(
+            @Parameter(name = "jobId", description = "岗位ID", required = true, example = "1")
+            @RequestParam Long jobId,
+            @Parameter(name = "designerId", description = "设计师ID", required = true, example = "1") 
+            @RequestParam Long designerId,
+            @Parameter(name = "coverLetter", description = "申请说明", required = false, 
+                      example = "我对这个岗位很感兴趣，希望能加入贵公司团队")
+            @RequestParam(required = false) String coverLetter,
+            @Parameter(name = "resumeUrl", description = "简历文件URL", required = false, 
+                      example = "https://example.com/resume.pdf")
+            @RequestParam(required = false) String resumeUrl) {
         return toAjax(jobApplicationService.applyForJob(jobId, designerId, coverLetter, resumeUrl));
     }
 
     /**
      * 企业处理申请（通过或拒绝）
      */
+    @Operation(
+        summary = "处理岗位申请",
+        description = "企业处理设计师的岗位申请，可以通过或拒绝申请"
+    )
     @SaCheckPermission("designer:application:process")
     @Log(title = "处理申请", businessType = BusinessType.UPDATE)
     @PutMapping("/process")
-    public R<Void> processApplication(@RequestParam Long applicationId,
-                                      @RequestParam String status,
-                                      @RequestParam(required = false) String feedback) {
+    public R<Void> processApplication(
+            @Parameter(name = "applicationId", description = "申请ID", required = true, example = "1") 
+            @RequestParam Long applicationId,
+            @Parameter(name = "status", description = "处理结果", required = true, 
+                      example = "APPROVED",
+                      schema = @io.swagger.v3.oas.annotations.media.Schema(
+                          allowableValues = {"APPROVED", "REJECTED", "1", "2"},
+                          description = "支持英文常量（APPROVED=通过, REJECTED=拒绝）或数字代码（1=通过, 2=拒绝）"
+                      ))
+            @RequestParam String status,
+            @Parameter(name = "feedback", description = "企业反馈信息", required = false, 
+                      example = "申请通过，请联系HR安排面试")
+            @RequestParam(required = false) String feedback) {
         return toAjax(jobApplicationService.processApplication(applicationId, status, feedback));
     }
 
     /**
      * 设计师撤回申请
      */
+    @Operation(
+        summary = "撤回申请",
+        description = "设计师撤回自己提交的岗位申请"
+    )
     @SaCheckPermission("designer:application:withdraw")
     @Log(title = "撤回申请", businessType = BusinessType.UPDATE)
     @PutMapping("/withdraw")
-    public R<Void> withdrawApplication(@RequestParam Long applicationId,
-                                       @RequestParam Long designerId) {
+    public R<Void> withdrawApplication(
+            @Parameter(name = "applicationId", description = "申请ID", required = true, example = "1")
+            @RequestParam Long applicationId,
+            @Parameter(name = "designerId", description = "设计师ID", required = true, example = "1")
+            @RequestParam Long designerId) {
         return toAjax(jobApplicationService.withdrawApplication(applicationId, designerId));
     }
 } 

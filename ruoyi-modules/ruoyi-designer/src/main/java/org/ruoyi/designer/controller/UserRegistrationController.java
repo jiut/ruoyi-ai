@@ -157,7 +157,12 @@ public class UserRegistrationController extends BaseController {
                         """
                 )
             )
-        )
+        ),
+        responses = {
+            @ApiResponse(responseCode = "200", description = "注册成功"),
+            @ApiResponse(responseCode = "400", description = "用户已绑定企业身份或企业名称已存在"),
+            @ApiResponse(responseCode = "500", description = "注册失败")
+        }
     )
     @Log(title = "企业注册", businessType = BusinessType.INSERT)
     @PostMapping("/register/enterprise")
@@ -167,6 +172,12 @@ public class UserRegistrationController extends BaseController {
         // 检查用户是否已经绑定了企业
         if (userBindingService.isUserBoundToEntityType(userId, UserEntityType.ENTERPRISE)) {
             return R.fail("用户已绑定企业身份");
+        }
+        
+        // 检查企业名称是否已存在
+        if (StringUtils.isNotBlank(enterprise.getEnterpriseName()) && 
+            enterpriseService.existsByEnterpriseName(enterprise.getEnterpriseName())) {
+            return R.fail("企业名称已存在，请更换企业名称");
         }
         
         // 设置用户ID
@@ -207,7 +218,12 @@ public class UserRegistrationController extends BaseController {
                         """
                 )
             )
-        )
+        ),
+        responses = {
+            @ApiResponse(responseCode = "200", description = "注册成功"),
+            @ApiResponse(responseCode = "400", description = "用户已绑定院校身份或院校名称已存在"),
+            @ApiResponse(responseCode = "500", description = "注册失败")
+        }
     )
     @Log(title = "院校注册", businessType = BusinessType.INSERT)
     @PostMapping("/register/school")
@@ -217,6 +233,12 @@ public class UserRegistrationController extends BaseController {
         // 检查用户是否已经绑定了院校
         if (userBindingService.isUserBoundToEntityType(userId, UserEntityType.SCHOOL)) {
             return R.fail("用户已绑定院校身份");
+        }
+        
+        // 检查院校名称是否已存在
+        if (StringUtils.isNotBlank(school.getSchoolName()) && 
+            schoolService.existsBySchoolName(school.getSchoolName())) {
+            return R.fail("院校名称已存在，请更换院校名称");
         }
         
         // 设置用户ID

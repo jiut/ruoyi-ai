@@ -43,6 +43,23 @@ public class SchoolServiceImpl extends ServiceImpl<SchoolMapper, School> impleme
     }
 
     /**
+     * 根据院校ID查询特定院校列表（用于院校管理员权限控制）
+     */
+    @Override
+    public TableDataInfo<School> selectSchoolListBySchoolId(Long schoolId, School school, PageQuery pageQuery) {
+        LambdaQueryWrapper<School> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(School::getSchoolId, schoolId)
+                .like(StringUtils.isNotBlank(school.getSchoolName()), School::getSchoolName, school.getSchoolName())
+                .eq(StringUtils.isNotBlank(school.getSchoolType()), School::getSchoolType, school.getSchoolType())
+                .eq(StringUtils.isNotBlank(school.getLevel()), School::getLevel, school.getLevel())
+                .eq(StringUtils.isNotBlank(school.getStatus()), School::getStatus, school.getStatus())
+                .orderByDesc(School::getCreateTime);
+        
+        Page<School> page = schoolMapper.selectPage(pageQuery.build(), wrapper);
+        return TableDataInfo.build(page);
+    }
+
+    /**
      * 根据院校ID查询院校信息
      */
     @Override
@@ -96,5 +113,13 @@ public class SchoolServiceImpl extends ServiceImpl<SchoolMapper, School> impleme
     @Override
     public List<Map<String, Object>> getEmploymentDistribution(Long schoolId) {
         return schoolMapper.getEmploymentDistribution(schoolId);
+    }
+
+    @Override
+    public boolean existsBySchoolName(String schoolName) {
+        LambdaQueryWrapper<School> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(School::getSchoolName, schoolName)
+                .eq(School::getStatus, "0");
+        return schoolMapper.selectCount(wrapper) > 0;
     }
 } 

@@ -25,6 +25,16 @@ public interface ISchoolService extends IService<School> {
     TableDataInfo<School> selectSchoolList(School school, PageQuery pageQuery);
 
     /**
+     * 根据院校ID查询特定院校列表（用于院校管理员权限控制）
+     *
+     * @param schoolId 院校ID
+     * @param school 院校查询条件
+     * @param pageQuery 分页参数
+     * @return 院校集合
+     */
+    TableDataInfo<School> selectSchoolListBySchoolId(Long schoolId, School school, PageQuery pageQuery);
+
+    /**
      * 根据院校ID查询院校信息
      *
      * @param schoolId 院校ID
@@ -79,4 +89,12 @@ public interface ISchoolService extends IService<School> {
      * @return 企业分布数据
      */
     List<Map<String, Object>> getEmploymentDistribution(Long schoolId);
+
+    /**
+     * 根据院校名称查询院校是否存在
+     *
+     * @param schoolName 院校名称
+     * @return 是否存在
+     */
+    boolean existsBySchoolName(String schoolName);
 } 

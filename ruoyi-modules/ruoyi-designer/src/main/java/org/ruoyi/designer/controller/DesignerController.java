@@ -19,6 +19,8 @@ import org.ruoyi.designer.domain.Designer;
 import org.ruoyi.designer.domain.enums.DesignerProfession;
 import org.ruoyi.designer.domain.enums.SkillTag;
 import org.ruoyi.designer.service.IDesignerService;
+import org.ruoyi.designer.util.DesignerPermissionUtils;
+import org.ruoyi.common.satoken.utils.LoginHelper;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
@@ -35,6 +37,12 @@ import java.beans.PropertyEditorSupport;
 
 /**
  * 设计师管理Controller
+ * 
+ * 权限说明：
+ * - 系统管理员：可以访问所有设计师管理接口
+ * - 企业管理员：可以查看设计师公开信息（用于招聘）
+ * - 院校管理员：可以查看本校设计师信息
+ * - 设计师：只能查看自己的信息，个人档案管理请使用用户档案接口
  *
  * @author ruoyi
  */
@@ -46,6 +54,28 @@ import java.beans.PropertyEditorSupport;
 public class DesignerController extends BaseController {
 
     private final IDesignerService designerService;
+    private final DesignerPermissionUtils permissionUtils;
+
+    /**
+     * 检查当前用户是否有设计师管理权限
+     * 根据权限矩阵，不同角色有不同的访问权限
+     */
+    private boolean hasDesignerManagementPermission() {
+        return LoginHelper.isSuperAdmin() || 
+               permissionUtils.isEnterprise() || 
+               permissionUtils.isSchool() || 
+               permissionUtils.isDesigner();
+    }
+
+    /**
+     * 检查当前用户是否为系统管理员
+     * 只有系统管理员才能进行增删改操作
+     */
+    private void checkAdminPermission() {
+        if (!LoginHelper.isSuperAdmin()) {
+            throw new RuntimeException("权限不足：设计师增删改操作仅限系统管理员访问");
+        }
+    }
 
     /**
      * 数据绑定初始化器
@@ -73,6 +103,11 @@ public class DesignerController extends BaseController {
 
     /**
      * 查询设计师列表
+     * 权限矩阵：
+     * - 系统管理员：查看所有设计师
+     * - 企业管理员：查看公开信息（用于招聘）
+     * - 院校管理员：查看本校设计师
+     * - 设计师：无权查看列表
      */
     @Operation(
         summary = "查询设计师列表",
@@ -88,7 +123,26 @@ public class DesignerController extends BaseController {
     @SaCheckPermission("designer:designer:list")
     @GetMapping("/list")
     public TableDataInfo<Designer> list(Designer designer) {
-        return designerService.selectDesignerList(designer);
+        if (!hasDesignerManagementPermission()) {
+            throw new RuntimeException("权限不足：无权查看设计师列表");
+        }
+        
+        Long userId = LoginHelper.getUserId();
+        
+        if (LoginHelper.isSuperAdmin()) {
+            // 系统管理员可以查看所有设计师
+            return designerService.selectDesignerList(designer);
+        } else if (permissionUtils.isEnterprise()) {
+            // 企业管理员可以查看公开信息（用于招聘）
+            return designerService.selectPublicDesignerList(designer);
+        } else if (permissionUtils.isSchool()) {
+            // 院校管理员可以查看本校设计师
+            Long schoolId = permissionUtils.getCurrentSchoolId();
+            return designerService.selectDesignerListBySchool(designer, schoolId);
+        } else {
+            // 设计师用户无权查看列表
+            throw new RuntimeException("权限不足：设计师用户无权查看设计师列表");
+        }
     }
 
     /**
@@ -102,6 +156,7 @@ public class DesignerController extends BaseController {
     @SaCheckPermission("designer:designer:query")
     @GetMapping("/{designerId}")
     public R<Designer> getInfo(@PathVariable Long designerId) {
+        checkAdminPermission();
         return R.ok(designerService.selectDesignerById(designerId));
     }
 
@@ -139,6 +194,7 @@ public class DesignerController extends BaseController {
     @Log(title = "设计师管理", businessType = BusinessType.INSERT)
     @PostMapping
     public R<Void> add(@Validated @RequestBody Designer designer) {
+        checkAdminPermission();
         return toAjax(designerService.insertDesigner(designer));
     }
 
@@ -181,6 +237,7 @@ public class DesignerController extends BaseController {
     @Log(title = "设计师管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public R<Void> edit(@Validated @RequestBody Designer designer) {
+        checkAdminPermission();
         // 清除系统自动填充的字段，避免前端误传
         designer.setCreateTime(null);
         designer.setUpdateTime(null);
@@ -203,6 +260,7 @@ public class DesignerController extends BaseController {
     @Log(title = "设计师管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{designerIds}")
     public R<Void> remove(@PathVariable Long[] designerIds) {
+        checkAdminPermission();
         return toAjax(designerService.deleteDesignerByIds(Arrays.asList(designerIds)));
     }
 
@@ -221,6 +279,7 @@ public class DesignerController extends BaseController {
     @SaCheckPermission("designer:designer:query")
     @GetMapping("/profession/{profession}")
     public R<List<Designer>> getByProfession(@PathVariable String profession) {
+        checkAdminPermission();
         return R.ok(designerService.selectDesignerByProfession(profession));
     }
 
@@ -236,6 +295,7 @@ public class DesignerController extends BaseController {
     @SaCheckPermission("designer:designer:query")
     @GetMapping("/skills")
     public R<List<Designer>> getBySkills(@RequestParam List<String> skillTags) {
+        checkAdminPermission();
         return R.ok(designerService.selectDesignerBySkillTags(skillTags));
     }
 
@@ -250,6 +310,7 @@ public class DesignerController extends BaseController {
     @SaCheckPermission("designer:designer:query")
     @GetMapping("/school/{schoolId}")
     public R<List<Designer>> getBySchool(@PathVariable Long schoolId) {
+        checkAdminPermission();
         return R.ok(designerService.selectDesignerBySchool(schoolId));
     }
 
@@ -264,6 +325,7 @@ public class DesignerController extends BaseController {
     @SaCheckPermission("designer:designer:query")
     @GetMapping("/enterprise/{enterpriseId}")
     public R<List<Designer>> getByEnterprise(@PathVariable Long enterpriseId) {
+        checkAdminPermission();
         return R.ok(designerService.selectDesignerByEnterprise(enterpriseId));
     }
 
@@ -272,10 +334,12 @@ public class DesignerController extends BaseController {
      */
     @Operation(
         summary = "获取职业选项",
-        description = "获取所有可用的设计师职业类型选项"
+        description = "获取所有可用的设计师职业类型选项（仅限系统管理员）"
     )
+    @SaCheckPermission("designer:designer:query")
     @GetMapping("/professions")
     public R<List<DesignerProfession>> getProfessions() {
+        checkAdminPermission();
         return R.ok(Arrays.asList(DesignerProfession.values()));
     }
 
@@ -284,10 +348,12 @@ public class DesignerController extends BaseController {
      */
     @Operation(
         summary = "获取技能标签选项",
-        description = "获取所有可用的技能标签选项"
+        description = "获取所有可用的技能标签选项（仅限系统管理员）"
     )
+    @SaCheckPermission("designer:designer:query")
     @GetMapping("/skillTags")
     public R<List<SkillTag>> getSkillTags() {
+        checkAdminPermission();
         return R.ok(Arrays.asList(SkillTag.values()));
     }
 } 

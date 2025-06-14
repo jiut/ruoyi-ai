@@ -16,6 +16,7 @@ import org.ruoyi.common.log.enums.BusinessType;
 import org.ruoyi.common.web.core.BaseController;
 import org.ruoyi.designer.domain.JobPosting;
 import org.ruoyi.designer.service.IJobPostingService;
+import org.ruoyi.designer.service.impl.JobPostingServiceImpl;
 import org.ruoyi.designer.util.DesignerPermissionUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -234,6 +235,10 @@ public class JobPostingController extends BaseController {
         return R.ok(jobPostingService.selectJobPostingByProfession(profession));
     }
 
+
+
+
+
     /**
      * 根据技能要求查询岗位
      */
@@ -247,5 +252,66 @@ public class JobPostingController extends BaseController {
     @GetMapping("/skills")
     public R<List<JobPosting>> getBySkills(@RequestParam List<String> skillTags) {
         return R.ok(jobPostingService.selectJobPostingBySkills(skillTags));
+    }
+
+    /**
+     * 根据技能要求查询岗位（任意匹配）
+     */
+    @Operation(
+        summary = "按技能查询岗位（任意匹配）",
+        description = "根据技能要求查询匹配的岗位，岗位只要包含任意一个搜索技能即可被查询出来。与 /skills 接口的区别：/skills 要求岗位包含所有搜索技能，而此接口只要求包含任意一个技能。",
+        parameters = @Parameter(
+            name = "skillTags", 
+            description = "技能标签列表，使用逗号分隔", 
+            required = true,
+            example = "PROTOTYPE_DESIGN,VISUAL_DESIGN,USER_INTERFACE_DESIGN",
+            schema = @Schema(
+                type = "array",
+                allowableValues = {
+                    "ANIMATION_DESIGN", "PROTOTYPE_DESIGN", "CHARACTER_DESIGN", 
+                    "VISUAL_DESIGN", "USER_INTERFACE_DESIGN", "USER_EXPERIENCE_DESIGN", 
+                    "GRAPHIC_DESIGN", "BRANDING_DESIGN", "ILLUSTRATION", 
+                    "WEB_DESIGN", "MOBILE_DESIGN", "PRINT_DESIGN"
+                }
+            )
+        ),
+        responses = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                responseCode = "200",
+                description = "查询成功",
+                content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = R.class),
+                    examples = @ExampleObject(
+                        name = "查询结果示例",
+                        value = """
+                            {
+                                "code": 200,
+                                "msg": "操作成功",
+                                "data": [
+                                    {
+                                        "jobId": 1,
+                                        "jobTitle": "高级UI设计师",
+                                        "enterpriseId": 1,
+                                        "requiredProfession": "UI_DESIGNER",
+                                        "requiredSkills": "[\\"PROTOTYPE_DESIGN\\", \\"VISUAL_DESIGN\\", \\"USER_INTERFACE_DESIGN\\"]",
+                                        "salaryMin": 15000,
+                                        "salaryMax": 25000,
+                                        "location": "北京市朝阳区",
+                                        "jobType": "全职",
+                                        "status": "0"
+                                    }
+                                ]
+                            }
+                            """
+                    )
+                )
+            )
+        }
+    )
+    @SaCheckPermission("designer:job:query")
+    @GetMapping("/skills-any")
+    public R<List<JobPosting>> getBySkillsAny(@RequestParam List<String> skillTags) {
+        return R.ok(((JobPostingServiceImpl) jobPostingService).selectJobPostingBySkillsAny(skillTags));
     }
 } 

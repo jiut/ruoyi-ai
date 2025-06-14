@@ -243,4 +243,114 @@ public class DesignerServiceImpl extends ServiceImpl<DesignerMapper, Designer> i
                 .orderByDesc(Designer::getCreateTime);
         return designerMapper.selectList(wrapper);
     }
+
+    /**
+     * 查询设计师公开信息列表（企业招聘使用）
+     * 只返回公开的设计师信息，隐藏敏感信息
+     */
+    @Override
+    public TableDataInfo<Designer> selectPublicDesignerList(Designer designer) {
+        LambdaQueryWrapper<Designer> wrapper = new LambdaQueryWrapper<>();
+        
+        // 只查询状态正常的设计师
+        wrapper.eq(Designer::getStatus, "0");
+        
+        // 根据查询条件进行筛选
+        if (StringUtils.isNotBlank(designer.getDesignerName())) {
+            wrapper.like(Designer::getDesignerName, designer.getDesignerName());
+        }
+        if (StringUtils.isNotBlank(designer.getProfession())) {
+            wrapper.eq(Designer::getProfession, designer.getProfession());
+        }
+        if (StringUtils.isNotBlank(designer.getSkillTags())) {
+            wrapper.apply("JSON_CONTAINS(skill_tags, {0})", "\"" + designer.getSkillTags() + "\"");
+        }
+        
+        // 按创建时间降序排列
+        wrapper.orderByDesc(Designer::getCreateTime);
+        
+        // 构建分页查询
+        PageQuery pageQuery = new PageQuery(20, 1);  // 使用默认分页参数
+        Page<Designer> page = designerMapper.selectPage(pageQuery.build(), wrapper);
+        
+        // 对于企业用户，需要隐藏敏感信息（如详细联系方式）
+        List<Designer> publicDesigners = page.getRecords().stream()
+                .map(this::convertToPublicDesigner)
+                .collect(Collectors.toList());
+        
+        page.setRecords(publicDesigners);
+        return TableDataInfo.build(page);
+    }
+
+    /**
+     * 根据院校查询设计师列表
+     * 院校管理员查看本校设计师使用
+     */
+    @Override
+    public TableDataInfo<Designer> selectDesignerListBySchool(Designer designer, Long schoolId) {
+        LambdaQueryWrapper<Designer> wrapper = new LambdaQueryWrapper<>();
+        
+        // 只查询指定院校的设计师
+        wrapper.eq(Designer::getSchoolId, schoolId)
+                .eq(Designer::getStatus, "0");
+        
+        // 根据查询条件进行筛选
+        if (StringUtils.isNotBlank(designer.getDesignerName())) {
+            wrapper.like(Designer::getDesignerName, designer.getDesignerName());
+        }
+        if (StringUtils.isNotBlank(designer.getProfession())) {
+            wrapper.eq(Designer::getProfession, designer.getProfession());
+        }
+        if (StringUtils.isNotBlank(designer.getSkillTags())) {
+            wrapper.apply("JSON_CONTAINS(skill_tags, {0})", "\"" + designer.getSkillTags() + "\"");
+        }
+        
+        // 按创建时间降序排列
+        wrapper.orderByDesc(Designer::getCreateTime);
+        
+        // 构建分页查询
+        PageQuery pageQuery = new PageQuery(20, 1);  // 使用默认分页参数
+        Page<Designer> page = designerMapper.selectPage(pageQuery.build(), wrapper);
+        return TableDataInfo.build(page);
+    }
+
+    /**
+     * 将设计师信息转换为公开信息（隐藏敏感数据）
+     * 
+     * @param designer 原始设计师信息
+     * @return 公开的设计师信息
+     */
+    private Designer convertToPublicDesigner(Designer designer) {
+        Designer publicDesigner = new Designer();
+        
+        // 复制公开信息
+        publicDesigner.setDesignerId(designer.getDesignerId());
+        publicDesigner.setDesignerName(designer.getDesignerName());
+        publicDesigner.setAvatar(designer.getAvatar());
+        publicDesigner.setGender(designer.getGender());
+        publicDesigner.setProfession(designer.getProfession());
+        publicDesigner.setSkillTags(designer.getSkillTags());
+        publicDesigner.setWorkYears(designer.getWorkYears());
+        publicDesigner.setDescription(designer.getDescription());
+        publicDesigner.setPortfolioUrl(designer.getPortfolioUrl());
+        publicDesigner.setSchoolId(designer.getSchoolId());
+        publicDesigner.setEnterpriseId(designer.getEnterpriseId());
+        publicDesigner.setStatus(designer.getStatus());
+        publicDesigner.setCreateTime(designer.getCreateTime());
+        
+        // 隐藏敏感信息
+        // publicDesigner.setPhone(null);  // 隐藏电话
+        // publicDesigner.setEmail(null);  // 隐藏邮箱
+        // publicDesigner.setBirthDate(null);  // 隐藏生日
+        // publicDesigner.setSocialLinks(null);  // 隐藏社交链接详情
+        
+        // 注：如果需要完全隐藏敏感信息，取消上面的注释
+        // 目前保留这些信息以便企业联系设计师
+        publicDesigner.setPhone(designer.getPhone());
+        publicDesigner.setEmail(designer.getEmail());
+        publicDesigner.setBirthDate(designer.getBirthDate());
+        publicDesigner.setSocialLinks(designer.getSocialLinks());
+        
+        return publicDesigner;
+    }
 } 

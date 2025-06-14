@@ -61,7 +61,9 @@ public class JobApplication extends BaseEntity {
      */
     @Schema(description = "申请状态", example = "0", 
             allowableValues = {"0", "1", "2", "3"},
-            accessMode = Schema.AccessMode.READ_ONLY)
+            accessMode = Schema.AccessMode.READ_ONLY,
+            enumAsRef = true,
+            implementation = String.class)
     private String status;
 
     /**

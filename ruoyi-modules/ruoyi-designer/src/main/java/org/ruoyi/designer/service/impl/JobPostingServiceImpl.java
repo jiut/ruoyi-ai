@@ -98,7 +98,6 @@ public class JobPostingServiceImpl extends ServiceImpl<JobPostingMapper, JobPost
         LambdaQueryWrapper<JobPosting> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(JobPosting::getRequiredProfession, profession)
                 .eq(JobPosting::getStatus, "0")
-                .ge(JobPosting::getDeadline, LocalDate.now())
                 .orderByDesc(JobPosting::getCreateTime);
         return jobPostingMapper.selectList(wrapper);
     }
@@ -109,13 +108,34 @@ public class JobPostingServiceImpl extends ServiceImpl<JobPostingMapper, JobPost
     @Override
     public List<JobPosting> selectJobPostingBySkills(List<String> skillTags) {
         LambdaQueryWrapper<JobPosting> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(JobPosting::getStatus, "0")
-                .ge(JobPosting::getDeadline, LocalDate.now());
+        wrapper.eq(JobPosting::getStatus, "0");
         
         // 使用JSON_CONTAINS函数查询包含指定技能要求的岗位
         for (String tag : skillTags) {
             wrapper.apply("JSON_CONTAINS(required_skills, {0})", "\"" + tag + "\"");
         }
+        
+        wrapper.orderByDesc(JobPosting::getCreateTime);
+        return jobPostingMapper.selectList(wrapper);
+    }
+
+    /**
+     * 根据技能要求查询岗位（任意匹配）
+     */
+    public List<JobPosting> selectJobPostingBySkillsAny(List<String> skillTags) {
+        LambdaQueryWrapper<JobPosting> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(JobPosting::getStatus, "0");
+        
+        // 使用OR条件查询包含任意一个技能的岗位
+        wrapper.and(w -> {
+            for (int i = 0; i < skillTags.size(); i++) {
+                if (i == 0) {
+                    w.apply("JSON_CONTAINS(required_skills, {0})", "\"" + skillTags.get(i) + "\"");
+                } else {
+                    w.or().apply("JSON_CONTAINS(required_skills, {0})", "\"" + skillTags.get(i) + "\"");
+                }
+            }
+        });
         
         wrapper.orderByDesc(JobPosting::getCreateTime);
         return jobPostingMapper.selectList(wrapper);
