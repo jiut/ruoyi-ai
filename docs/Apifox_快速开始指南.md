@@ -9,7 +9,7 @@
 3. 添加以下环境变量：
 
 ```
-base_url = http://localhost:1002/api
+base_url = http://localhost:6039
 access_token = (留空，登录后自动填充)
 ```
 
