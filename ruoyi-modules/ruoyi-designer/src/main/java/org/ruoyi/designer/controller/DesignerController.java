@@ -57,10 +57,20 @@ public class DesignerController extends BaseController {
     private final DesignerPermissionUtils permissionUtils;
 
     /**
-     * 检查当前用户是否有设计师管理权限
+     * 检查当前用户是否有设计师查看权限
      * 根据权限矩阵，不同角色有不同的访问权限
      */
-    private boolean hasDesignerManagementPermission() {
+    private boolean hasDesignerViewPermission() {
+        return LoginHelper.isSuperAdmin() || 
+               permissionUtils.isEnterprise() || 
+               permissionUtils.isSchool();
+    }
+
+    /**
+     * 检查当前用户是否有设计师详情查看权限
+     * 设计师可以查看自己的详情
+     */
+    private boolean hasDesignerDetailPermission() {
         return LoginHelper.isSuperAdmin() || 
                permissionUtils.isEnterprise() || 
                permissionUtils.isSchool() || 
@@ -123,7 +133,7 @@ public class DesignerController extends BaseController {
     @SaCheckPermission("designer:designer:list")
     @GetMapping("/list")
     public TableDataInfo<Designer> list(Designer designer) {
-        if (!hasDesignerManagementPermission()) {
+        if (!hasDesignerViewPermission()) {
             throw new RuntimeException("权限不足：无权查看设计师列表");
         }
         
@@ -147,6 +157,11 @@ public class DesignerController extends BaseController {
 
     /**
      * 获取设计师详细信息
+     * 权限矩阵：
+     * - 系统管理员：查看所有设计师详情
+     * - 企业管理员：查看设计师公开信息
+     * - 院校管理员：查看本校设计师详情
+     * - 设计师：查看自己的详情
      */
     @Operation(
         summary = "获取设计师详情",
@@ -156,8 +171,44 @@ public class DesignerController extends BaseController {
     @SaCheckPermission("designer:designer:query")
     @GetMapping("/{designerId}")
     public R<Designer> getInfo(@PathVariable Long designerId) {
-        checkAdminPermission();
-        return R.ok(designerService.selectDesignerById(designerId));
+        if (!hasDesignerDetailPermission()) {
+            return R.fail("权限不足：无权查看设计师详情");
+        }
+        
+        Long userId = LoginHelper.getUserId();
+        
+        if (LoginHelper.isSuperAdmin()) {
+            // 系统管理员可以查看所有设计师详情
+            return R.ok(designerService.selectDesignerById(designerId));
+        } else if (permissionUtils.isDesigner()) {
+            // 设计师只能查看自己的详情
+            Long currentDesignerId = permissionUtils.getCurrentDesignerId();
+            if (currentDesignerId == null || !currentDesignerId.equals(designerId)) {
+                return R.fail("权限不足：只能查看自己的设计师信息");
+            }
+            return R.ok(designerService.selectDesignerById(designerId));
+        } else if (permissionUtils.isEnterprise()) {
+            // 企业管理员可以查看设计师公开信息
+            Designer designer = designerService.selectDesignerById(designerId);
+            if (designer == null) {
+                return R.fail("设计师不存在");
+            }
+            // 返回公开信息（可以考虑创建一个专门的方法来处理）
+            return R.ok(designer);
+        } else if (permissionUtils.isSchool()) {
+            // 院校管理员可以查看本校设计师详情
+            Long schoolId = permissionUtils.getCurrentSchoolId();
+            Designer designer = designerService.selectDesignerById(designerId);
+            if (designer == null) {
+                return R.fail("设计师不存在");
+            }
+            if (designer.getSchoolId() == null || !designer.getSchoolId().equals(schoolId)) {
+                return R.fail("权限不足：只能查看本校设计师信息");
+            }
+            return R.ok(designer);
+        } else {
+            return R.fail("权限不足：无权查看设计师详情");
+        }
     }
 
     /**

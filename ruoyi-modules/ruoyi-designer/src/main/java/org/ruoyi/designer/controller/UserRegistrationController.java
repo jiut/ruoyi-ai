@@ -273,11 +273,11 @@ public class UserRegistrationController extends BaseController {
         return R.ok(bindings);
     }
 
-    /**
+        /**
      * 获取当前用户绑定的设计师信息
      */
     @Operation(
-        summary = "获取设计师档案", 
+        summary = "获取设计师档案",
         description = "获取当前用户绑定的设计师信息",
         responses = {
             @ApiResponse(responseCode = "200", description = "获取成功",
@@ -296,6 +296,64 @@ public class UserRegistrationController extends BaseController {
         
         Designer designer = designerService.selectDesignerById(designerId);
         return R.ok(designer);
+    }
+
+    /**
+     * 更新当前用户绑定的设计师信息
+     */
+    @Operation(
+        summary = "更新设计师档案",
+        description = "更新当前用户绑定的设计师信息，设计师只能编辑自己的信息",
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "设计师信息（无需提供designerId和userId）",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = Designer.class),
+                examples = @ExampleObject(
+                    name = "更新设计师档案示例",
+                    value = """
+                        {
+                            "designerName": "张三",
+                            "avatar": "https://avatars.example.com/user.jpg",
+                            "gender": "0", 
+                            "birthDate": "1995-06-15",
+                            "phone": "13800138000",
+                            "email": "zhangsan@example.com",
+                            "description": "专业UI设计师，擅长原型设计和视觉设计",
+                            "profession": "UI_DESIGNER",
+                            "skillTags": "[\\"PROTOTYPE_DESIGN\\", \\"VISUAL_DESIGN\\"]",
+                            "workYears": 3,
+                            "portfolioUrl": "https://portfolio.example.com",
+                            "socialLinks": "{\\"github\\":\\"https://github.com/zhangsan\\",\\"behance\\":\\"https://behance.net/zhangsan\\"}"
+                        }
+                        """
+                )
+            )
+        ),
+        responses = {
+            @ApiResponse(responseCode = "200", description = "更新成功"),
+            @ApiResponse(responseCode = "400", description = "用户未绑定设计师身份或更新失败")
+        }
+    )
+    @PutMapping("/designer/profile")
+    public R<Void> updateDesignerProfile(@Validated @RequestBody Designer designer) {
+        Long userId = LoginHelper.getUserId();
+        Long designerId = userBindingService.getDesignerIdByUserId(userId);
+        
+        if (designerId == null) {
+            return R.fail("用户未绑定设计师身份");
+        }
+        
+        // 设置设计师ID和用户ID（防止恶意修改）
+        designer.setDesignerId(designerId);
+        designer.setUserId(userId);
+        
+        // 调用设计师服务更新信息
+        if (designerService.updateDesigner(designer)) {
+            return R.ok();
+        } else {
+            return R.fail("更新设计师信息失败");
+        }
     }
 
     /**
