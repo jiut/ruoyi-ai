@@ -12,14 +12,17 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum DesignerProfession {
 
-    ILLUSTRATOR("illustrator", "插画师"),
-    INTERACTION_DESIGNER("interaction_designer", "交互设计师"),
-    BRAND_DESIGNER("brand_designer", "品牌设计师"),
-    UI_DESIGNER("ui_designer", "UI设计师"),
-    UX_DESIGNER("ux_designer", "UX设计师"),
-    GRAPHIC_DESIGNER("graphic_designer", "平面设计师"),
-    PRODUCT_DESIGNER("product_designer", "产品设计师"),
-    MOTION_DESIGNER("motion_designer", "动效设计师");
+    ILLUSTRATOR("ILLUSTRATOR", "插画师"),
+    INTERACTION_DESIGNER("INTERACTION_DESIGNER", "交互设计师"),
+    BRAND_DESIGNER("BRAND_DESIGNER", "品牌设计师"),
+    UI_DESIGNER("UI_DESIGNER", "UI设计师"),
+    UX_DESIGNER("UX_DESIGNER", "UX设计师"),
+    UI_UX_DESIGNER("UI_UX_DESIGNER", "UI/UX设计师"),
+    VISUAL_DESIGNER("VISUAL_DESIGNER", "视觉设计师"),
+    THREE_D_DESIGNER("THREE_D_DESIGNER", "3D设计师"),
+    GRAPHIC_DESIGNER("GRAPHIC_DESIGNER", "平面设计师"),
+    PRODUCT_DESIGNER("PRODUCT_DESIGNER", "产品设计师"),
+    MOTION_DESIGNER("MOTION_DESIGNER", "动效设计师");
 
     private final String code;
     private final String name;

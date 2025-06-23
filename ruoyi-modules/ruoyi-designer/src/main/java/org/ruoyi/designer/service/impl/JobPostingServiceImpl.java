@@ -8,12 +8,16 @@ import org.ruoyi.core.page.TableDataInfo;
 import org.ruoyi.common.core.utils.StringUtils;
 import org.ruoyi.core.page.PageQuery;
 import org.ruoyi.designer.domain.JobPosting;
+import org.ruoyi.designer.domain.Enterprise;
 import org.ruoyi.designer.mapper.JobPostingMapper;
 import org.ruoyi.designer.service.IJobPostingService;
+import org.ruoyi.designer.service.IEnterpriseService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 岗位招聘Service业务层处理
@@ -25,6 +29,7 @@ import java.util.List;
 public class JobPostingServiceImpl extends ServiceImpl<JobPostingMapper, JobPosting> implements IJobPostingService {
 
     private final JobPostingMapper jobPostingMapper;
+    private final IEnterpriseService enterpriseService;
 
     /**
      * 查询岗位招聘列表
@@ -42,6 +47,11 @@ public class JobPostingServiceImpl extends ServiceImpl<JobPostingMapper, JobPost
                 .orderByDesc(JobPosting::getCreateTime);
         
         Page<JobPosting> page = jobPostingMapper.selectPage(pageQuery.build(), wrapper);
+        
+        // 关联查询企业信息
+        List<JobPosting> jobPostings = page.getRecords();
+        fillEnterpriseInfo(jobPostings);
+        
         return TableDataInfo.build(page);
     }
 
@@ -50,7 +60,13 @@ public class JobPostingServiceImpl extends ServiceImpl<JobPostingMapper, JobPost
      */
     @Override
     public JobPosting selectJobPostingById(Long jobId) {
-        return jobPostingMapper.selectById(jobId);
+        JobPosting jobPosting = jobPostingMapper.selectById(jobId);
+        if (jobPosting != null) {
+            // 关联查询企业信息
+            Enterprise enterprise = enterpriseService.selectEnterpriseById(jobPosting.getEnterpriseId());
+            jobPosting.setEnterprise(enterprise);
+        }
+        return jobPosting;
     }
 
     /**
@@ -87,7 +103,12 @@ public class JobPostingServiceImpl extends ServiceImpl<JobPostingMapper, JobPost
                 .eq(JobPosting::getStatus, "0")
                 .ge(JobPosting::getDeadline, LocalDate.now())
                 .orderByDesc(JobPosting::getCreateTime);
-        return jobPostingMapper.selectList(wrapper);
+        List<JobPosting> jobPostings = jobPostingMapper.selectList(wrapper);
+        
+        // 关联查询企业信息
+        fillEnterpriseInfo(jobPostings);
+        
+        return jobPostings;
     }
 
     /**
@@ -99,7 +120,12 @@ public class JobPostingServiceImpl extends ServiceImpl<JobPostingMapper, JobPost
         wrapper.eq(JobPosting::getRequiredProfession, profession)
                 .eq(JobPosting::getStatus, "0")
                 .orderByDesc(JobPosting::getCreateTime);
-        return jobPostingMapper.selectList(wrapper);
+        List<JobPosting> jobPostings = jobPostingMapper.selectList(wrapper);
+        
+        // 关联查询企业信息
+        fillEnterpriseInfo(jobPostings);
+        
+        return jobPostings;
     }
 
     /**
@@ -116,7 +142,12 @@ public class JobPostingServiceImpl extends ServiceImpl<JobPostingMapper, JobPost
         }
         
         wrapper.orderByDesc(JobPosting::getCreateTime);
-        return jobPostingMapper.selectList(wrapper);
+        List<JobPosting> jobPostings = jobPostingMapper.selectList(wrapper);
+        
+        // 关联查询企业信息
+        fillEnterpriseInfo(jobPostings);
+        
+        return jobPostings;
     }
 
     /**
@@ -138,6 +169,37 @@ public class JobPostingServiceImpl extends ServiceImpl<JobPostingMapper, JobPost
         });
         
         wrapper.orderByDesc(JobPosting::getCreateTime);
-        return jobPostingMapper.selectList(wrapper);
+        List<JobPosting> jobPostings = jobPostingMapper.selectList(wrapper);
+        
+        // 关联查询企业信息
+        fillEnterpriseInfo(jobPostings);
+        
+        return jobPostings;
+    }
+    
+    /**
+     * 为岗位列表填充企业信息
+     */
+    private void fillEnterpriseInfo(List<JobPosting> jobPostings) {
+        if (jobPostings.isEmpty()) {
+            return;
+        }
+        
+        // 收集所有企业ID
+        List<Long> enterpriseIds = jobPostings.stream()
+                .map(JobPosting::getEnterpriseId)
+                .distinct()
+                .toList();
+        
+        // 批量查询企业信息
+        List<Enterprise> enterprises = enterpriseService.listByIds(enterpriseIds);
+        Map<Long, Enterprise> enterpriseMap = enterprises.stream()
+                .collect(Collectors.toMap(Enterprise::getEnterpriseId, e -> e));
+        
+        // 设置企业信息
+        jobPostings.forEach(jobPosting -> {
+            Enterprise enterprise = enterpriseMap.get(jobPosting.getEnterpriseId());
+            jobPosting.setEnterprise(enterprise);
+        });
     }
 } 

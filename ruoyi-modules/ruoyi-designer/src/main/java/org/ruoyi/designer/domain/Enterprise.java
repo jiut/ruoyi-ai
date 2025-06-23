@@ -3,6 +3,7 @@ package org.ruoyi.designer.domain;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -100,4 +101,13 @@ public class Enterprise extends BaseEntity {
      */
     @Schema(description = "状态", example = "0", allowableValues = {"0", "1"})
     private String status;
+    
+    /**
+     * 获取用于JSON序列化的ID字段
+     * 为了与前端mock数据保持一致
+     */
+    @JsonProperty("id")
+    public Long getId() {
+        return this.enterpriseId;
+    }
 } 

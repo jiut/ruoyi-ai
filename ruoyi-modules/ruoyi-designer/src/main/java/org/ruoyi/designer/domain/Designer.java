@@ -95,7 +95,7 @@ public class Designer extends BaseEntity {
      * 技能标签（JSON数组格式）
      */
     @Schema(description = "技能标签，JSON数组格式", 
-            example = "[\"PROTOTYPE_DESIGN\", \"VISUAL_DESIGN\"]")
+            example = "[\"prototype_design\", \"visual_design\"]")
     private String skillTags;
 
     /**
@@ -141,6 +141,19 @@ public class Designer extends BaseEntity {
             type = "string",
             example = "\"{\\\"github\\\":\\\"https://github.com/testuser\\\",\\\"behance\\\":\\\"https://behance.net/testuser\\\"}\"")
     private String socialLinks;
+
+    /**
+     * 工作状态（EMPLOYED在职、FREELANCER自由职业者、UNEMPLOYED求职中等）
+     */
+    @Schema(description = "工作状态", example = "EMPLOYED", 
+            allowableValues = {"EMPLOYED", "FREELANCER", "UNEMPLOYED", "STUDENT", "RETIRED"})
+    private String workStatus;
+
+    /**
+     * 工作地点
+     */
+    @Schema(description = "工作地点", example = "深圳市南山区")
+    private String location;
 
     /**
      * 状态（0正常 1停用）

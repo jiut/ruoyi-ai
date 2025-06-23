@@ -2,7 +2,9 @@ package org.ruoyi.designer.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -10,10 +12,12 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.ruoyi.core.domain.BaseEntity;
 import org.ruoyi.common.core.utils.StringUtils;
+import org.ruoyi.designer.domain.enums.SkillTag;
 
 import java.io.Serial;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -46,6 +50,13 @@ public class JobPosting extends BaseEntity {
     private Long enterpriseId;
 
     /**
+     * 企业信息（关联查询时使用）
+     */
+    @TableField(exist = false)
+    @Schema(description = "企业信息", accessMode = Schema.AccessMode.READ_ONLY)
+    private Enterprise enterprise;
+
+    /**
      * 岗位名称
      */
     @Schema(description = "岗位名称", example = "高级UI设计师", requiredMode = Schema.RequiredMode.REQUIRED)
@@ -56,6 +67,12 @@ public class JobPosting extends BaseEntity {
      */
     @Schema(description = "岗位描述", example = "负责移动端产品UI设计，与产品经理和开发团队紧密合作")
     private String description;
+
+    /**
+     * 岗位要求
+     */
+    @Schema(description = "岗位要求", example = "本科及以上学历，设计相关专业，3年以上UI设计经验")
+    private String requirements;
 
     /**
      * 职业要求（对应设计师职业）
@@ -69,8 +86,15 @@ public class JobPosting extends BaseEntity {
     /**
      * 技能要求（JSON数组格式）
      */
-    @Schema(description = "技能要求，JSON数组格式", 
-            example = "[\"PROTOTYPE_DESIGN\", \"VISUAL_DESIGN\", \"USER_INTERFACE_DESIGN\"]")
+    @Schema(description = "技能要求，JSON数组格式，使用技能枚举代码", 
+            example = "[\"prototype_design\", \"visual_design\", \"ui_design\"]",
+            allowableValues = {"figma", "sketch", "axure_rp", "photoshop", "illustrator", 
+                             "after_effects", "cinema_4d", "lottie", "3d_max", "maya",
+                             "interaction_design", "prototype_design", "user_experience", 
+                             "user_research", "information_architecture", "brand_design",
+                             "visual_system", "web_design", "ui_design", "design_system",
+                             "mobile_design", "game_art", "character_design", "scene_design",
+                             "product_design", "motion_design", "animation_design"})
     private String requiredSkills;
 
     /**
@@ -145,9 +169,61 @@ public class JobPosting extends BaseEntity {
     @Schema(description = "状态", example = "0", allowableValues = {"0", "1", "2"})
     private String status;
 
+
+
+    /**
+     * 获取工作地点（与前端mock数据字段兼容）
+     */
+    @Schema(description = "工作地点", example = "北京·朝阳区", accessMode = Schema.AccessMode.READ_ONLY)
+    public String getWorkLocation() {
+        return this.location;
+    }
+
+    /**
+     * 获取工作类型（与前端mock数据字段兼容）
+     */
+    @Schema(description = "工作类型", example = "全职", accessMode = Schema.AccessMode.READ_ONLY)
+    public String getWorkType() {
+        return this.jobType;
+    }
+
+    /**
+     * 获取经验要求（与前端mock数据字段兼容）
+     */
+    @Schema(description = "经验要求", example = "3-5年经验", accessMode = Schema.AccessMode.READ_ONLY)
+    public String getExperienceRequired() {
+        return this.workYearsRequired;
+    }
+
+    /**
+     * 获取岗位标题（与前端mock数据字段兼容）
+     */
+    @Schema(description = "岗位标题", example = "高级UI设计师", accessMode = Schema.AccessMode.READ_ONLY)
+    public String getTitle() {
+        return this.jobTitle;
+    }
+
+    /**
+     * 获取技能要求字符串（与前端mock数据字段兼容）
+     */
+    @Schema(description = "技能要求字符串", example = "[\"figma\", \"sketch\", \"ui_design\"]", accessMode = Schema.AccessMode.READ_ONLY)
+    public String getSkillsRequired() {
+        return this.requiredSkills;
+    }
+
+    /**
+     * 获取用于JSON序列化的ID字段
+     * 为了与前端mock数据保持一致
+     */
+    @JsonProperty("id")
+    public Long getId() {
+        return this.jobId;
+    }
+
     /**
      * 设置技能要求
      * 如果传入的是逗号分隔的字符串，自动转换为JSON数组格式
+     * 同时验证技能是否在枚举范围内
      */
     public void setRequiredSkills(String requiredSkills) {
         if (StringUtils.isBlank(requiredSkills)) {
@@ -155,8 +231,9 @@ public class JobPosting extends BaseEntity {
             return;
         }
         
-        // 如果已经是JSON格式（以[开头），直接使用
+        // 如果已经是JSON格式（以[开头），验证后使用
         if (requiredSkills.trim().startsWith("[")) {
+            validateSkills(requiredSkills);
             this.requiredSkills = requiredSkills;
             return;
         }
@@ -169,11 +246,54 @@ public class JobPosting extends BaseEntity {
                     .filter(StringUtils::isNotBlank)
                     .toList();
             
+            // 验证技能有效性
+            for (String skill : skillList) {
+                if (SkillTag.getByCode(skill) == null && SkillTag.getByName(skill) == null) {
+                    throw new RuntimeException("无效的技能要求: " + skill);
+                }
+            }
+            
             ObjectMapper objectMapper = new ObjectMapper();
             this.requiredSkills = objectMapper.writeValueAsString(skillList);
         } catch (JsonProcessingException e) {
             // 如果转换失败，记录错误并设置为空
             throw new RuntimeException("技能要求格式转换失败: " + e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * 验证技能JSON数组的有效性
+     */
+    private void validateSkills(String skillsJson) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            List<String> skills = objectMapper.readValue(skillsJson, 
+                    objectMapper.getTypeFactory().constructCollectionType(List.class, String.class));
+            
+            for (String skill : skills) {
+                if (SkillTag.getByCode(skill) == null && SkillTag.getByName(skill) == null) {
+                    throw new RuntimeException("无效的技能要求: " + skill);
+                }
+            }
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("技能要求JSON格式错误: " + e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * 获取技能要求列表
+     */
+    public List<String> getRequiredSkillsList() {
+        if (StringUtils.isBlank(this.requiredSkills)) {
+            return new ArrayList<>();
+        }
+        
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            return objectMapper.readValue(this.requiredSkills, 
+                    objectMapper.getTypeFactory().constructCollectionType(List.class, String.class));
+        } catch (JsonProcessingException e) {
+            return new ArrayList<>();
         }
     }
 } 

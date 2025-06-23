@@ -72,7 +72,7 @@ public class UserRegistrationController extends BaseController {
                             "email": "zhangsan@example.com",
                             "description": "专业UI设计师，擅长原型设计和视觉设计",
                             "profession": "UI_DESIGNER",
-                            "skillTags": "[\\"PROTOTYPE_DESIGN\\", \\"VISUAL_DESIGN\\"]",
+                            "skillTags": "[\\"prototype_design\\", \\"visual_design\\"]",
                             "workYears": 3,
                             "graduationDate": "2022-06-30",
                             "portfolioUrl": "https://portfolio.example.com",
@@ -321,7 +321,7 @@ public class UserRegistrationController extends BaseController {
                             "email": "zhangsan@example.com",
                             "description": "专业UI设计师，擅长原型设计和视觉设计",
                             "profession": "UI_DESIGNER",
-                            "skillTags": "[\\"PROTOTYPE_DESIGN\\", \\"VISUAL_DESIGN\\"]",
+                            "skillTags": "[\\"prototype_design\\", \\"visual_design\\"]",
                             "workYears": 3,
                             "portfolioUrl": "https://portfolio.example.com",
                             "socialLinks": "{\\"github\\":\\"https://github.com/zhangsan\\",\\"behance\\":\\"https://behance.net/zhangsan\\"}"

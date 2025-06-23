@@ -273,7 +273,7 @@ public class DesignerController extends BaseController {
                             "email": "zhangsan@example.com",
                             "description": "专业UI设计师，擅长原型设计和视觉设计",
                             "profession": "UI_DESIGNER",
-                            "skillTags": "[\\"PROTOTYPE_DESIGN\\", \\"VISUAL_DESIGN\\"]",
+                            "skillTags": "[\\"prototype_design\\", \\"visual_design\\"]",
                             "workYears": 3,
                             "portfolioUrl": "https://portfolio.example.com",
                             "socialLinks": "{\"github\":\"https://github.com/zhangsan\",\"behance\":\"https://behance.net/zhangsan\"}",
@@ -341,7 +341,7 @@ public class DesignerController extends BaseController {
         summary = "按技能查询设计师",
         description = "根据技能标签查询设计师列表",
         parameters = @Parameter(name = "skillTags", description = "技能标签列表", required = true,
-                               example = "PROTOTYPE_DESIGN,VISUAL_DESIGN")
+                               example = "prototype_design,visual_design")
     )
     @SaCheckPermission("designer:designer:query")
     @GetMapping("/skills")

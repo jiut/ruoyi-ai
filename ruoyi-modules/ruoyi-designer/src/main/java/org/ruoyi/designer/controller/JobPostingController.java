@@ -15,6 +15,9 @@ import org.ruoyi.common.log.annotation.Log;
 import org.ruoyi.common.log.enums.BusinessType;
 import org.ruoyi.common.web.core.BaseController;
 import org.ruoyi.designer.domain.JobPosting;
+import org.ruoyi.designer.domain.dto.SkillTagDTO;
+import org.ruoyi.designer.domain.enums.SkillTag;
+import org.ruoyi.designer.domain.enums.SkillTagCategory;
 import org.ruoyi.designer.service.IJobPostingService;
 import org.ruoyi.designer.service.impl.JobPostingServiceImpl;
 import org.ruoyi.designer.util.DesignerPermissionUtils;
@@ -23,6 +26,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 岗位招聘Controller
@@ -91,7 +96,7 @@ public class JobPostingController extends BaseController {
                             "jobTitle": "高级UI设计师",
                             "description": "负责移动端产品UI设计，与产品经理和开发团队紧密合作",
                             "requiredProfession": "UI_DESIGNER",
-                            "requiredSkills": "[\\"PROTOTYPE_DESIGN\\", \\"VISUAL_DESIGN\\"]",
+                            "requiredSkills": "[\\"prototype_design\\", \\"visual_design\\"]",
                             "workYearsRequired": "3-5年",
                             "salaryMin": 15000,
                             "salaryMax": 25000,
@@ -246,7 +251,7 @@ public class JobPostingController extends BaseController {
         summary = "按技能查询岗位",
         description = "根据技能要求查询匹配的岗位",
         parameters = @Parameter(name = "skillTags", description = "技能标签列表", required = true,
-                               example = "PROTOTYPE_DESIGN,VISUAL_DESIGN")
+                               example = "prototype_design,visual_design")
     )
     @SaCheckPermission("designer:job:query")
     @GetMapping("/skills")
@@ -264,14 +269,14 @@ public class JobPostingController extends BaseController {
             name = "skillTags", 
             description = "技能标签列表，使用逗号分隔", 
             required = true,
-            example = "PROTOTYPE_DESIGN,VISUAL_DESIGN,USER_INTERFACE_DESIGN",
+            example = "prototype_design,visual_design,ui_design",
             schema = @Schema(
                 type = "array",
                 allowableValues = {
-                    "ANIMATION_DESIGN", "PROTOTYPE_DESIGN", "CHARACTER_DESIGN", 
-                    "VISUAL_DESIGN", "USER_INTERFACE_DESIGN", "USER_EXPERIENCE_DESIGN", 
-                    "GRAPHIC_DESIGN", "BRANDING_DESIGN", "ILLUSTRATION", 
-                    "WEB_DESIGN", "MOBILE_DESIGN", "PRINT_DESIGN"
+                    "animation_design", "prototype_design", "character_design", 
+                    "visual_design", "ui_design", "user_experience", 
+                    "graphic_design", "brand_design", "illustration", 
+                    "web_design", "mobile_design", "game_art"
                 }
             )
         ),
@@ -294,7 +299,7 @@ public class JobPostingController extends BaseController {
                                         "jobTitle": "高级UI设计师",
                                         "enterpriseId": 1,
                                         "requiredProfession": "UI_DESIGNER",
-                                        "requiredSkills": "[\\"PROTOTYPE_DESIGN\\", \\"VISUAL_DESIGN\\", \\"USER_INTERFACE_DESIGN\\"]",
+                                        "requiredSkills": "[\\"prototype_design\\", \\"visual_design\\", \\"ui_design\\"]",
                                         "salaryMin": 15000,
                                         "salaryMax": 25000,
                                         "location": "北京市朝阳区",
@@ -313,5 +318,151 @@ public class JobPostingController extends BaseController {
     @GetMapping("/skills-any")
     public R<List<JobPosting>> getBySkillsAny(@RequestParam List<String> skillTags) {
         return R.ok(((JobPostingServiceImpl) jobPostingService).selectJobPostingBySkillsAny(skillTags));
+    }
+
+    /**
+     * 获取所有可用技能列表（带分类信息）
+     */
+    @Operation(
+        summary = "获取技能列表",
+        description = "获取系统支持的所有技能标签，包含分类信息，用于岗位发布和筛选",
+        responses = @io.swagger.v3.oas.annotations.responses.ApiResponse(
+            responseCode = "200",
+            description = "查询成功",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = R.class),
+                examples = @ExampleObject(
+                    name = "技能列表示例",
+                    value = """
+                        {
+                            "code": 200,
+                            "msg": "操作成功",
+                            "data": [
+                                {
+                                    "code": "figma",
+                                    "name": "Figma",
+                                    "category": "tool"
+                                },
+                                {
+                                    "code": "interaction_design",
+                                    "name": "交互设计",
+                                    "category": "field"
+                                },
+                                {
+                                    "code": "user_experience",
+                                    "name": "用户体验",
+                                    "category": "skill"
+                                }
+                            ]
+                        }
+                        """
+                )
+            )
+        )
+    )
+    @GetMapping("/skills/list")
+    public R<List<SkillTagDTO>> getSkillsList() {
+        List<SkillTagDTO> skills = Arrays.stream(SkillTag.values())
+                .map(skill -> SkillTagDTO.builder()
+                    .code(skill.getCode())
+                    .name(skill.getName())
+                    .category(skill.getCategory().getCode())
+                    .build())
+                .collect(Collectors.toList());
+        return R.ok(skills);
+    }
+
+    /**
+     * 获取技能代码列表
+     */
+    @Operation(
+        summary = "获取技能代码列表",
+        description = "获取所有技能的代码列表，用于API调用时的参数验证"
+    )
+    @GetMapping("/skills/codes")
+    public R<String[]> getSkillsCodes() {
+        return R.ok(SkillTag.getAllCodes());
+    }
+
+    /**
+     * 获取技能名称列表
+     */
+    @Operation(
+        summary = "获取技能名称列表", 
+        description = "获取所有技能的中文名称列表，用于前端展示"
+    )
+    @GetMapping("/skills/names")
+    public R<String[]> getSkillsNames() {
+        return R.ok(SkillTag.getAllNames());
+    }
+
+    /**
+     * 获取技能分类列表
+     */
+    @Operation(
+        summary = "获取技能分类列表",
+        description = "获取所有技能分类，用于前端分类显示"
+    )
+    @GetMapping("/skills/categories")
+    public R<List<Map<String, String>>> getSkillCategories() {
+        List<Map<String, String>> categories = Arrays.stream(SkillTagCategory.values())
+                .map(category -> Map.of(
+                    "code", category.getCode(),
+                    "name", category.getName()
+                ))
+                .collect(Collectors.toList());
+        return R.ok(categories);
+    }
+
+    /**
+     * 按分类获取技能列表
+     */
+    @Operation(
+        summary = "按分类获取技能列表",
+        description = "根据分类获取对应的技能标签列表",
+        parameters = @Parameter(name = "category", description = "分类代码", required = true,
+                               example = "tool", 
+                               schema = @Schema(allowableValues = {"tool", "field", "skill"}))
+    )
+    @GetMapping("/skills/category/{category}")
+    public R<List<SkillTagDTO>> getSkillsByCategory(@PathVariable String category) {
+        SkillTagCategory skillCategory = SkillTagCategory.getByCode(category);
+        if (skillCategory == null) {
+            return R.fail("无效的技能分类: " + category);
+        }
+        
+        List<SkillTagDTO> skills = Arrays.stream(SkillTag.getByCategory(skillCategory))
+                .map(skill -> SkillTagDTO.builder()
+                    .code(skill.getCode())
+                    .name(skill.getName())
+                    .category(skill.getCategory().getCode())
+                    .build())
+                .collect(Collectors.toList());
+        return R.ok(skills);
+    }
+
+    /**
+     * 获取分组的技能列表
+     */
+    @Operation(
+        summary = "获取分组技能列表",
+        description = "获取按分类分组的技能列表，方便前端分组展示"
+    )
+    @GetMapping("/skills/grouped")
+    public R<Map<String, List<SkillTagDTO>>> getGroupedSkills() {
+        Map<String, List<SkillTagDTO>> groupedSkills = Arrays.stream(SkillTag.values())
+                .collect(Collectors.groupingBy(
+                    skill -> skill.getCategory().getCode(),
+                    Collectors.mapping(
+                        skill -> SkillTagDTO.builder()
+                            .code(skill.getCode())
+                            .name(skill.getName())
+                            .category(skill.getCategory().getCode())
+                            .build(),
+                        Collectors.toList()
+                    )
+                ));
+        return R.ok(groupedSkills);
     }
 } 

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>技能标签工具类使用示例</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .demo-section {
+            @apply bg-white rounded-lg shadow-md p-6 mb-6;
+        }
+        .demo-title {
+            @apply text-lg font-semibold text-gray-800 mb-4;
+        }
+        .code-block {
+            @apply bg-gray-100 rounded p-4 text-sm font-mono overflow-x-auto;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-gray-900 mb-8">技能标签工具类使用示例</h1>
+
+        <!-- 基础使用 -->
+        <div class="demo-section">
+            <h2 class="demo-title">基础使用 - 获取标签分类和样式</h2>
+            <div class="space-y-4">
+                <p class="text-gray-600">展示不同分类的技能标签：</p>
+                <div id="basic-demo" class="flex flex-wrap gap-2"></div>
+                <div class="code-block">
+// 后端返回英文简写格式，前端自动转换显示为中文
+const tags = ['figma', 'interaction_design', 'user_experience'];
+SkillTagUtils.renderTags('#basic-demo', tags);
+                </div>
+            </div>
+        </div>
+
+        <!-- 默认主题展示 -->
+        <div class="demo-section">
+            <h2 class="demo-title">默认主题展示</h2>
+            <div class="space-y-4">
+                <p class="text-gray-600">统一的默认主题样式：</p>
+                <div id="theme-demo" class="flex flex-wrap gap-2"></div>
+                <div class="code-block">
+// 后端返回英文简写，前端自动转中文并按分类着色
+const tags = ['sketch', 'ui_design', 'prototype_design', 'photoshop'];
+SkillTagUtils.renderTags('#theme-demo', tags);
+                </div>
+            </div>
+        </div>
+
+        <!-- 分组显示 -->
+        <div class="demo-section">
+            <h2 class="demo-title">分组显示</h2>
+            <div class="space-y-4">
+                <p class="text-gray-600">按照分类分组显示技能标签：</p>
+                <div id="grouped-demo"></div>
+                <div class="code-block">
+// 不同分类的英文简写标签，自动分组显示
+const mixedTags = ['figma', 'sketch', 'interaction_design', 'ui_design', 'user_experience', 'prototype_design'];
+SkillTagUtils.renderGroupedTags('#grouped-demo', mixedTags);
+                </div>
+            </div>
+        </div>
+
+        <!-- 自定义样式 -->
+        <div class="demo-section">
+            <h2 class="demo-title">自定义样式</h2>
+            <div class="space-y-4">
+                <p class="text-gray-600">使用自定义样式选项：</p>
+                <div id="custom-demo" class="flex flex-wrap gap-3"></div>
+                <div class="code-block">
+const customOptions = {
+    baseClasses: 'px-3 py-1.5 rounded-full text-sm font-medium',
+    gap: 'gap-3'
+};
+SkillTagUtils.renderTags('#custom-demo', tags, 'default', customOptions);
+                </div>
+            </div>
+        </div>
+
+        <!-- 实时分类检测 -->
+        <div class="demo-section">
+            <h2 class="demo-title">实时分类检测</h2>
+            <div class="space-y-4">
+                <div class="flex space-x-4">
+                    <input type="text" id="tag-input" placeholder="输入英文简写标签名称（如：figma, ui_design）..."
+                           class="flex-1 px-3 py-2 border border-gray-300 rounded-md">
+                    <button onclick="detectCategory()" class="px-4 py-2 bg-green-500 text-white rounded">检测分类</button>
+                </div>
+                <div id="detection-result" class="text-sm text-gray-600"></div>
+                <div class="code-block">
+// 输入英文简写，检测分类并获取中文显示名
+const category = SkillTagUtils.getTagCategory('figma');
+const displayName = SkillTagUtils.getTagDisplayName('figma');
+console.log(category); // 输出: 'tool'
+console.log(displayName); // 输出: 'Figma'
+                </div>
+            </div>
+        </div>
+
+        <!-- 统计信息 -->
+        <div class="demo-section">
+            <h2 class="demo-title">统计信息</h2>
+            <div class="space-y-4">
+                <p class="text-gray-600">获取技能标签的分类统计：</p>
+                <div id="stats-demo"></div>
+                <div class="code-block">
+const stats = SkillTagUtils.getCategoryStats(tags);
+// 返回: { tool: 2, field: 1, skill: 1 }
+                </div>
+            </div>
+        </div>
+
+        <!-- Vue.js 组件示例 -->
+        <div class="demo-section">
+            <h2 class="demo-title">Vue.js 组件示例</h2>
+            <div class="code-block">
+&lt;template&gt;
+  &lt;div class="skill-tags"&gt;
+    &lt;span
+      v-for="tag in skills"
+      :key="tag"
+      :class="getTagClasses(tag)"
+    &gt;
+      {{ tag }}
+    &lt;/span&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+export default {
+  props: ['skills'],
+  methods: {
+    getTagClasses(tag) {
+      return SkillTagUtils.getTagClasses(tag, 'default');
+    }
+  }
+}
+&lt;/script&gt;
+            </div>
+        </div>
+    </div>
+
+    <script src="skillTagUtils.js"></script>
+    <script>
+        // 页面加载完成后执行示例
+        document.addEventListener('DOMContentLoaded', function() {
+            // 基础示例 - 后端返回英文简写格式
+            const basicTags = ['figma', 'interaction_design', 'user_experience'];
+            SkillTagUtils.renderTags('#basic-demo', basicTags);
+
+            // 默认主题示例 - 自动转换为中文显示并按分类着色
+            const themeTags = ['sketch', 'ui_design', 'prototype_design', 'photoshop'];
+            SkillTagUtils.renderTags('#theme-demo', themeTags);
+
+            // 分组示例 - 混合不同分类的英文简写标签
+            const mixedTags = ['figma', 'sketch', 'interaction_design', 'ui_design', 'user_experience', 'prototype_design', 'photoshop', 'illustrator'];
+            SkillTagUtils.renderGroupedTags('#grouped-demo', mixedTags);
+
+            // 自定义样式示例 - 使用英文简写格式
+            const customOptions = {
+                baseClasses: 'px-3 py-1.5 rounded-full text-sm font-medium',
+                gap: 'gap-3'
+            };
+            SkillTagUtils.renderTags('#custom-demo', basicTags, 'default', customOptions);
+
+            // 统计信息示例
+            const stats = SkillTagUtils.getCategoryStats(mixedTags);
+            const statsHtml = `
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="text-center p-3 bg-blue-50 rounded">
+                        <div class="text-blue-600 font-bold text-xl">${stats.tool}</div>
+                        <div class="text-blue-600 text-sm">🔵 设计工具</div>
+                    </div>
+                    <div class="text-center p-3 bg-purple-50 rounded">
+                        <div class="text-purple-600 font-bold text-xl">${stats.field}</div>
+                        <div class="text-purple-600 text-sm">🟣 专业领域</div>
+                    </div>
+                    <div class="text-center p-3 bg-pink-50 rounded">
+                        <div class="text-pink-600 font-bold text-xl">${stats.skill}</div>
+                        <div class="text-pink-600 text-sm">🩷 技能方法</div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('stats-demo').innerHTML = statsHtml;
+        });
+
+        // 主题切换函数已移除，仅使用默认主题
+
+        // 分类检测函数
+        function detectCategory() {
+            const input = document.getElementById('tag-input');
+            const result = document.getElementById('detection-result');
+            const tag = input.value.trim();
+
+            if (tag) {
+                const category = SkillTagUtils.getTagCategory(tag);
+                const displayName = SkillTagUtils.getTagDisplayName(tag);
+                const categoryNames = {
+                    tool: '🔵 设计工具',
+                    field: '🟣 专业领域',
+                    skill: '🩷 技能方法'
+                };
+
+                result.innerHTML = `
+                    <div class="flex items-center space-x-2">
+                        <span>英文简写 "${tag}" 显示为：</span>
+                        <span class="font-semibold">"${displayName}"</span>
+                        <span>，属于分类：</span>
+                        <span class="font-semibold">${categoryNames[category]}</span>
+                        <span class="${SkillTagUtils.getTagClasses(tag)}">${displayName}</span>
+                    </div>
+                `;
+            } else {
+                result.innerHTML = '<span class="text-red-500">请输入英文简写标签名称</span>';
+            }
+        }
+
+        // 允许Enter键触发检测
+        document.getElementById('tag-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                detectCategory();
+            }
+        });
+    </script>
+</body>
+</html>

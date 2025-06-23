@@ -1,0 +1,107 @@
+package org.ruoyi.designer.domain;
+
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.ruoyi.core.domain.BaseEntity;
+
+import java.io.Serial;
+import java.time.LocalDate;
+
+/**
+ * 教育背景对象 des_education
+ *
+ * @author ruoyi
+ */
+@Data
+@EqualsAndHashCode(callSuper = true)
+@TableName("des_education")
+@Schema(description = "设计师教育背景信息")
+public class Education extends BaseEntity {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 教育背景ID
+     */
+    @JsonIgnore
+    @Schema(description = "教育背景ID", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
+    @TableId(value = "education_id")
+    private Long educationId;
+
+    /**
+     * 设计师ID
+     */
+    @Schema(description = "设计师ID", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
+    private Long designerId;
+
+    /**
+     * 学校名称
+     */
+    @Schema(description = "学校名称", example = "中国美术学院", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String school;
+
+    /**
+     * 学位
+     */
+    @Schema(description = "学位", example = "硕士", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String degree;
+
+    /**
+     * 专业
+     */
+    @Schema(description = "专业", example = "设计学", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String major;
+
+    /**
+     * 开始日期
+     */
+    @Schema(description = "开始日期，格式：yyyy-MM-dd", example = "2015-09-01", type = "string", format = "date", requiredMode = Schema.RequiredMode.REQUIRED)
+    private LocalDate startDate;
+
+    /**
+     * 结束日期
+     */
+    @Schema(description = "结束日期，格式：yyyy-MM-dd", example = "2018-06-30", type = "string", format = "date")
+    private LocalDate endDate;
+
+    /**
+     * 是否在读
+     */
+    @Schema(description = "是否在读", example = "false")
+    private Boolean isCurrent;
+
+    /**
+     * 描述
+     */
+    @Schema(description = "描述", example = "专业方向：数字媒体艺术，研究方向：交互设计与用户体验")
+    private String description;
+
+    /**
+     * GPA
+     */
+    @Schema(description = "GPA", example = "3.8")
+    private Double gpa;
+
+    /**
+     * 排名（如第几名）
+     */
+    @Schema(description = "排名", example = "5")
+    private Integer ranking;
+
+    /**
+     * 总人数
+     */
+    @Schema(description = "总人数", example = "120")
+    private Integer totalStudents;
+
+    /**
+     * 状态（0正常 1停用）
+     */
+    @Schema(description = "状态", example = "0", allowableValues = {"0", "1"})
+    private String status;
+} 
