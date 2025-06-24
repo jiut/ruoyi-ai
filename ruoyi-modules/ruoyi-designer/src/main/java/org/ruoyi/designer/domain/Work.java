@@ -6,8 +6,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.ruoyi.common.core.validate.AddGroup;
+import org.ruoyi.common.core.validate.EditGroup;
 import org.ruoyi.core.domain.BaseEntity;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serial;
 
 /**
@@ -30,18 +34,21 @@ public class Work extends BaseEntity {
     @JsonIgnore
     @Schema(description = "作品ID", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     @TableId(value = "work_id")
+    @NotNull(message = "作品ID不能为空", groups = { EditGroup.class })
     private Long workId;
 
     /**
      * 设计师ID
      */
     @Schema(description = "设计师ID", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotNull(message = "设计师ID不能为空", groups = { AddGroup.class, EditGroup.class })
     private Long designerId;
 
     /**
      * 作品标题
      */
     @Schema(description = "作品标题", example = "移动应用UI设计", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotBlank(message = "作品标题不能为空", groups = { AddGroup.class, EditGroup.class })
     private String title;
 
     /**
@@ -56,6 +63,7 @@ public class Work extends BaseEntity {
     @Schema(description = "作品类型", example = "image", 
             allowableValues = {"image", "video"},
             requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotBlank(message = "作品类型不能为空", groups = { AddGroup.class, EditGroup.class })
     private String workType;
 
     /**
@@ -63,6 +71,7 @@ public class Work extends BaseEntity {
      */
     @Schema(description = "文件URL", example = "https://example.com/work/design.jpg",
             requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotBlank(message = "文件URL不能为空", groups = { AddGroup.class, EditGroup.class })
     private String fileUrl;
 
     /**

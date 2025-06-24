@@ -4,9 +4,13 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.ruoyi.core.domain.BaseEntity;
+import org.ruoyi.common.core.validate.AddGroup;
+import org.ruoyi.common.core.validate.EditGroup;
 
 import java.io.Serial;
 
@@ -35,24 +39,28 @@ public class Award extends BaseEntity {
     /**
      * 设计师ID
      */
+    @NotNull(message = "设计师ID不能为空", groups = {AddGroup.class, EditGroup.class})
     @Schema(description = "设计师ID", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
     private Long designerId;
 
     /**
      * 奖项名称
      */
+    @NotBlank(message = "奖项名称不能为空", groups = {AddGroup.class, EditGroup.class})
     @Schema(description = "奖项名称", example = "2023 iF 设计奖", requiredMode = Schema.RequiredMode.REQUIRED)
     private String title;
 
     /**
      * 颁发机构
      */
+    @NotBlank(message = "颁发机构不能为空", groups = {AddGroup.class, EditGroup.class})
     @Schema(description = "颁发机构", example = "iF International Forum Design", requiredMode = Schema.RequiredMode.REQUIRED)
     private String organization;
 
     /**
      * 获奖年份
      */
+    @NotBlank(message = "获奖年份不能为空", groups = {AddGroup.class, EditGroup.class})
     @Schema(description = "获奖年份", example = "2023", requiredMode = Schema.RequiredMode.REQUIRED)
     private String year;
 

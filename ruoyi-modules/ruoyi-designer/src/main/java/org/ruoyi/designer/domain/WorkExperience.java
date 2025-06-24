@@ -6,8 +6,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.ruoyi.common.core.validate.AddGroup;
+import org.ruoyi.common.core.validate.EditGroup;
 import org.ruoyi.core.domain.BaseEntity;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serial;
 import java.time.LocalDate;
 
@@ -31,30 +35,35 @@ public class WorkExperience extends BaseEntity {
     @JsonIgnore
     @Schema(description = "工作经历ID", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     @TableId(value = "experience_id")
+    @NotNull(message = "工作经历ID不能为空", groups = { EditGroup.class })
     private Long experienceId;
 
     /**
      * 设计师ID
      */
     @Schema(description = "设计师ID", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotNull(message = "设计师ID不能为空", groups = { AddGroup.class, EditGroup.class })
     private Long designerId;
 
     /**
      * 公司名称
      */
     @Schema(description = "公司名称", example = "腾讯科技有限公司", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotBlank(message = "公司名称不能为空", groups = { AddGroup.class, EditGroup.class })
     private String company;
 
     /**
      * 职位名称
      */
     @Schema(description = "职位名称", example = "高级UI设计师", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotBlank(message = "职位名称不能为空", groups = { AddGroup.class, EditGroup.class })
     private String position;
 
     /**
      * 开始日期
      */
     @Schema(description = "开始日期，格式：yyyy-MM-dd", example = "2020-03-01", type = "string", format = "date", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotNull(message = "开始日期不能为空", groups = { AddGroup.class, EditGroup.class })
     private LocalDate startDate;
 
     /**
