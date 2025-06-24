@@ -3,6 +3,7 @@ package org.ruoyi.designer.domain;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,7 +29,7 @@ public class Designer extends BaseEntity {
     /**
      * 设计师ID
      */
-    @JsonIgnore
+    @JsonProperty("id")
     @Schema(description = "设计师ID", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     @TableId(value = "designer_id")
     private Long designerId;
@@ -36,7 +37,6 @@ public class Designer extends BaseEntity {
     /**
      * 关联用户ID
      */
-    @JsonIgnore
     @Schema(description = "关联用户ID", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     private Long userId;
 

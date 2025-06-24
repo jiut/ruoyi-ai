@@ -233,7 +233,7 @@ public class DesignerController extends BaseController {
                             "email": "lisi@example.com",
                             "description": "资深交互设计师",
                             "profession": "INTERACTION_DESIGNER",
-                            "skillTags": "[\\"USER_RESEARCH\\", \\"PROTOTYPE_DESIGN\\"]",
+                            "skillTags": "[\\"user_research\\", \\"prototype_design\\"]",
                             "workYears": 5
                         }
                         """
