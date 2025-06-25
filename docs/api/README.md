@@ -94,8 +94,15 @@ GET    /designer/school/{id}             # 获取院校详情
 POST   /designer/school                  # 新增院校
 PUT    /designer/school                  # 修改院校
 DELETE /designer/school/{ids}            # 删除院校
+GET    /designer/school/user/{userId}    # 根据用户ID查询院校
 GET    /designer/school/{id}/employment/statistics    # 就业统计
 GET    /designer/school/{id}/employment/distribution  # 就业分布
+GET    /designer/school/{id}/students    # 查询院校学生列表
+GET    /designer/school/{id}/majors      # 查询院校专业列表
+GET    /designer/school/{id}/achievements # 查询院校获奖成果
+POST   /designer/school/{id}/favorite    # 收藏院校
+DELETE /designer/school/{id}/favorite    # 取消收藏院校
+GET    /designer/school/favorites        # 获取我的收藏院校
 ```
 
 ### 企业管理接口
@@ -472,6 +479,56 @@ public List<Designer> getMyDesigners() {
 4. 管理在校学生信息
 5. 跟踪毕业生就业情况
 6. 查看就业统计数据和企业分布
+7. 查看院校专业设置和就业率
+8. 管理院校获奖成果展示
+
+### 4. 院校数据查询使用方法
+
+#### 查询院校学生列表
+```bash
+GET /designer/school/1/students?status=current&profession=UI设计&pageNum=1&pageSize=20
+```
+
+**参数说明：**
+- `status`: 学生状态（current-在校, graduate-毕业）
+- `profession`: 专业筛选（模糊匹配）
+- `graduationYear`: 毕业年份筛选
+- `pageNum`: 页码（默认1）
+- `pageSize`: 每页大小（默认20）
+
+#### 查询院校专业列表
+```bash
+GET /designer/school/1/majors
+```
+
+**返回数据包含：**
+- 专业名称和学生数量
+- 就业人数和就业率
+- 按学生数量排序
+
+#### 查询院校获奖成果
+```bash
+GET /designer/school/1/achievements
+```
+
+**返回数据包含：**
+- 获奖作品标题和类别
+- 获奖级别和年份
+- 颁发机构和获奖学生
+
+#### 院校收藏功能
+```bash
+# 收藏院校
+POST /designer/school/1/favorite
+
+# 取消收藏
+DELETE /designer/school/1/favorite
+
+# 获取我的收藏
+GET /designer/school/favorites
+```
+
+
 
 ## 权限设计
 
@@ -514,6 +571,10 @@ public List<Designer> getMyDesigners() {
 | 申请岗位 | ✓ | ✓ | ✗ | ✗ |
 | 处理申请 | ✓ | ✗ | ✓ | ✗ |
 | 查看就业统计 | ✓ | ✗ | ✗ | ✓ |
+| 查看院校学生列表 | ✓ | ✗ | ✗ | ✓(本校) |
+| 查看院校专业信息 | ✓ | ✓(公开信息) | ✓(公开信息) | ✓(本校详细) |
+| 查看院校获奖成果 | ✓ | ✓(公开信息) | ✓(公开信息) | ✓(本校详细) |
+| 收藏院校 | ✓ | ✓ | ✓ | ✓ |
 | 管理企业信息 | ✓ | ✗ | ✓(自己) | ✗ |
 | 管理院校信息 | ✓ | ✗ | ✗ | ✓(自己) |
 
@@ -524,6 +585,7 @@ public List<Designer> getMyDesigners() {
 - `script/sql/designer_tables.sql` - 基础表结构
 - `script/sql/designer_user_binding.sql` - 用户绑定相关表和角色
 - `script/sql/designer_user_binding_safe.sql` - 安全更新脚本（推荐）
+- `script/sql/des_user_favorite.sql` - 用户收藏功能表（新增）
 
 ### 2. 模块配置
 确保在主应用的 `pom.xml` 中包含了 `ruoyi-designer` 模块依赖。
@@ -609,6 +671,8 @@ graph TB
 9. 技能标签和社交链接采用 JSON 格式存储
 10. 文件上传需要配置 OSS 存储服务
 11. 定期清理过期的岗位和申请记录
+12. 院校收藏功能需要先创建 `des_user_favorite` 表
+13. 院校数据查询支持多维度筛选和分页
 
 ## 扩展功能
 

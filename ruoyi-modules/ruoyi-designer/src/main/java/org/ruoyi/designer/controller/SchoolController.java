@@ -95,6 +95,121 @@ public class SchoolController extends BaseController {
     }
 
     /**
+     * 查询院校学生列表
+     * 管理员可以查看任意院校，院校管理员只能查看自己绑定的院校
+     */
+    @Operation(summary = "查询院校学生列表", description = "分页查询院校学生信息")
+    @Parameter(name = "schoolId", description = "院校ID", required = true)
+    @SaCheckPermission("designer:school:query")
+    @GetMapping("/{schoolId}/students")
+    public R<TableDataInfo<Map<String, Object>>> getSchoolStudents(
+            @PathVariable Long schoolId,
+            @RequestParam(defaultValue = "1") Integer pageNum,
+            @RequestParam(defaultValue = "20") Integer pageSize,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String profession,
+            @RequestParam(required = false) Integer graduationYear) {
+        
+        Long userId = LoginHelper.getUserId();
+        
+        // 检查用户是否为管理员
+        if (!LoginHelper.isSuperAdmin()) {
+            // 非管理员用户，检查是否有权限访问该院校
+            Long userSchoolId = userBindingService.getSchoolIdByUserId(userId);
+            if (userSchoolId == null || !userSchoolId.equals(schoolId)) {
+                return R.fail("无权访问该院校学生信息");
+            }
+        }
+        
+        PageQuery pageQuery = new PageQuery(pageSize, pageNum);
+        
+        return R.ok(schoolService.getSchoolStudents(schoolId, status, profession, graduationYear, pageQuery));
+    }
+
+    /**
+     * 查询院校专业列表
+     * 管理员可以查看任意院校，院校管理员只能查看自己绑定的院校
+     */
+    @Operation(summary = "查询院校专业列表", description = "获取院校专业设置")
+    @Parameter(name = "schoolId", description = "院校ID", required = true)
+    @SaCheckPermission("designer:school:query")
+    @GetMapping("/{schoolId}/majors")
+    public R<List<Map<String, Object>>> getSchoolMajors(@PathVariable Long schoolId) {
+        Long userId = LoginHelper.getUserId();
+        
+        // 检查用户是否为管理员
+        if (!LoginHelper.isSuperAdmin()) {
+            // 非管理员用户，检查是否有权限访问该院校
+            Long userSchoolId = userBindingService.getSchoolIdByUserId(userId);
+            if (userSchoolId == null || !userSchoolId.equals(schoolId)) {
+                return R.fail("无权访问该院校专业信息");
+            }
+        }
+        
+        return R.ok(schoolService.getSchoolMajors(schoolId));
+    }
+
+    /**
+     * 查询院校获奖成果
+     * 管理员可以查看任意院校，院校管理员只能查看自己绑定的院校
+     */
+    @Operation(summary = "查询院校获奖成果", description = "获取院校学生获奖成果")
+    @Parameter(name = "schoolId", description = "院校ID", required = true)
+    @SaCheckPermission("designer:school:query")
+    @GetMapping("/{schoolId}/achievements")
+    public R<List<Map<String, Object>>> getSchoolAchievements(@PathVariable Long schoolId) {
+        Long userId = LoginHelper.getUserId();
+        
+        // 检查用户是否为管理员
+        if (!LoginHelper.isSuperAdmin()) {
+            // 非管理员用户，检查是否有权限访问该院校
+            Long userSchoolId = userBindingService.getSchoolIdByUserId(userId);
+            if (userSchoolId == null || !userSchoolId.equals(schoolId)) {
+                return R.fail("无权访问该院校成果信息");
+            }
+        }
+        
+        return R.ok(schoolService.getSchoolAchievements(schoolId));
+    }
+
+    /**
+     * 收藏院校
+     */
+    @Operation(summary = "收藏院校", description = "收藏院校到个人收藏夹")
+    @Parameter(name = "schoolId", description = "院校ID", required = true)
+    @SaCheckPermission("designer:school:query")
+    @PostMapping("/{schoolId}/favorite")
+    public R<Void> favoriteSchool(@PathVariable Long schoolId) {
+        Long userId = LoginHelper.getUserId();
+        return toAjax(schoolService.favoriteSchool(schoolId, userId));
+    }
+
+    /**
+     * 取消收藏院校
+     */
+    @Operation(summary = "取消收藏院校", description = "从个人收藏夹移除院校")
+    @Parameter(name = "schoolId", description = "院校ID", required = true)
+    @SaCheckPermission("designer:school:query")
+    @DeleteMapping("/{schoolId}/favorite")
+    public R<Void> unfavoriteSchool(@PathVariable Long schoolId) {
+        Long userId = LoginHelper.getUserId();
+        return toAjax(schoolService.unfavoriteSchool(schoolId, userId));
+    }
+
+    /**
+     * 获取我的收藏院校
+     */
+    @Operation(summary = "获取我的收藏院校", description = "获取当前用户收藏的院校列表")
+    @SaCheckPermission("designer:school:query")
+    @GetMapping("/favorites")
+    public R<List<School>> getFavoriteSchools() {
+        Long userId = LoginHelper.getUserId();
+        return R.ok(schoolService.getFavoriteSchools(userId));
+    }
+
+
+
+    /**
      * 新增院校
      * 仅管理员可以访问
      */

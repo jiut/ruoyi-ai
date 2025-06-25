@@ -97,4 +97,60 @@ public interface ISchoolService extends IService<School> {
      * @return 是否存在
      */
     boolean existsBySchoolName(String schoolName);
+
+    /**
+     * 查询院校学生列表
+     *
+     * @param schoolId 院校ID
+     * @param status 学生状态（current-在校, graduate-毕业）
+     * @param profession 专业
+     * @param graduationYear 毕业年份
+     * @param pageQuery 分页参数
+     * @return 学生列表
+     */
+    TableDataInfo<Map<String, Object>> getSchoolStudents(Long schoolId, String status, String profession, Integer graduationYear, PageQuery pageQuery);
+
+    /**
+     * 查询院校专业列表
+     *
+     * @param schoolId 院校ID
+     * @return 专业列表
+     */
+    List<Map<String, Object>> getSchoolMajors(Long schoolId);
+
+    /**
+     * 查询院校获奖成果
+     *
+     * @param schoolId 院校ID
+     * @return 获奖成果列表
+     */
+    List<Map<String, Object>> getSchoolAchievements(Long schoolId);
+
+    /**
+     * 收藏院校
+     *
+     * @param schoolId 院校ID
+     * @param userId 用户ID
+     * @return 结果
+     */
+    Boolean favoriteSchool(Long schoolId, Long userId);
+
+    /**
+     * 取消收藏院校
+     *
+     * @param schoolId 院校ID
+     * @param userId 用户ID
+     * @return 结果
+     */
+    Boolean unfavoriteSchool(Long schoolId, Long userId);
+
+    /**
+     * 获取用户收藏的院校列表
+     *
+     * @param userId 用户ID
+     * @return 收藏院校列表
+     */
+    List<School> getFavoriteSchools(Long userId);
+
+
 } 

@@ -14,6 +14,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
+import java.util.ArrayList;
+import java.time.LocalDate;
 
 /**
  * 院校Service业务层处理
@@ -122,4 +125,54 @@ public class SchoolServiceImpl extends ServiceImpl<SchoolMapper, School> impleme
                 .eq(School::getStatus, "0");
         return schoolMapper.selectCount(wrapper) > 0;
     }
+
+    /**
+     * 查询院校学生列表
+     */
+    @Override
+    public TableDataInfo<Map<String, Object>> getSchoolStudents(Long schoolId, String status, String profession, Integer graduationYear, PageQuery pageQuery) {
+        return schoolMapper.getSchoolStudents(schoolId, status, profession, graduationYear, pageQuery);
+    }
+
+    /**
+     * 查询院校专业列表
+     */
+    @Override
+    public List<Map<String, Object>> getSchoolMajors(Long schoolId) {
+        return schoolMapper.getSchoolMajors(schoolId);
+    }
+
+    /**
+     * 查询院校获奖成果
+     */
+    @Override
+    public List<Map<String, Object>> getSchoolAchievements(Long schoolId) {
+        return schoolMapper.getSchoolAchievements(schoolId);
+    }
+
+    /**
+     * 收藏院校
+     */
+    @Override
+    public Boolean favoriteSchool(Long schoolId, Long userId) {
+        return schoolMapper.favoriteSchool(schoolId, userId);
+    }
+
+    /**
+     * 取消收藏院校
+     */
+    @Override
+    public Boolean unfavoriteSchool(Long schoolId, Long userId) {
+        return schoolMapper.unfavoriteSchool(schoolId, userId);
+    }
+
+    /**
+     * 获取用户收藏的院校列表
+     */
+    @Override
+    public List<School> getFavoriteSchools(Long userId) {
+        return schoolMapper.getFavoriteSchools(userId);
+    }
+
+
 } 
