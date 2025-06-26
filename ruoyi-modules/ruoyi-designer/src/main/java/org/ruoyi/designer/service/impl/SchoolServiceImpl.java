@@ -131,7 +131,27 @@ public class SchoolServiceImpl extends ServiceImpl<SchoolMapper, School> impleme
      */
     @Override
     public TableDataInfo<Map<String, Object>> getSchoolStudents(Long schoolId, String status, String profession, Integer graduationYear, PageQuery pageQuery) {
-        return schoolMapper.getSchoolStudents(schoolId, status, profession, graduationYear, pageQuery);
+        // 由于 Mapper 方法使用动态 SQL，我们需要手动处理分页
+        List<Map<String, Object>> allData = schoolMapper.getSchoolStudents(schoolId, status, profession, graduationYear);
+        
+        // 手动创建分页结果
+        // 注意：这种方式不是最优的，因为它会查询所有数据然后在内存中分页
+        // 更好的方式是在 Mapper 中使用 MyBatis-Plus 的分页插件
+        int total = allData.size();
+        int pageNum = pageQuery.getPageNum();
+        int pageSize = pageQuery.getPageSize();
+        int startIndex = (pageNum - 1) * pageSize;
+        int endIndex = Math.min(startIndex + pageSize, total);
+        
+        List<Map<String, Object>> pageData = allData.subList(startIndex, endIndex);
+        
+        TableDataInfo<Map<String, Object>> result = new TableDataInfo<>();
+        result.setRows(pageData);
+        result.setTotal(total);
+        result.setCode(200);
+        result.setMsg("查询成功");
+        
+        return result;
     }
 
     /**

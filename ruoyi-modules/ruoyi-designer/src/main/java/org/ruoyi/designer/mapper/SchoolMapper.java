@@ -6,8 +6,6 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Delete;
 import org.ruoyi.designer.domain.School;
-import org.ruoyi.core.page.TableDataInfo;
-import org.ruoyi.core.page.PageQuery;
 
 import java.util.List;
 import java.util.Map;
@@ -66,43 +64,39 @@ public interface SchoolMapper extends BaseMapper<School> {
      * @param status 学生状态
      * @param profession 专业
      * @param graduationYear 毕业年份
-     * @param pageQuery 分页参数
      * @return 学生列表
      */
-    @Select("""
-        <script>
-        SELECT 
-            d.designer_id,
-            d.designer_name,
-            d.profession,
-            d.work_status,
-            d.graduation_date,
-            d.join_date,
-            e.enterprise_name
-        FROM des_designer d
-        LEFT JOIN des_enterprise e ON d.enterprise_id = e.enterprise_id
-        WHERE d.school_id = #{schoolId} 
-            AND d.status = '0'
-            <if test="status == 'current'">
-                AND (d.graduation_date IS NULL OR d.graduation_date > CURDATE())
-            </if>
-            <if test="status == 'graduate'">
-                AND d.graduation_date IS NOT NULL AND d.graduation_date <= CURDATE()
-            </if>
-            <if test="profession != null and profession != ''">
-                AND d.profession LIKE CONCAT('%', #{profession}, '%')
-            </if>
-            <if test="graduationYear != null">
-                AND YEAR(d.graduation_date) = #{graduationYear}
-            </if>
-        ORDER BY d.create_time DESC
-        </script>
-    """)
-    TableDataInfo<Map<String, Object>> getSchoolStudents(@Param("schoolId") Long schoolId, 
-                                                         @Param("status") String status, 
-                                                         @Param("profession") String profession, 
-                                                         @Param("graduationYear") Integer graduationYear, 
-                                                         @Param("pageQuery") PageQuery pageQuery);
+    @Select("<script>" +
+        "SELECT " +
+            "d.designer_id, " +
+            "d.designer_name, " +
+            "d.profession, " +
+            "d.work_status, " +
+            "d.graduation_date, " +
+            "d.join_date, " +
+            "e.enterprise_name " +
+        "FROM des_designer d " +
+        "LEFT JOIN des_enterprise e ON d.enterprise_id = e.enterprise_id " +
+        "WHERE d.school_id = #{schoolId} " +
+            "AND d.status = '0' " +
+            "<if test=\"status == &quot;current&quot;\"> " +
+                "AND (d.graduation_date IS NULL OR d.graduation_date &gt; CURDATE()) " +
+            "</if> " +
+            "<if test=\"status == &quot;graduate&quot;\"> " +
+                "AND d.graduation_date IS NOT NULL AND d.graduation_date &lt;= CURDATE() " +
+            "</if> " +
+            "<if test=\"profession != null and profession != &quot;&quot;\"> " +
+                "AND d.profession LIKE CONCAT('%', #{profession}, '%') " +
+            "</if> " +
+            "<if test=\"graduationYear != null\"> " +
+                "AND YEAR(d.graduation_date) = #{graduationYear} " +
+            "</if> " +
+        "ORDER BY d.create_time DESC " +
+        "</script>")
+    List<Map<String, Object>> getSchoolStudents(@Param("schoolId") Long schoolId, 
+                                               @Param("status") String status, 
+                                               @Param("profession") String profession, 
+                                               @Param("graduationYear") Integer graduationYear);
 
     /**
      * 查询院校专业列表
