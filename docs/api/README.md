@@ -221,6 +221,79 @@ interface SchoolFullInfo {
 }
 ```
 
+#### 设计师完整详情数据结构
+```typescript
+interface DesignerCompleteInfo {
+  designer: Designer                    // 设计师基本信息
+  works: Work[]                        // 设计师作品集
+  workExperience: WorkExperience[]     // 工作经历列表
+  education: Education[]               // 教育背景列表
+  awards: Award[]                      // 获奖记录列表
+}
+
+interface Designer {
+  id: number
+  designerName: string
+  profession: string
+  email: string
+  phone: string
+  skillTags: string
+  description: string
+  avatar: string
+  location: string
+  experience: number
+  workStatus: string
+  company: string
+  // ... 其他设计师字段
+}
+
+interface Work {
+  id: number
+  title: string
+  description: string
+  imageUrl: string
+  category: string
+  designerId: number
+  // ... 其他作品字段
+}
+
+interface WorkExperience {
+  id: number
+  company: string
+  position: string
+  startDate: string
+  endDate: string | null
+  description: string
+  isCurrent: boolean
+  designerId: number
+  // ... 其他工作经历字段
+}
+
+interface Education {
+  id: number
+  school: string
+  degree: string
+  major: string
+  startDate: string
+  endDate: string
+  description: string
+  designerId: number
+  // ... 其他教育背景字段
+}
+
+interface Award {
+  id: number
+  title: string
+  organization: string
+  year: string
+  description: string
+  designerId: number
+  level: string
+  category: string
+  // ... 其他获奖字段
+}
+```
+
 #### 标准响应格式
 ```typescript
 interface ApiResponse<T> {
@@ -239,12 +312,18 @@ interface SchoolListResponse {
 
 ### 设计师管理接口
 
+#### 基础设计师管理接口
 ```
 GET    /designer/designer/list           # 查询设计师列表
 GET    /designer/designer/{id}           # 获取设计师详情
+GET    /designer/designer/{id}/complete  # 获取设计师完整详情（聚合API）
 POST   /designer/designer                # 新增设计师
 PUT    /designer/designer                # 修改设计师
 DELETE /designer/designer/{ids}          # 删除设计师
+```
+
+#### 设计师查询接口
+```
 GET    /designer/designer/profession/{profession}  # 按职业查询
 GET    /designer/designer/skills         # 按技能查询
 GET    /designer/designer/professions    # 获取职业选项
@@ -332,15 +411,21 @@ GET    /designer/enterprise/user/{userId} # 根据用户ID查询企业
 
 ### 岗位招聘接口
 
+#### 基础岗位管理接口
 ```
 GET    /designer/job/list                # 查询岗位列表
 GET    /designer/job/{id}                # 获取岗位详情
 POST   /designer/job                     # 发布岗位
 PUT    /designer/job                     # 修改岗位
 DELETE /designer/job/{ids}               # 删除岗位
+```
+
+#### 岗位查询接口
+```
 GET    /designer/job/enterprise/{id}     # 企业岗位查询
 GET    /designer/job/profession/{profession}  # 按职业查询岗位
-GET    /designer/job/skills              # 按技能查询岗位
+GET    /designer/job/skills              # 按技能查询岗位（精确匹配）
+GET    /designer/job/skills-any          # 按技能查询岗位（任意匹配）
 ```
 
 ### 岗位申请接口
@@ -404,16 +489,29 @@ PUT    /designer/award/{id}/sort         # 调整获奖记录排序
 
 ### 用户注册绑定接口
 
+#### 用户注册接口
 ```
 POST   /designer/user/register/designer  # 注册设计师身份
 POST   /designer/user/register/enterprise # 注册企业身份
 POST   /designer/user/register/school    # 注册院校身份
+```
+
+#### 用户绑定管理接口
+```
 GET    /designer/user/bindings           # 获取用户绑定信息
 GET    /designer/user/designer/profile   # 获取设计师档案
 GET    /designer/user/enterprise/profile # 获取企业档案
 GET    /designer/user/school/profile     # 获取院校档案
 PUT    /designer/user/unbind/{entityType} # 解绑身份
 POST   /designer/user/bind               # 管理员绑定用户实体
+```
+
+#### 绑定已有实体接口
+```
+GET    /designer/user/available/enterprises  # 查看可绑定的企业列表
+POST   /designer/user/bind/enterprise        # 绑定到指定企业
+GET    /designer/user/available/schools      # 查看可绑定的院校列表
+POST   /designer/user/bind/school            # 绑定到指定院校
 ```
 
 ## 使用方法
@@ -491,7 +589,139 @@ GET /designer/user/enterprise/profile
 GET /designer/user/school/profile
 ```
 
-### 3. 设计师档案管理
+### 3. 绑定已有实体
+
+#### 绑定已有企业
+```bash
+# 1. 查看可绑定的企业列表
+GET /designer/user/available/enterprises?pageNum=1&pageSize=10&enterpriseName=科技
+
+# 2. 绑定到指定企业
+POST /designer/user/bind/enterprise?enterpriseId=1&inviteCode=INVITE123
+```
+
+**企业绑定参数**:
+- `enterpriseId` (必须): 企业ID
+- `inviteCode` (可选): 企业邀请码
+
+#### 绑定已有院校
+```bash
+# 1. 查看可绑定的院校列表
+GET /designer/user/available/schools?pageNum=1&pageSize=10&schoolName=设计
+
+# 2. 绑定到指定院校
+POST /designer/user/bind/school?schoolId=1&studentId=2020001234
+```
+
+**院校绑定参数**:
+- `schoolId` (必须): 院校ID
+- `studentId` (可选): 学号
+
+#### 绑定限制说明
+- 每个用户在同一实体类型下只能绑定一个实体
+- 如需切换绑定，必须先解绑当前实体
+- 解绑操作：
+  ```bash
+  # 解绑企业身份
+  PUT /designer/user/unbind/enterprise
+  
+  # 解绑院校身份  
+  PUT /designer/user/unbind/school
+  ```
+
+#### 管理员绑定接口
+```bash
+# 管理员为任意用户绑定实体
+POST /designer/user/bind?userId=123&entityType=enterprise&entityId=1
+```
+
+**管理员绑定参数**:
+- `userId` (必须): 用户ID
+- `entityType` (必须): 实体类型 (`designer`/`enterprise`/`school`)
+- `entityId` (必须): 实体ID
+
+### 4. 设计师档案管理
+
+#### 获取设计师完整详情（聚合API）
+```bash
+# 获取设计师完整信息（包含基本信息、作品、工作经历、教育背景、获奖记录）
+GET /designer/designer/1/complete
+```
+
+**响应示例**:
+```json
+{
+  "code": 200,
+  "msg": "操作成功",
+  "data": {
+    "designer": {
+      "id": 1,
+      "designerName": "张雨",
+      "profession": "UI_UX_DESIGNER",
+      "email": "zhangyu@example.com",
+      "phone": "13888888888",
+      "skillTags": "[\"figma\",\"sketch\",\"ui_design\"]",
+      "description": "...",
+      "avatar": "...",
+      "location": "北京市",
+      "experience": 5,
+      "workStatus": "EMPLOYED",
+      "company": "腾讯"
+    },
+    "works": [
+      {
+        "id": 1,
+        "title": "移动支付APP界面设计",
+        "description": "...",
+        "imageUrl": "...",
+        "category": "移动应用",
+        "designerId": 1
+      }
+    ],
+    "workExperience": [
+      {
+        "id": 1,
+        "company": "腾讯",
+        "position": "高级UI设计师",
+        "startDate": "2022-01-01",
+        "endDate": null,
+        "description": "...",
+        "isCurrent": true,
+        "designerId": 1
+      }
+    ],
+    "education": [
+      {
+        "id": 1,
+        "school": "清华大学",
+        "degree": "学士",
+        "major": "视觉传达设计",
+        "startDate": "2018-09-01",
+        "endDate": "2022-06-30",
+        "description": "...",
+        "designerId": 1
+      }
+    ],
+    "awards": [
+      {
+        "id": 1,
+        "title": "Red Dot Design Award",
+        "organization": "Red Dot",
+        "year": "2023",
+        "description": "...",
+        "designerId": 1,
+        "level": "GOLD",
+        "category": "DESIGN_AWARD"
+      }
+    ]
+  }
+}
+```
+
+**性能优势**:
+- 🚀 减少网络请求次数：5个请求 → 1个请求
+- ⚡ 并行数据查询：4个数据源并行获取，响应时间更短
+- 📦 数据一致性：一次性获取完整数据，避免数据不一致
 
 #### 管理工作经历
 ```bash
@@ -696,7 +926,50 @@ public List<Designer> getMyDesigners() {
 7. 查看院校专业设置和就业率
 8. 管理院校获奖成果展示
 
-### 4. 院校数据查询使用方法
+### 5. 岗位技能查询使用方法
+
+#### 技能查询接口对比
+```bash
+# 精确匹配查询（要求岗位包含所有搜索技能）
+GET /designer/job/skills?skillTags=PROTOTYPE_DESIGN,VISUAL_DESIGN
+
+# 任意匹配查询（要求岗位包含任意一个搜索技能）
+GET /designer/job/skills-any?skillTags=PROTOTYPE_DESIGN,VISUAL_DESIGN
+```
+
+**查询逻辑对比**:
+| 接口 | 查询逻辑 | 示例 | 应用场景 |
+|------|----------|------|----------|
+| `/skills` | 交集查询（AND） | 搜索 A,B 时，岗位必须同时包含 A 和 B | 精确匹配，要求岗位具备所有技能 |
+| `/skills-any` | 并集查询（OR） | 搜索 A,B 时，岗位包含 A 或 B 即可 | 宽松匹配，扩大搜索范围 |
+
+**支持的技能标签**:
+- **动效设计**: ANIMATION_DESIGN
+- **原型设计**: PROTOTYPE_DESIGN  
+- **角色设计**: CHARACTER_DESIGN
+- **视觉设计**: VISUAL_DESIGN
+- **用户界面设计**: USER_INTERFACE_DESIGN
+- **用户体验设计**: USER_EXPERIENCE_DESIGN
+- **平面设计**: GRAPHIC_DESIGN
+- **品牌设计**: BRANDING_DESIGN
+- **插画**: ILLUSTRATION
+- **网页设计**: WEB_DESIGN
+- **移动设计**: MOBILE_DESIGN
+- **印刷设计**: PRINT_DESIGN
+
+**使用场景示例**:
+```bash
+# 1. 宽松技能匹配 - 找到具备某些技能中任意一种的设计师
+GET /designer/job/skills-any?skillTags=UI_DESIGN,UX_DESIGN,VISUAL_DESIGN
+
+# 2. 扩大搜索范围 - 当精确匹配结果太少时
+GET /designer/job/skills-any?skillTags=PROTOTYPE_DESIGN,ANIMATION_DESIGN
+
+# 3. 相关技能探索 - 查找相关技能的岗位
+GET /designer/job/skills-any?skillTags=WEB_DESIGN,MOBILE_DESIGN,USER_INTERFACE_DESIGN
+```
+
+### 6. 院校数据查询使用方法
 
 #### 查询院校列表（扩展）
 ```bash
@@ -1055,11 +1328,31 @@ graph TB
 - `TROUBLESHOOTING.md` - 详细的故障排除指南
 - 常见问题包括：重复索引错误、角色创建失败、权限检查失败等
 
-## 院校API集成说明
+## API集成说明
 
 ### 本次更新内容
 
-本版本已完整集成了院校Mock数据API设计方案中的所有接口，实现了从Mock数据到真实后端API的无缝对接：
+本版本已完整集成了多个重要功能模块的API接口，包括院校Mock数据API、设计师完整详情聚合API、技能查询优化API和绑定已有实体API：
+
+#### ✅ 新增接口统计
+- **设计师聚合API**: 1个 (设计师完整详情查询)
+- **技能查询优化**: 1个 (任意匹配技能查询)
+- **绑定已有实体**: 4个 (企业/院校绑定相关接口)
+- **院校展示接口**: 16个 (专业分类、师资统计、就业统计等)
+
+#### ✅ 功能特性
+- **性能优化**: 设计师聚合API减少5个网络请求到1个
+- **查询灵活性**: 技能查询支持精确匹配和任意匹配两种模式
+- **绑定灵活性**: 支持绑定已有实体，无需重复注册
+- **数据完整性**: 院校接口覆盖所有Mock数据源和函数
+
+#### ✅ 架构兼容性
+- **URL规范统一**: 所有接口采用 `/designer/*` 路径结构
+- **权限体系集成**: 继承现有权限码体系
+- **原有接口保留**: 完全兼容已有的管理接口
+- **前端无缝切换**: Mock数据与API响应结构完全一致
+
+### 院校API集成详情
 
 #### ✅ 新增接口统计
 - **基础管理接口**: 1个 (院校完整信息查询)
@@ -1121,6 +1414,69 @@ graph TB
 - **格式化数据**: 1小时缓存 (各类格式化展示数据)
 
 通过本次集成，院校数据展示功能已与整个设计师生态管理系统完全融合，为用户提供了完整的院校信息查询和展示能力。
+
+### 设计师聚合API集成详情
+
+#### ✅ 实现状态
+- **后端实现**: ✅ 完成 (`DesignerController.getDesignerComplete()`)
+- **API路径**: `GET /designer/designer/{designerId}/complete`
+- **性能优化**: 并行查询4个数据源，响应时间显著提升
+- **权限控制**: 支持不同角色的访问控制
+
+#### ✅ 数据结构覆盖
+- **设计师基本信息**: Designer
+- **作品集**: Work[]
+- **工作经历**: WorkExperience[]
+- **教育背景**: Education[]
+- **获奖记录**: Award[]
+
+#### ✅ 性能优势
+- 🚀 减少网络请求次数：5个请求 → 1个请求
+- ⚡ 并行数据查询：4个数据源并行获取，响应时间更短
+- 📦 数据一致性：一次性获取完整数据，避免数据不一致
+
+### 技能查询优化API集成详情
+
+#### ✅ 新增接口
+- **精确匹配**: `GET /designer/job/skills` (原有)
+- **任意匹配**: `GET /designer/job/skills-any` (新增)
+
+#### ✅ 查询逻辑对比
+| 接口 | 查询逻辑 | 应用场景 |
+|------|----------|----------|
+| `/skills` | 交集查询（AND） | 精确匹配，要求岗位具备所有技能 |
+| `/skills-any` | 并集查询（OR） | 宽松匹配，扩大搜索范围 |
+
+#### ✅ 支持的技能标签
+12种设计技能标签，包括动效设计、原型设计、视觉设计、UI/UX设计等
+
+### 绑定已有实体API集成详情
+
+#### ✅ 新增接口
+- **企业绑定**: `GET /designer/user/available/enterprises`, `POST /designer/user/bind/enterprise`
+- **院校绑定**: `GET /designer/user/available/schools`, `POST /designer/user/bind/school`
+
+#### ✅ 功能特性
+- **灵活绑定**: 支持绑定已有实体，无需重复注册
+- **身份验证**: 支持邀请码和学号验证（待完善）
+- **权限控制**: 管理员可为任意用户绑定实体
+- **绑定限制**: 每个用户在同一实体类型下只能绑定一个实体
+
+#### ✅ 使用场景
+- **员工加入已有企业**: 通过邀请码绑定企业身份
+- **学生绑定院校**: 通过学号绑定院校身份
+- **管理员管理**: 为任意用户绑定或解绑身份
+
+### 总体集成效果
+
+通过本次全面的API集成，设计师生态管理系统现在具备了：
+
+1. **完整的院校数据展示能力** - 16个专业接口覆盖所有展示需求
+2. **高性能的设计师详情查询** - 聚合API大幅提升前端性能
+3. **灵活的岗位技能匹配** - 支持精确和宽松两种查询模式
+4. **便捷的实体绑定机制** - 支持绑定已有实体，提升用户体验
+
+所有新增接口都严格遵循现有的架构规范和权限体系，确保系统的整体一致性和安全性。
 
 ## 开发团队
 
