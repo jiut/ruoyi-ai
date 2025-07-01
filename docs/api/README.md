@@ -70,6 +70,171 @@ ALTER TABLE `des_designer` ADD COLUMN `user_id` BIGINT COMMENT '关联用户ID';
 - 设计师可以申请多个岗位
 - 用户可以绑定多种身份（通过绑定关系表管理）
 
+## 数据结构定义
+
+### 院校相关数据结构
+
+#### 基础院校信息
+```typescript
+interface School {
+  id: number
+  schoolName: string
+  schoolType: 'COMPREHENSIVE' | 'ART' | 'ENGINEERING' | 'NORMAL' | 'FINANCE'
+  location: string
+  province: string
+  city: string
+  level: 'UNDERGRADUATE' | 'GRADUATE' | 'VOCATIONAL'
+  ranking: number
+  description: string
+  logo: string
+  website: string
+  address: string
+  phone: string
+  email: string
+  totalStudents: number
+  totalTeachers: number
+  facultyCount: number
+  majorCount: number
+  status: 'ACTIVE' | 'INACTIVE'
+  isKey: boolean
+  is985: boolean
+  is211: boolean
+  isDoubleFirst: boolean
+  createdAt: string
+  updatedAt: string
+}
+```
+
+#### 专业分类数据
+```typescript
+interface MajorCategoryData {
+  name: string        // 专业名称，如"信息艺术设计"
+  icon: string        // 图标，如"ri-computer-line"
+  description: string // 专业描述
+  skills: string[]    // 技能列表
+}
+```
+
+#### 课程体系数据
+```typescript
+interface CourseGroup {
+  name: string      // 课程组名称，如"通识基础课程"
+  courses: string[] // 课程列表
+}
+```
+
+#### 师资统计数据
+```typescript
+interface FacultyStatsData {
+  totalFaculty: number      // 师资总数
+  professors: number        // 教授人数
+  doctorDegree: number      // 博士学位人数
+  overseasBackground: number // 海外背景人数
+  description: string       // 师资描述
+}
+
+interface TeacherData {
+  id: number          // 教师ID
+  name: string        // 教师姓名
+  title: string       // 职称
+  expertise: string[] // 专业领域
+  description: string // 教师描述
+}
+```
+
+#### 就业统计数据
+```typescript
+interface EmploymentStatsData {
+  employmentRate: string       // 就业率，如"96.8%"
+  averageSalary: string        // 平均薪资，如"18.5K"
+  furtherStudyRate: string     // 深造率，如"38.2%"
+  overseasEmploymentRate: string // 海外就业率，如"22.1%"
+  description: string          // 就业描述
+}
+
+interface EmployerData {
+  id: number      // 雇主ID
+  name: string    // 雇主名称
+  industry: string // 行业类型
+}
+
+interface ChartData {
+  industryData: Array<{
+    value: number                    // 数值
+    name: string                     // 行业名称
+  }>
+  salaryData: number[]               // 薪资分布数据
+  salaryLabels: string[]             // 薪资区间标签
+}
+```
+
+#### 学生成果数据
+```typescript
+interface AchievementStatsData {
+  internationalAwards: number // 国际奖项数量
+  nationalAwards: number      // 国家级奖项数量
+  provincialAwards: number    // 省级奖项数量
+  patents: number             // 专利数量
+  description: string         // 成果描述
+}
+
+interface TrendData {
+  years: string[]            // 年份数组
+  internationalData: number[] // 国际奖项数据
+  nationalData: number[]      // 国家级奖项数据
+  provincialData: number[]    // 省级奖项数据
+}
+
+interface AwardWorkData {
+  id: number          // 作品ID
+  title: string       // 作品标题
+  award: string       // 奖项名称
+  description: string // 作品描述
+}
+```
+
+#### 卡片统计数据
+```typescript
+interface SchoolCardStatsData {
+  employmentRates: string[]                           // 就业率数组
+  facultyStrengths: string[]                          // 师资力量评分数组
+  studentScores: string[]                             // 学生评分数组
+  advantagePrograms: Record<string, string[]>         // 优势专业按院校类型分类
+}
+```
+
+#### 综合数据结构
+```typescript
+interface SchoolFullInfo {
+  basicInfo: School                      // 基础院校信息
+  majorCategories: MajorCategoryData[]   // 专业分类数据
+  courseSystem: CourseGroup[]            // 课程体系数据
+  facultyStats: FacultyStatsData         // 师资统计数据
+  facultyMembers: TeacherData[]          // 代表性教师数据
+  employmentStats: EmploymentStatsData   // 就业统计数据
+  employers: EmployerData[]              // 代表性雇主数据
+  chartData: ChartData                   // 图表数据
+  achievementStats: AchievementStatsData // 学生成果统计
+  trendData: TrendData                   // 获奖趋势数据
+  awardWorks: AwardWorkData[]            // 获奖作品数据
+  cardStats: SchoolCardStatsData         // 卡片统计数据
+}
+```
+
+#### 标准响应格式
+```typescript
+interface ApiResponse<T> {
+  code: number    // 状态码，200表示成功
+  msg: string     // 响应消息
+  data: T         // 响应数据
+}
+
+interface SchoolListResponse {
+  total: number
+  rows: School[]
+}
+```
+
 ## API接口
 
 ### 设计师管理接口
@@ -88,6 +253,7 @@ GET    /designer/designer/skillTags      # 获取技能标签选项
 
 ### 院校管理接口
 
+#### 基础院校管理接口
 ```
 GET    /designer/school/list             # 查询院校列表
 GET    /designer/school/{id}             # 获取院校详情
@@ -95,11 +261,59 @@ POST   /designer/school                  # 新增院校
 PUT    /designer/school                  # 修改院校
 DELETE /designer/school/{ids}            # 删除院校
 GET    /designer/school/user/{userId}    # 根据用户ID查询院校
-GET    /designer/school/{id}/employment/statistics    # 就业统计
-GET    /designer/school/{id}/employment/distribution  # 就业分布
-GET    /designer/school/{id}/students    # 查询院校学生列表
-GET    /designer/school/{id}/majors      # 查询院校专业列表
-GET    /designer/school/{id}/achievements # 查询院校获奖成果
+GET    /designer/school/{id}/full-info   # 获取院校完整信息
+```
+
+#### 院校专业与课程接口
+```
+GET    /designer/school/{id}/major-categories  # 获取院校专业分类
+GET    /designer/school/{id}/course-system     # 获取院校课程体系
+GET    /designer/school/{id}/majors            # 查询院校专业列表
+```
+
+#### 师资管理接口
+```
+GET    /designer/school/{id}/faculty-stats     # 获取院校师资统计
+GET    /designer/school/{id}/faculty-members   # 获取院校代表性教师
+```
+
+#### 就业统计接口
+```
+GET    /designer/school/{id}/employment-stats      # 获取院校就业统计
+GET    /designer/school/{id}/employment/statistics # 就业统计（原有接口）
+GET    /designer/school/{id}/employment/distribution # 就业分布（原有接口）
+GET    /designer/school/{id}/employment-charts     # 获取院校就业图表数据
+GET    /designer/school/{id}/employers             # 获取院校代表性雇主
+```
+
+#### 学生管理接口
+```
+GET    /designer/school/{id}/students          # 查询院校学生列表
+```
+
+#### 学生成果接口
+```
+GET    /designer/school/{id}/achievement-stats # 获取院校学生成果统计
+GET    /designer/school/{id}/award-trends      # 获取院校获奖趋势数据
+GET    /designer/school/{id}/award-works       # 获取院校获奖作品
+GET    /designer/school/{id}/achievements      # 查询院校获奖成果（原有接口）
+```
+
+#### 院校展示数据接口
+```
+GET    /designer/school/{id}/card-stats        # 获取院校卡片统计数据
+```
+
+#### 格式化数据接口
+```
+GET    /designer/school/{id}/formatted/employment-rate     # 获取格式化就业率
+GET    /designer/school/{id}/formatted/faculty-strength    # 获取格式化师资力量评分
+GET    /designer/school/{id}/formatted/student-score       # 获取格式化学生评分
+GET    /designer/school/{id}/formatted/advantage-programs  # 获取格式化优势专业
+```
+
+#### 院校收藏接口
+```
 POST   /designer/school/{id}/favorite    # 收藏院校
 DELETE /designer/school/{id}/favorite    # 取消收藏院校
 GET    /designer/school/favorites        # 获取我的收藏院校
@@ -484,6 +698,28 @@ public List<Designer> getMyDesigners() {
 
 ### 4. 院校数据查询使用方法
 
+#### 查询院校列表（扩展）
+```bash
+GET /designer/school/list?pageNum=1&pageSize=20&schoolName=设计学院&schoolType=ART&province=北京&city=北京&level=UNDERGRADUATE&isKey=true&is985=false&is211=true&isDoubleFirst=true
+```
+
+**请求参数：**
+```typescript
+interface SchoolListParams {
+  pageNum?: number      // 页码，默认1
+  pageSize?: number     // 每页大小，默认20
+  schoolName?: string   // 院校名称模糊查询
+  schoolType?: string   // 院校类型: COMPREHENSIVE/ART/ENGINEERING/NORMAL/FINANCE
+  province?: string     // 省份
+  city?: string         // 城市
+  level?: string        // 办学层次: UNDERGRADUATE/GRADUATE/VOCATIONAL
+  isKey?: boolean       // 是否重点院校
+  is985?: boolean       // 是否985院校
+  is211?: boolean       // 是否211院校
+  isDoubleFirst?: boolean // 是否双一流院校
+}
+```
+
 #### 查询院校学生列表
 ```bash
 GET /designer/school/1/students?status=current&profession=UI设计&pageNum=1&pageSize=20
@@ -496,7 +732,106 @@ GET /designer/school/1/students?status=current&profession=UI设计&pageNum=1&pag
 - `pageNum`: 页码（默认1）
 - `pageSize`: 每页大小（默认20）
 
-#### 查询院校专业列表
+#### 查询院校专业分类
+```bash
+GET /designer/school/1/major-categories
+```
+
+**返回数据包含：**
+- 专业名称、图标、描述
+- 相关技能列表
+
+#### 查询院校课程体系
+```bash
+GET /designer/school/1/course-system
+```
+
+**返回数据包含：**
+- 课程组名称
+- 每个课程组的课程列表
+
+#### 查询院校师资统计
+```bash
+GET /designer/school/1/faculty-stats
+```
+
+**返回数据包含：**
+- 师资总数、教授人数
+- 博士学位人数、海外背景人数
+- 师资描述信息
+
+#### 查询院校就业统计
+```bash
+GET /designer/school/1/employment-stats
+```
+
+**返回数据包含：**
+- 就业率、平均薪资
+- 深造率、海外就业率
+- 就业描述信息
+
+#### 查询院校就业图表数据
+```bash
+GET /designer/school/1/employment-charts
+```
+
+**返回数据包含：**
+- 行业分布数据（饼图）
+- 薪资分布数据（柱状图）
+
+#### 查询院校获奖成果统计
+```bash
+GET /designer/school/1/achievement-stats
+```
+
+**返回数据包含：**
+- 国际、国家级、省级奖项数量
+- 专利数量和成果描述
+
+#### 查询院校获奖趋势
+```bash
+GET /designer/school/1/award-trends
+```
+
+**返回数据包含：**
+- 年份数组
+- 各级别奖项的趋势数据
+
+#### 查询院校卡片统计
+```bash
+GET /designer/school/1/card-stats
+```
+
+**返回数据包含：**
+- 就业率、师资力量、学生评分数组
+- 按院校类型分类的优势专业
+
+#### 格式化数据查询
+```bash
+# 获取格式化就业率
+GET /designer/school/1/formatted/employment-rate
+
+# 获取格式化师资力量评分
+GET /designer/school/1/formatted/faculty-strength
+
+# 获取格式化学生评分
+GET /designer/school/1/formatted/student-score
+
+# 获取格式化优势专业
+GET /designer/school/1/formatted/advantage-programs
+```
+
+#### 查询院校完整信息
+```bash
+GET /designer/school/1/full-info
+```
+
+**返回数据包含：**
+- 基础信息、专业分类、课程体系
+- 师资统计、就业统计、成果统计
+- 图表数据、趋势数据、卡片统计
+
+#### 查询院校专业列表（原有）
 ```bash
 GET /designer/school/1/majors
 ```
@@ -506,7 +841,7 @@ GET /designer/school/1/majors
 - 就业人数和就业率
 - 按学生数量排序
 
-#### 查询院校获奖成果
+#### 查询院校获奖成果（原有）
 ```bash
 GET /designer/school/1/achievements
 ```
@@ -719,6 +1054,73 @@ graph TB
 如果在部署过程中遇到问题，请参考：
 - `TROUBLESHOOTING.md` - 详细的故障排除指南
 - 常见问题包括：重复索引错误、角色创建失败、权限检查失败等
+
+## 院校API集成说明
+
+### 本次更新内容
+
+本版本已完整集成了院校Mock数据API设计方案中的所有接口，实现了从Mock数据到真实后端API的无缝对接：
+
+#### ✅ 新增接口统计
+- **基础管理接口**: 1个 (院校完整信息查询)
+- **专业课程接口**: 2个 (专业分类、课程体系)  
+- **师资管理接口**: 2个 (师资统计、代表性教师)
+- **就业统计接口**: 3个 (就业统计、图表数据、代表性雇主)
+- **学生成果接口**: 3个 (成果统计、获奖趋势、获奖作品)
+- **展示数据接口**: 1个 (卡片统计)
+- **格式化接口**: 4个 (各类格式化数据)
+
+#### ✅ 数据结构覆盖
+- **12个核心数据结构**全部定义
+- **支持所有筛选参数**（pageNum, pageSize, schoolType等）
+- **统一响应格式**（ApiResponse<T>）
+- **完整数据关系**（SchoolFullInfo综合结构）
+
+#### ✅ 架构兼容性
+- **URL规范统一**：所有接口采用 `/designer/school/*` 路径结构
+- **权限体系集成**：继承 `designer:school:*` 权限码体系  
+- **原有接口保留**：完全兼容已有的院校管理接口
+- **前端无缝切换**：Mock数据与API响应结构完全一致
+
+### Mock数据覆盖验证
+
+#### 📊 数据源覆盖率 100%
+1. ✅ mockSchools → `/designer/school/list` & `/designer/school/{id}`
+2. ✅ mockMajorCategoriesBySchool → `/designer/school/{id}/major-categories`
+3. ✅ mockCourseSystemBySchool → `/designer/school/{id}/course-system`
+4. ✅ mockFacultyStatsBySchool → `/designer/school/{id}/faculty-stats`
+5. ✅ mockFacultyMembersBySchool → `/designer/school/{id}/faculty-members`
+6. ✅ mockEmploymentStatsBySchool → `/designer/school/{id}/employment-stats`
+7. ✅ mockEmployersBySchool → `/designer/school/{id}/employers`
+8. ✅ mockChartDataBySchool → `/designer/school/{id}/employment-charts`
+9. ✅ mockAchievementStatsBySchool → `/designer/school/{id}/achievement-stats`
+10. ✅ mockTrendDataBySchool → `/designer/school/{id}/award-trends`
+11. ✅ mockAwardWorksBySchool → `/designer/school/{id}/award-works`
+12. ✅ mockSchoolCardStatsBySchool → `/designer/school/{id}/card-stats`
+
+#### 🔧 函数映射覆盖率 100%
+- **基础查询函数**: getMockSchools, getMockSchoolById
+- **专业课程函数**: getMockMajorCategories, getMockCourseSystem
+- **师资相关函数**: getMockFacultyStats, getMockFacultyMembers  
+- **就业统计函数**: getMockEmploymentStats, getMockEmployers, getMockChartData
+- **成果统计函数**: getMockAchievementStats, getMockTrendData, getMockAwardWorks
+- **格式化函数**: getMockEmploymentRate, getMockFacultyStrength, getMockStudentScore, getMockAdvantagePrograms
+
+### 实施建议
+
+#### 开发优先级
+1. **P1 (立即实施)**: 基础院校数据接口、院校完整信息接口
+2. **P2 (核心功能)**: 专业分类、课程体系、师资统计、就业统计接口  
+3. **P3 (增强展示)**: 代表性教师、雇主、图表数据、学生成果接口
+4. **P4 (完善功能)**: 获奖趋势、获奖作品、卡片统计、格式化接口
+
+#### 缓存策略建议
+- **基础数据**: 1小时缓存 (院校信息、专业分类、课程体系)
+- **统计数据**: 30分钟缓存 (师资统计、就业统计、成果统计)  
+- **图表数据**: 15分钟缓存 (就业图表、获奖趋势)
+- **格式化数据**: 1小时缓存 (各类格式化展示数据)
+
+通过本次集成，院校数据展示功能已与整个设计师生态管理系统完全融合，为用户提供了完整的院校信息查询和展示能力。
 
 ## 开发团队
 

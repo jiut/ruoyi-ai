@@ -11,7 +11,7 @@
  Target Server Version : 80042 (8.0.42)
  File Encoding         : 65001
 
- Date: 24/06/2025 14:35:59
+ Date: 30/06/2025 11:20:07
 */
 
 SET NAMES utf8mb4;
@@ -324,7 +324,7 @@ CREATE TABLE `chat_pay_order`  (
   `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
   `create_dept` bigint NULL DEFAULT NULL COMMENT '创建部门',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '支付订单表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '支付订单表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of chat_pay_order
@@ -372,7 +372,7 @@ CREATE TABLE `chat_rob_config`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `udx_wx_rob_config_uniquekey`(`unique_key` ASC) USING BTREE,
   UNIQUE INDEX `udx_wx_name`(`bot_name` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '聊天机器人配置' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '聊天机器人配置' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of chat_rob_config
@@ -436,7 +436,7 @@ CREATE TABLE `chat_voucher`  (
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户兑换记录' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户兑换记录' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of chat_voucher
@@ -470,13 +470,20 @@ CREATE TABLE `des_award`  (
   INDEX `idx_sort`(`sort` ASC) USING BTREE,
   INDEX `idx_category`(`category` ASC) USING BTREE,
   CONSTRAINT `fk_award_designer` FOREIGN KEY (`designer_id`) REFERENCES `des_designer` (`designer_id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '设计师获奖表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '设计师获奖表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of des_award
 -- ----------------------------
-INSERT INTO `des_award` VALUES (1, 1, '2023 iF 设计奖', 'iF International Forum Design', '2023', NULL, NULL, NULL, '该作品在用户体验和视觉设计方面表现出色，获得国际认可', NULL, 0, '0', NULL, NULL, '2025-06-23 16:32:34', NULL, '2025-06-23 16:33:55');
-INSERT INTO `des_award` VALUES (2, 1, 'Google UX 设计专业认证', 'Google', '2021', NULL, NULL, NULL, '通过Google官方用户体验设计认证考试，证明具备专业的UX设计能力', NULL, 0, '0', NULL, NULL, '2025-06-23 16:32:34', NULL, '2025-06-23 16:33:55');
+INSERT INTO `des_award` VALUES (1, 1, '2023 iF 设计奖', 'iF International Forum Design', '2023', '金奖', 'UI/UX设计', '腾讯社交产品界面设计', '腾讯社交产品界面设计获得国际认可，在用户体验和视觉设计方面表现出色', NULL, 1, '0', NULL, NULL, '2023-01-01 00:00:00', NULL, '2023-01-01 00:00:00');
+INSERT INTO `des_award` VALUES (2, 1, 'Google UX 设计专业认证', 'Google', '2021', '认证', '专业认证', NULL, '通过Google官方用户体验设计课程认证，掌握专业的UX设计方法和工具', NULL, 2, '0', NULL, NULL, '2021-01-01 00:00:00', NULL, '2021-01-01 00:00:00');
+INSERT INTO `des_award` VALUES (3, 1, '中国设计红星奖', '中国工业设计协会', '2022', '银奖', 'UI设计', '智慧出行APP界面设计', '移动应用UI设计作品获得红星奖，体现了优秀的设计创新能力', NULL, 3, '0', NULL, NULL, '2022-01-01 00:00:00', NULL, '2022-01-01 00:00:00');
+INSERT INTO `des_award` VALUES (4, 2, 'D&AD 设计奖', 'D&AD', '2023', '铜奖', '品牌设计', '绿色科技公司品牌设计', '品牌设计作品在国际设计大赛中获奖，展现了卓越的创意表达能力', NULL, 1, '0', NULL, NULL, '2023-01-01 00:00:00', NULL, '2023-01-01 00:00:00');
+INSERT INTO `des_award` VALUES (5, 2, '亚洲设计大奖', '亚洲设计师联盟', '2022', '优秀奖', '包装设计', '咖啡品牌包装设计', '包装设计作品获得亚洲设计大奖，在视觉创意和实用性方面获得好评', NULL, 2, '0', NULL, NULL, '2022-01-01 00:00:00', NULL, '2022-01-01 00:00:00');
+INSERT INTO `des_award` VALUES (6, 3, '国际动画节最佳角色设计奖', '安纳西国际动画节', '2023', '最佳奖', '角色设计', '科幻角色设计系列', '原创角色设计作品在国际动画节中获得最佳角色设计奖，获得业内高度认可', NULL, 1, '0', NULL, NULL, '2023-01-01 00:00:00', NULL, '2023-01-01 00:00:00');
+INSERT INTO `des_award` VALUES (7, 3, 'CGI 全球设计大赛', 'CGI Society', '2022', '金奖', '3D动画', '产品宣传动画', '3D动画作品在全球设计大赛中获奖，技术实力和创意表达获得认可', NULL, 2, '0', NULL, NULL, '2022-01-01 00:00:00', NULL, '2022-01-01 00:00:00');
+INSERT INTO `des_award` VALUES (8, 4, 'UX Design Awards', 'UX Design Institute', '2023', '优秀奖', '用户体验设计', NULL, 'B端产品用户体验设计获得专业认可，在复杂业务场景设计方面表现突出', NULL, 1, '0', NULL, NULL, '2023-01-01 00:00:00', NULL, '2023-01-01 00:00:00');
+INSERT INTO `des_award` VALUES (9, 5, '全国大学生设计大赛', '教育部', '2020', '一等奖', '交互设计', NULL, '在校期间参与全国大学生设计大赛并获奖，展现了良好的设计基础和创新能力', NULL, 1, '0', NULL, NULL, '2020-01-01 00:00:00', NULL, '2020-01-01 00:00:00');
 
 -- ----------------------------
 -- Table structure for des_designer
@@ -517,15 +524,31 @@ CREATE TABLE `des_designer`  (
   INDEX `idx_work_status`(`work_status` ASC) USING BTREE,
   CONSTRAINT `des_designer_ibfk_1` FOREIGN KEY (`school_id`) REFERENCES `des_school` (`school_id`) ON DELETE SET NULL ON UPDATE RESTRICT,
   CONSTRAINT `des_designer_ibfk_2` FOREIGN KEY (`enterprise_id`) REFERENCES `des_enterprise` (`enterprise_id`) ON DELETE SET NULL ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 1933350394109485058 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '设计师信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 21 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '设计师信息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of des_designer
 -- ----------------------------
-INSERT INTO `des_designer` VALUES (1, 1, '陈雨晴', NULL, '1', NULL, '13812345678', 'chenyu@example.com', '拥有 5 年 UI/UX 设计经验，专注于移动应用和 Web 产品的用户体验设计。擅长用户研究、交互设计和视觉设计，能够从用户需求出发，打造直观易用的产品界面。曾主导腾讯多个核心产品的设计工作，包括社交、游戏和企业应用等领域。', 'UI_UX_DESIGNER', '[\"figma\", \"sketch\", \"user_research\"]', 5, 'EMPLOYED', '深圳', NULL, 1, NULL, NULL, 'https://chenyudesign.com', NULL, '0', NULL, NULL, '2025-06-23 16:32:34', NULL, '2025-06-23 16:33:55');
-INSERT INTO `des_designer` VALUES (2, 2, '林子豪', NULL, '0', NULL, '13923456789', 'linzihao@example.com', '专业视觉设计师，专注于品牌设计和视觉传达。拥有丰富的品牌标识设计经验，善于通过视觉语言传达品牌价值。', 'VISUAL_DESIGNER', '[\"photoshop\", \"illustrator\", \"brand_design\"]', 7, 'FREELANCER', '上海', NULL, NULL, NULL, NULL, 'https://linzihaodesign.com', NULL, '0', NULL, NULL, '2025-06-23 16:32:34', NULL, '2025-06-23 16:33:55');
-INSERT INTO `des_designer` VALUES (3, 3, '王梦琪', '', '1', NULL, '13634567890', 'wangmengqi@example.com', '3D 动画设计师，专注于三维建模和动画制作。拥有丰富的影视和游戏行业经验。', 'THREE_D_DESIGNER', '[\"blender\", \"cinema_4d\", \"animation_design\"]', 4, 'FREELANCER', '北京', NULL, NULL, NULL, NULL, 'https://wangmengqi3d.com', '{}', '0', NULL, NULL, '2023-03-01 00:00:00', NULL, '2025-06-23 16:33:55');
-INSERT INTO `des_designer` VALUES (4, 4, '赵明宇', '', '0', NULL, '13745678901', 'zhaomingyu@example.com', '产品设计师，专注于数字产品的用户体验设计和产品策略。', 'PRODUCT_DESIGNER', '[\"sketch\", \"prototype_design\", \"user_experience\"]', 6, 'EMPLOYED', '杭州', NULL, NULL, NULL, NULL, 'https://zhaomingyu.design', '{}', '0', NULL, NULL, '2022-09-01 00:00:00', NULL, '2023-12-01 00:00:00');
+INSERT INTO `des_designer` VALUES (1, 1, '陈雨晴', 'https://api.dicebear.com/9.x/shapes/svg?seed=chenyu', '1', '1995-06-15', '13812345678', 'chenyu@example.com', '拥有 5 年 UI/UX 设计经验，专注于移动应用和 Web 产品的用户体验设计。擅长用户研究、交互设计和视觉设计，能够从用户需求出发，打造直观易用的产品界面。曾主导腾讯多个核心产品的设计工作，包括社交、游戏和企业应用等领域。精通用户研究方法，具备敏锐的用户洞察力和优秀的设计执行力。', 'UI_UX_DESIGNER', '[\"figma\", \"user_research\", \"interaction_design\", \"prototype_design\", \"design_system\"]', 5, 'EMPLOYED', '深圳市南山区', 1, 1, '2018-06-30', '2022-03-01', 'https://chenyudesign.com', '{\"behance\": \"https://behance.net/chenyu\", \"dribbble\": \"https://dribbble.com/chenyu\", \"linkedin\": \"https://linkedin.com/in/chenyu\"}', '0', NULL, NULL, '2023-01-01 00:00:00', NULL, '2023-12-01 00:00:00');
+INSERT INTO `des_designer` VALUES (2, 2, '林子豪', 'https://api.dicebear.com/9.x/shapes/svg?seed=linzihao', '0', '1990-03-22', '13923456789', 'linzihao@example.com', '专业视觉设计师，专注于品牌设计和视觉传达。拥有丰富的品牌标识设计经验，善于通过视觉语言传达品牌价值。曾为多家知名企业设计品牌形象，包括LOGO设计、VI系统、包装设计等。在色彩搭配和字体设计方面有独到见解，作品风格简约而富有张力。', 'VISUAL_DESIGNER', '[\"photoshop\", \"illustrator\", \"brand_design\", \"typography\", \"visual_design\"]', 7, 'EMPLOYED', '上海市浦东新区', NULL, 2, NULL, NULL, 'https://linzihaodesign.com', '{\"behance\": \"https://behance.net/linzihao\", \"instagram\": \"https://instagram.com/linzihao\"}', '0', NULL, NULL, '2022-06-01 00:00:00', NULL, '2023-12-01 00:00:00');
+INSERT INTO `des_designer` VALUES (3, 3, '王梦琪', 'https://api.dicebear.com/9.x/shapes/svg?seed=wangmengqi', '1', '1992-08-10', '13634567890', 'wangmengqi@example.com', '3D 动画设计师，专注于三维建模和动画制作。拥有丰富的影视和游戏行业经验，擅长角色建模、场景设计和动画制作。作品曾在多个国际动画节获奖，具备扎实的美术功底和前沿的技术实力。', 'THREE_D_DESIGNER', '[\"blender\", \"cinema_4d\", \"animation_design\", \"character_design\", \"visual_design\"]', 4, 'FREELANCER', '北京市朝阳区', NULL, NULL, NULL, NULL, 'https://wangmengqi3d.com', '{\"artstation\": \"https://artstation.com/wangmengqi\"}', '0', NULL, NULL, '2023-03-01 00:00:00', NULL, '2023-12-01 00:00:00');
+INSERT INTO `des_designer` VALUES (4, 4, '赵明宇', 'https://api.dicebear.com/9.x/shapes/svg?seed=zhaomingyu', '0', '1991-12-05', '13745678901', 'zhaomingyu@example.com', '产品设计师，专注于数字产品的用户体验设计和产品策略。拥有深厚的产品思维和用户洞察能力，善于从商业目标出发，设计既美观又实用的产品界面。在B端产品设计方面经验丰富，曾主导多个企业级产品的设计工作。', 'PRODUCT_DESIGNER', '[\"sketch\", \"prototype_design\", \"user_experience\", \"design_system\", \"user_research\"]', 6, 'EMPLOYED', '杭州市西湖区', NULL, 3, NULL, NULL, 'https://zhaomingyu.design', '{\"medium\": \"https://medium.com/@zhaomingyu\"}', '0', NULL, NULL, '2022-09-01 00:00:00', NULL, '2023-12-01 00:00:00');
+INSERT INTO `des_designer` VALUES (5, 5, '李思雨', 'https://api.dicebear.com/9.x/shapes/svg?seed=lisiyu', '1', '1996-04-18', '13856789012', 'lisiyu@example.com', '交互设计师，专注于数字产品的交互体验设计。具备丰富的用户研究经验和交互设计技能，善于通过原型设计和用户测试验证设计方案。曾参与多个大型互联网产品的交互设计工作，在移动端交互设计方面有深入研究。', 'INTERACTION_DESIGNER', '[\"figma\", \"prototype_design\", \"user_research\", \"wireframing\", \"user_testing\"]', 3, 'EMPLOYED', '成都市高新区', 2, NULL, '2020-06-30', '2020-07-15', 'https://lisiyu.design', '{\"github\": \"https://github.com/lisiyu\", \"dribbble\": \"https://dribbble.com/lisiyu\"}', '0', NULL, NULL, '2023-05-01 00:00:00', NULL, '2023-12-01 00:00:00');
+INSERT INTO `des_designer` VALUES (6, 6, '张伟强', 'https://api.dicebear.com/9.x/shapes/svg?seed=zhangweiqiang', '0', '1989-09-30', '13967890123', 'zhangweiqiang@example.com', '品牌设计师，专注于企业品牌形象设计和视觉识别系统构建。拥有多年品牌设计经验，为众多知名企业提供过品牌设计服务。擅长将品牌理念转化为视觉符号，在LOGO设计、VI系统、包装设计等领域具备专业能力。', 'BRAND_DESIGNER', '[\"illustrator\", \"photoshop\", \"brand_design\", \"typography\", \"color_theory\"]', 8, 'FREELANCER', '广州市天河区', NULL, NULL, NULL, NULL, 'https://zhangweiqiang.design', '{\"behance\": \"https://behance.net/zhangweiqiang\", \"instagram\": \"https://instagram.com/zhangweiqiang\"}', '0', NULL, NULL, '2022-01-01 00:00:00', NULL, '2023-12-01 00:00:00');
+INSERT INTO `des_designer` VALUES (7, 7, '刘小雅', 'https://api.dicebear.com/9.x/shapes/svg?seed=liuxiaoya', '1', '1994-07-12', '13078901234', 'liuxiaoya@example.com', '动效设计师，专注于数字媒体动画和视觉特效设计。具备丰富的动效制作经验，善于运用各种动效技术创造引人入胜的视觉体验。作品涵盖品牌动画、产品演示动画、UI动效等多个领域，在创意表达和技术实现方面都有出色表现。', 'MOTION_DESIGNER', '[\"after_effects\", \"cinema_4d\", \"animation_design\", \"visual_design\", \"illustration\"]', 4, 'EMPLOYED', '武汉市洪山区', NULL, 4, NULL, NULL, 'https://liuxiaoya.motion', '{\"vimeo\": \"https://vimeo.com/liuxiaoya\", \"behance\": \"https://behance.net/liuxiaoya\"}', '0', NULL, NULL, '2023-02-01 00:00:00', NULL, '2023-12-01 00:00:00');
+INSERT INTO `des_designer` VALUES (8, 8, '孙志华', 'https://api.dicebear.com/9.x/shapes/svg?seed=sunzhihua', '0', '1990-11-28', '13189012345', 'sunzhihua@example.com', '插画师，专注于商业插画和角色设计。具备扎实的美术功底和独特的创作风格，作品风格多样，能够根据不同项目需求调整创作方向。在儿童绘本、品牌插画、游戏角色设计等领域有丰富经验，作品多次获得业内认可。', 'ILLUSTRATOR', '[\"illustrator\", \"photoshop\", \"illustration\", \"character_design\", \"visual_design\"]', 6, 'FREELANCER', '西安市雁塔区', NULL, NULL, NULL, NULL, 'https://sunzhihua.art', '{\"instagram\": \"https://instagram.com/sunzhihua\", \"artstation\": \"https://artstation.com/sunzhihua\"}', '0', NULL, NULL, '2022-08-01 00:00:00', NULL, '2023-12-01 00:00:00');
+INSERT INTO `des_designer` VALUES (9, 9, '周雅琪', 'https://api.dicebear.com/9.x/shapes/svg?seed=zhouyaqi', '1', '1993-05-14', '13290123456', 'zhouyaqi@example.com', '平面设计师，专注于印刷品设计和数字媒体设计。在杂志排版、海报设计、宣传册制作等方面有丰富经验。善于运用色彩和排版创造视觉冲击力，作品风格现代简约，注重信息传达的清晰性和美观性。', 'GRAPHIC_DESIGNER', '[\"photoshop\", \"illustrator\", \"graphic_design\", \"typography\", \"layout_design\"]', 5, 'EMPLOYED', '南京市鼓楼区', NULL, 5, NULL, NULL, 'https://zhouyaqi.design', '{\"behance\": \"https://behance.net/zhouyaqi\", \"pinterest\": \"https://pinterest.com/zhouyaqi\"}', '0', NULL, NULL, '2022-11-01 00:00:00', NULL, '2023-12-01 00:00:00');
+INSERT INTO `des_designer` VALUES (10, 10, '吴志强', 'https://api.dicebear.com/9.x/shapes/svg?seed=wuzhiqiang', '0', '1994-09-20', '13301234567', 'wuzhiqiang@example.com', 'UI设计师，专注于移动应用和Web界面的视觉设计。具备敏锐的视觉感知能力和优秀的设计执行力，善于将品牌元素融入界面设计中。在电商、金融、教育等多个行业有丰富的设计经验，作品注重用户体验和视觉美感的平衡。', 'UI_DESIGNER', '[\"figma\", \"sketch\", \"ui_design\", \"visual_design\", \"design_system\"]', 4, 'EMPLOYED', '苏州市工业园区', NULL, 6, NULL, NULL, 'https://wuzhiqiang.design', '{\"dribbble\": \"https://dribbble.com/wuzhiqiang\", \"linkedin\": \"https://linkedin.com/in/wuzhiqiang\"}', '0', NULL, NULL, '2023-01-15 00:00:00', NULL, '2023-12-01 00:00:00');
+INSERT INTO `des_designer` VALUES (11, 11, '林小雨', 'https://api.dicebear.com/9.x/shapes/svg?seed=linxiaoyu', '1', '1991-12-08', '13412345678', 'linxiaoyu@example.com', 'UX设计师，专注于用户体验研究和交互设计。具备深厚的用户研究背景，善于通过数据分析和用户访谈洞察用户需求。在复杂业务场景的UX设计方面有丰富经验，曾为多个大型企业级产品提供用户体验优化服务。', 'UX_DESIGNER', '[\"user_research\", \"prototype_design\", \"user_testing\", \"information_architecture\", \"wireframing\"]', 6, 'EMPLOYED', '重庆市渝北区', NULL, 7, NULL, NULL, 'https://linxiaoyu.ux', '{\"medium\": \"https://medium.com/@linxiaoyu\", \"linkedin\": \"https://linkedin.com/in/linxiaoyu\"}', '0', NULL, NULL, '2022-07-01 00:00:00', NULL, '2023-12-01 00:00:00');
+INSERT INTO `des_designer` VALUES (12, 12, '陈志明', 'https://api.dicebear.com/9.x/shapes/svg?seed=chenzhiming', '0', '1989-04-16', '13523456789', 'chenzhiming@example.com', '动效设计师，专注于数字媒体动画和视觉特效制作。具备丰富的影视后期制作经验，善于运用各种动效技术创造震撼的视觉体验。作品涵盖广告动画、产品演示、品牌宣传片等多个领域，在创意表达和技术实现方面都有出色表现。', 'MOTION_DESIGNER', '[\"after_effects\", \"cinema_4d\", \"motion_design\", \"animation\", \"visual_effects\"]', 7, 'FREELANCER', '天津市和平区', NULL, NULL, NULL, NULL, 'https://chenzhiming.motion', '{\"vimeo\": \"https://vimeo.com/chenzhiming\", \"instagram\": \"https://instagram.com/chenzhiming\"}', '0', NULL, NULL, '2022-03-01 00:00:00', NULL, '2023-12-01 00:00:00');
+INSERT INTO `des_designer` VALUES (13, 13, '黄雅婷', 'https://api.dicebear.com/9.x/shapes/svg?seed=huangyating', '1', '1992-07-25', '13634567890', 'huangyating@example.com', 'UI/UX设计师，专注于移动应用和Web产品的用户体验设计。具备深厚的用户研究背景和优秀的设计执行力，善于通过数据驱动的方法优化产品体验。在电商、社交、教育等多个领域有丰富经验，作品注重用户需求和商业目标的平衡。', 'UI_UX_DESIGNER', '[\"figma\", \"sketch\", \"user_research\", \"prototype_design\", \"design_system\"]', 5, 'EMPLOYED', '厦门市思明区', NULL, 8, NULL, NULL, 'https://huangyating.design', '{\"dribbble\": \"https://dribbble.com/huangyating\", \"linkedin\": \"https://linkedin.com/in/huangyating\"}', '0', NULL, NULL, '2022-09-15 00:00:00', NULL, '2023-12-01 00:00:00');
+INSERT INTO `des_designer` VALUES (14, 14, '杨志强', 'https://api.dicebear.com/9.x/shapes/svg?seed=yangzhiqiang', '0', '1988-11-12', '13745678901', 'yangzhiqiang@example.com', '品牌设计师，专注于企业品牌形象设计和视觉识别系统构建。拥有多年品牌设计经验，为众多知名企业提供过品牌设计服务。擅长将品牌理念转化为视觉符号，在LOGO设计、VI系统、品牌应用等方面具备专业能力。', 'BRAND_DESIGNER', '[\"illustrator\", \"photoshop\", \"brand_design\", \"typography\", \"visual_identity\"]', 8, 'FREELANCER', '青岛市市南区', NULL, NULL, NULL, NULL, 'https://yangzhiqiang.brand', '{\"behance\": \"https://behance.net/yangzhiqiang\", \"instagram\": \"https://instagram.com/yangzhiqiang\"}', '0', NULL, NULL, '2021-12-01 00:00:00', NULL, '2023-12-01 00:00:00');
+INSERT INTO `des_designer` VALUES (15, 15, '刘梦琪', 'https://api.dicebear.com/9.x/shapes/svg?seed=liumengqi', '1', '1991-03-18', '13856789012', 'liumengqi@example.com', '3D设计师，专注于三维建模和角色设计。具备扎实的美术功底和前沿的技术实力，在游戏美术、影视特效、产品展示等领域有丰富经验。擅长角色建模、场景设计和动画制作，作品风格独特，技术精湛。', 'THREE_D_DESIGNER', '[\"blender\", \"maya\", \"3d_modeling\", \"character_design\", \"animation_design\"]', 6, 'EMPLOYED', '大连市中山区', NULL, 9, NULL, NULL, 'https://liumengqi.3d', '{\"instagram\": \"https://instagram.com/liumengqi\", \"artstation\": \"https://artstation.com/liumengqi\"}', '0', NULL, NULL, '2022-05-01 00:00:00', NULL, '2023-12-01 00:00:00');
+INSERT INTO `des_designer` VALUES (16, 16, '张雅文', 'https://api.dicebear.com/9.x/shapes/svg?seed=zhangyawen', '1', '1995-08-30', '13967890123', 'zhangyawen@example.com', '产品设计师，专注于数字产品的用户体验设计和产品策略。具备深厚的产品思维和用户洞察能力，善于从商业目标出发，设计既美观又实用的产品界面。在B端产品设计方面经验丰富，曾主导多个企业级产品的设计工作。', 'PRODUCT_DESIGNER', '[\"sketch\", \"figma\", \"user_experience\", \"prototype_design\", \"design_system\"]', 4, 'EMPLOYED', '无锡市滨湖区', NULL, 10, NULL, NULL, 'https://zhangyawen.product', '{\"medium\": \"https://medium.com/@zhangyawen\", \"linkedin\": \"https://linkedin.com/in/zhangyawen\"}', '0', NULL, NULL, '2023-02-01 00:00:00', NULL, '2023-12-01 00:00:00');
+INSERT INTO `des_designer` VALUES (17, 17, '王浩然', 'https://api.dicebear.com/9.x/shapes/svg?seed=wanghaoran', '0', '1993-01-15', '13078901234', 'wanghaoran@example.com', '交互设计师，专注于数字产品的交互体验设计。具备丰富的用户研究经验和交互设计技能，善于通过原型设计和用户测试验证设计方案。曾参与多个大型互联网产品的交互设计工作，在移动端交互设计方面有深入研究。', 'INTERACTION_DESIGNER', '[\"figma\", \"axure_rp\", \"user_research\", \"wireframing\", \"user_testing\"]', 5, 'EMPLOYED', '福州市鼓楼区', NULL, 11, NULL, NULL, 'https://wanghaoran.interaction', '{\"github\": \"https://github.com/wanghaoran\", \"dribbble\": \"https://dribbble.com/wanghaoran\"}', '0', NULL, NULL, '2022-11-01 00:00:00', NULL, '2023-12-01 00:00:00');
+INSERT INTO `des_designer` VALUES (18, 18, '李雅琴', 'https://api.dicebear.com/9.x/shapes/svg?seed=liyaqin', '1', '1990-06-22', '13189012345', 'liyaqin@example.com', '视觉设计师，专注于品牌视觉设计和视觉传达。拥有丰富的视觉设计经验，善于通过色彩、字体、图形等视觉元素传达品牌价值。在品牌标识设计、视觉系统构建、创意广告设计等方面有专业能力。', 'VISUAL_DESIGNER', '[\"photoshop\", \"illustrator\", \"visual_design\", \"color_theory\", \"typography\"]', 7, 'FREELANCER', '济南市历下区', NULL, NULL, NULL, NULL, 'https://liyaqin.visual', '{\"behance\": \"https://behance.net/liyaqin\", \"pinterest\": \"https://pinterest.com/liyaqin\"}', '0', NULL, NULL, '2022-01-15 00:00:00', NULL, '2023-12-01 00:00:00');
+INSERT INTO `des_designer` VALUES (19, 19, '陈志豪', 'https://api.dicebear.com/9.x/shapes/svg?seed=chenzhihao', '0', '1992-12-08', '13290123456', 'chenzhihao@example.com', '插画师，专注于商业插画和概念设计。具备扎实的美术功底和独特的创作风格，作品风格多样，能够根据不同项目需求调整创作方向。在游戏美术、品牌插画、概念设计等领域有丰富经验，作品多次获得业内认可。', 'ILLUSTRATOR', '[\"illustrator\", \"photoshop\", \"illustration\", \"character_design\", \"scene_design\"]', 5, 'FREELANCER', '郑州市金水区', NULL, NULL, NULL, NULL, 'https://chenzhihao.art', '{\"instagram\": \"https://instagram.com/chenzhihao\", \"artstation\": \"https://artstation.com/chenzhihao\"}', '0', NULL, NULL, '2022-07-01 00:00:00', NULL, '2023-12-01 00:00:00');
+INSERT INTO `des_designer` VALUES (20, 20, '赵雅琪', 'https://api.dicebear.com/9.x/shapes/svg?seed=zhaoyaqi', '1', '1991-09-14', '13301234567', 'zhaoyaqi@example.com', '平面设计师，专注于印刷品设计和数字媒体设计。在杂志排版、海报设计、宣传册制作等方面有丰富经验。善于运用色彩和排版创造视觉冲击力，作品风格现代简约，注重信息传达的清晰性和美观性。', 'GRAPHIC_DESIGNER', '[\"photoshop\", \"illustrator\", \"graphic_design\", \"layout_design\", \"print_design\"]', 6, 'EMPLOYED', '长沙市岳麓区', NULL, 12, NULL, NULL, 'https://zhaoyaqi.graphic', '{\"behance\": \"https://behance.net/zhaoyaqi\", \"linkedin\": \"https://linkedin.com/in/zhaoyaqi\"}', '0', NULL, NULL, '2022-04-01 00:00:00', NULL, '2023-12-01 00:00:00');
 
 -- ----------------------------
 -- Table structure for des_education
@@ -555,13 +578,34 @@ CREATE TABLE `des_education`  (
   INDEX `idx_start_date`(`start_date` ASC) USING BTREE,
   INDEX `idx_degree`(`degree` ASC) USING BTREE,
   CONSTRAINT `fk_education_designer` FOREIGN KEY (`designer_id`) REFERENCES `des_designer` (`designer_id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '设计师教育背景表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 24 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '设计师教育背景表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of des_education
 -- ----------------------------
-INSERT INTO `des_education` VALUES (1, 1, '中国美术学院', '硕士', '设计学', '2015-09-01', NULL, 0, '专业方向：数字媒体艺术，研究方向：交互设计与用户体验', NULL, NULL, NULL, '0', NULL, NULL, '2025-06-23 16:32:34', NULL, '2025-06-23 16:33:55');
-INSERT INTO `des_education` VALUES (2, 1, '浙江大学', '学士', '工业设计', '2011-09-01', NULL, 0, '主修课程：设计基础、人机交互、产品设计、计算机辅助设计', NULL, NULL, NULL, '0', NULL, NULL, '2025-06-23 16:32:34', NULL, '2025-06-23 16:33:55');
+INSERT INTO `des_education` VALUES (1, 1, '中国美术学院', '硕士', '设计学', '2015-09-01', '2018-06-30', 0, '专业方向：数字媒体艺术，研究方向：交互设计与用户体验。主要课程包括用户体验设计、交互设计方法、视觉传达设计等。', 3.80, 5, 48, '0', NULL, NULL, '2015-09-01 00:00:00', NULL, '2018-06-30 00:00:00');
+INSERT INTO `des_education` VALUES (2, 1, '浙江大学', '学士', '工业设计', '2011-09-01', '2015-06-30', 0, '主修课程：设计基础、人机交互、产品设计、计算机辅助设计。参与多项设计竞赛并获奖，具备扎实的设计理论基础。', 3.60, 8, 120, '0', NULL, NULL, '2011-09-01 00:00:00', NULL, '2015-06-30 00:00:00');
+INSERT INTO `des_education` VALUES (3, 2, '清华大学美术学院', '学士', '视觉传达设计', '2012-09-01', '2016-06-30', 0, '主修课程：平面设计、品牌设计、包装设计、广告设计等。在校期间多次获得设计奖学金，作品在多个展览中展出。', 3.90, 2, 60, '0', NULL, NULL, '2012-09-01 00:00:00', NULL, '2016-06-30 00:00:00');
+INSERT INTO `des_education` VALUES (4, 3, '北京电影学院', '学士', '动画设计', '2014-09-01', '2018-06-30', 0, '主修课程：三维动画、角色设计、场景设计、动画导演等。毕业作品《未来城市》获得学院优秀毕业作品奖。', 3.70, 6, 80, '0', NULL, NULL, '2014-09-01 00:00:00', NULL, '2018-06-30 00:00:00');
+INSERT INTO `des_education` VALUES (5, 4, '同济大学', '硕士', '工业设计', '2015-09-01', '2018-06-30', 0, '研究方向：交互设计与用户体验。参与多个产品设计项目，在人机交互和用户研究方面有深入学习。', 3.80, 3, 40, '0', NULL, NULL, '2015-09-01 00:00:00', NULL, '2018-06-30 00:00:00');
+INSERT INTO `des_education` VALUES (6, 4, '华中科技大学', '学士', '工业设计', '2011-09-01', '2015-06-30', 0, '主修课程：产品设计、人机工程学、设计心理学、计算机辅助设计等。', 3.50, 15, 90, '0', NULL, NULL, '2011-09-01 00:00:00', NULL, '2015-06-30 00:00:00');
+INSERT INTO `des_education` VALUES (7, 5, '四川美术学院', '学士', '数字媒体艺术', '2016-09-01', '2020-06-30', 0, '主修课程：交互设计、用户体验设计、界面设计、数字媒体技术等。毕业设计作品获得优秀毕业设计奖。', 3.70, 4, 70, '0', NULL, NULL, '2016-09-01 00:00:00', NULL, '2020-06-30 00:00:00');
+INSERT INTO `des_education` VALUES (8, 6, '广州美术学院', '学士', '视觉传达设计', '2012-09-01', '2016-06-30', 0, '主修课程：品牌设计、广告设计、包装设计、企业形象设计等。在校期间多次参与设计竞赛并获奖。', 3.80, 3, 65, '0', NULL, NULL, '2012-09-01 00:00:00', NULL, '2016-06-30 00:00:00');
+INSERT INTO `des_education` VALUES (9, 7, '湖北美术学院', '学士', '动画设计', '2014-09-01', '2018-06-30', 0, '主修课程：动画制作、影视后期、数字媒体技术、视觉特效等。毕业作品获得学院优秀作品奖。', 3.60, 8, 75, '0', NULL, NULL, '2014-09-01 00:00:00', NULL, '2018-06-30 00:00:00');
+INSERT INTO `des_education` VALUES (10, 8, '西安美术学院', '学士', '插画设计', '2014-09-01', '2018-06-30', 0, '主修课程：插画技法、角色设计、场景设计、绘本创作等。在校期间为多家出版社创作插画作品。', 3.90, 2, 55, '0', NULL, NULL, '2014-09-01 00:00:00', NULL, '2018-06-30 00:00:00');
+INSERT INTO `des_education` VALUES (11, 9, '南京艺术学院', '学士', '平面设计', '2015-09-01', '2019-06-30', 0, '主修课程：平面设计、排版设计、印刷工艺、数字媒体设计等。毕业设计获得优秀毕业设计奖。', 3.70, 5, 80, '0', NULL, NULL, '2015-09-01 00:00:00', NULL, '2019-06-30 00:00:00');
+INSERT INTO `des_education` VALUES (12, 10, '苏州大学', '学士', '数字媒体艺术', '2016-09-01', '2020-06-30', 0, '主修课程：UI设计、交互设计、数字媒体技术、视觉设计等。在校期间参与多个设计项目。', 3.50, 12, 85, '0', NULL, NULL, '2016-09-01 00:00:00', NULL, '2020-06-30 00:00:00');
+INSERT INTO `des_education` VALUES (13, 11, '重庆大学', '硕士', '设计学', '2017-09-01', '2020-06-30', 0, '研究方向：用户体验设计。参与多个用户体验研究项目，在人机交互和用户研究方面有深入学习。', 3.80, 4, 35, '0', NULL, NULL, '2017-09-01 00:00:00', NULL, '2020-06-30 00:00:00');
+INSERT INTO `des_education` VALUES (14, 11, '西南大学', '学士', '工业设计', '2013-09-01', '2017-06-30', 0, '主修课程：产品设计、人机工程学、设计心理学、计算机辅助设计等。', 3.60, 10, 95, '0', NULL, NULL, '2013-09-01 00:00:00', NULL, '2017-06-30 00:00:00');
+INSERT INTO `des_education` VALUES (15, 12, '天津美术学院', '学士', '数字媒体艺术', '2014-09-01', '2018-06-30', 0, '主修课程：动画制作、影视后期、数字媒体技术、视觉特效等。毕业作品获得学院优秀作品奖。', 3.70, 6, 70, '0', NULL, NULL, '2014-09-01 00:00:00', NULL, '2018-06-30 00:00:00');
+INSERT INTO `des_education` VALUES (16, 13, '厦门大学', '学士', '数字媒体艺术', '2016-09-01', '2020-06-30', 0, '主修课程：UI设计、交互设计、数字媒体技术、视觉设计等。在校期间参与多个设计项目。', 3.60, 8, 75, '0', NULL, NULL, '2016-09-01 00:00:00', NULL, '2020-06-30 00:00:00');
+INSERT INTO `des_education` VALUES (17, 14, '青岛大学', '学士', '视觉传达设计', '2014-09-01', '2018-06-30', 0, '主修课程：品牌设计、广告设计、包装设计、企业形象设计等。在校期间多次参与设计竞赛并获奖。', 3.80, 4, 60, '0', NULL, NULL, '2014-09-01 00:00:00', NULL, '2018-06-30 00:00:00');
+INSERT INTO `des_education` VALUES (18, 15, '大连工业大学', '学士', '动画设计', '2015-09-01', '2019-06-30', 0, '主修课程：三维动画、角色设计、场景设计、动画导演等。毕业作品《未来世界》获得学院优秀毕业作品奖。', 3.70, 5, 65, '0', NULL, NULL, '2015-09-01 00:00:00', NULL, '2019-06-30 00:00:00');
+INSERT INTO `des_education` VALUES (19, 16, '江南大学', '学士', '工业设计', '2017-09-01', '2021-06-30', 0, '主修课程：产品设计、人机工程学、设计心理学、计算机辅助设计等。毕业设计获得优秀毕业设计奖。', 3.50, 12, 85, '0', NULL, NULL, '2017-09-01 00:00:00', NULL, '2021-06-30 00:00:00');
+INSERT INTO `des_education` VALUES (20, 17, '福建师范大学', '学士', '数字媒体艺术', '2016-09-01', '2020-06-30', 0, '主修课程：交互设计、用户体验设计、界面设计、数字媒体技术等。在校期间参与多个设计项目。', 3.60, 9, 70, '0', NULL, NULL, '2016-09-01 00:00:00', NULL, '2020-06-30 00:00:00');
+INSERT INTO `des_education` VALUES (21, 18, '山东艺术学院', '学士', '视觉传达设计', '2015-09-01', '2019-06-30', 0, '主修课程：平面设计、品牌设计、包装设计、广告设计等。在校期间多次获得设计奖学金。', 3.80, 3, 55, '0', NULL, NULL, '2015-09-01 00:00:00', NULL, '2019-06-30 00:00:00');
+INSERT INTO `des_education` VALUES (22, 19, '郑州轻工业大学', '学士', '动画设计', '2016-09-01', '2020-06-30', 0, '主修课程：插画技法、角色设计、场景设计、概念设计等。在校期间为多家出版社创作插画作品。', 3.70, 6, 60, '0', NULL, NULL, '2016-09-01 00:00:00', NULL, '2020-06-30 00:00:00');
+INSERT INTO `des_education` VALUES (23, 20, '湖南师范大学', '学士', '平面设计', '2016-09-01', '2020-06-30', 0, '主修课程：平面设计、排版设计、印刷工艺、数字媒体设计等。毕业设计获得优秀毕业设计奖。', 3.60, 8, 75, '0', NULL, NULL, '2016-09-01 00:00:00', NULL, '2020-06-30 00:00:00');
 
 -- ----------------------------
 -- Table structure for des_enterprise
@@ -688,8 +732,8 @@ CREATE TABLE `des_school`  (
   `phone` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '联系电话',
   `email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '联系邮箱',
   `website` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '院校网站',
-  `school_type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '院校类型',
-  `level` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '院校等级',
+  `school_type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '院校类型：COMPREHENSIVE/ART/ENGINEERING/NORMAL/FINANCE',
+  `level` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '办学层次：UNDERGRADUATE/GRADUATE/VOCATIONAL',
   `logo` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '院校LOGO',
   `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '0' COMMENT '状态（0正常 1停用）',
   `create_dept` bigint NULL DEFAULT NULL COMMENT '创建部门',
@@ -697,19 +741,539 @@ CREATE TABLE `des_school`  (
   `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
   `update_by` bigint NULL DEFAULT NULL COMMENT '更新者',
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
+  `province` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '省份',
+  `city` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '城市',
+  `location` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '区域位置',
+  `ranking` int NULL DEFAULT NULL COMMENT '院校排名',
+  `total_students` int NULL DEFAULT 0 COMMENT '学生总数',
+  `total_teachers` int NULL DEFAULT 0 COMMENT '教师总数',
+  `faculty_count` int NULL DEFAULT 0 COMMENT '院系数量',
+  `major_count` int NULL DEFAULT 0 COMMENT '专业数量',
+  `is_key` tinyint(1) NULL DEFAULT 0 COMMENT '是否重点院校',
+  `is_985` tinyint(1) NULL DEFAULT 0 COMMENT '是否985院校',
+  `is_211` tinyint(1) NULL DEFAULT 0 COMMENT '是否211院校',
+  `is_double_first` tinyint(1) NULL DEFAULT 0 COMMENT '是否双一流院校',
   PRIMARY KEY (`school_id`) USING BTREE,
-  INDEX `idx_user_id`(`user_id` ASC) USING BTREE
+  INDEX `idx_user_id`(`user_id` ASC) USING BTREE,
+  INDEX `idx_des_school_province_city`(`province` ASC, `city` ASC) USING BTREE,
+  INDEX `idx_des_school_type_level`(`school_type` ASC, `level` ASC) USING BTREE,
+  INDEX `idx_des_school_ranking`(`ranking` ASC) USING BTREE,
+  INDEX `idx_des_school_flags`(`is_key` ASC, `is_985` ASC, `is_211` ASC, `is_double_first` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1933345376878845954 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '院校信息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of des_school
 -- ----------------------------
-INSERT INTO `des_school` VALUES (1, NULL, '清华大学美术学院', '中国著名的艺术设计院校', '北京市海淀区清华园1号', '010-62785001', 'info@tsinghua.edu.cn', 'https://www.ad.tsinghua.edu.cn', '公立', '985', NULL, '0', NULL, NULL, '2025-06-10 16:23:31', NULL, NULL);
-INSERT INTO `des_school` VALUES (2, NULL, '中央美术学院', '中国历史最悠久的美术院校', '北京市朝阳区花家地南街8号', '010-64771056', 'info@cafa.edu.cn', 'https://www.cafa.edu.cn', '公立', '211', NULL, '0', NULL, NULL, '2025-06-10 16:23:31', NULL, NULL);
-INSERT INTO `des_school` VALUES (3, NULL, '广州美术学院', '华南地区重要的美术院校', '广州市海珠区昌岗东路257号', '020-84017740', 'info@gzarts.edu.cn', 'https://www.gzarts.edu.cn', '公立', '普通本科', NULL, '0', NULL, NULL, '2025-06-10 16:23:31', NULL, NULL);
-INSERT INTO `des_school` VALUES (1933075905270292482, 1933072715447574530, '北京设计学院', '专业的设计教育机构', '北京市海淀区', NULL, NULL, NULL, 'UNIVERSITY', '本科', NULL, '0', 103, 1933072715447574530, '2025-06-12 16:16:25', 1933072715447574530, '2025-06-12 16:16:25');
-INSERT INTO `des_school` VALUES (1933093400651780098, 1933082743395094530, '北京设计学院', '专业的设计教育机构', '北京市海淀区', NULL, NULL, NULL, 'UNIVERSITY', '本科', NULL, '0', 103, 1933082743395094530, '2025-06-12 17:25:57', 1933082743395094530, '2025-06-12 17:25:57');
-INSERT INTO `des_school` VALUES (1933345376878845953, 1, '北京设计学院', '专业的设计教育机构', '北京市海淀区', NULL, NULL, NULL, 'UNIVERSITY', '本科', NULL, '0', 103, 1, '2025-06-13 10:07:12', 1, '2025-06-13 10:07:12');
+INSERT INTO `des_school` VALUES (1, NULL, '清华大学', '清华大学美术学院设计系成立于1984年，是中国最早开设设计专业的院系之一。', '北京市海淀区清华园1号', '010-62782051', 'info@tsinghua.edu.cn', 'https://www.tsinghua.edu.cn', 'COMPREHENSIVE', 'UNDERGRADUATE', NULL, '0', NULL, NULL, '2025-06-10 16:23:31', NULL, '2025-06-28 15:46:54', '北京市', '海淀区', '北京市海淀区', 1, 48000, 3485, 15, 82, 1, 1, 1, 1);
+INSERT INTO `des_school` VALUES (2, NULL, '中央美术学院', '中央美术学院是中华人民共和国教育部直属的唯一一所高等美术学校。', '北京市朝阳区花家地南街8号', '010-64771056', 'info@cafa.edu.cn', 'https://www.cafa.edu.cn', 'ART', 'UNDERGRADUATE', NULL, '0', NULL, NULL, '2025-06-10 16:23:31', NULL, '2025-06-28 15:46:54', '北京市', '朝阳区', '北京市朝阳区', 15, 5000, 485, 8, 16, 1, 0, 1, 1);
+INSERT INTO `des_school` VALUES (3, NULL, '同济大学', '同济大学设计创意学院是国内最具影响力的设计学院之一。', '浙江省杭州市西湖区转塘街道象山352号', '0571-87164630', 'info@caa.edu.cn', 'https://www.caa.edu.cn', 'ART', 'UNDERGRADUATE', NULL, '0', NULL, NULL, '2025-06-10 16:23:31', NULL, '2025-06-28 15:46:54', '浙江省', '杭州市', '浙江省杭州市', 12, 8500, 625, 15, 28, 1, 0, 1, 1);
+INSERT INTO `des_school` VALUES (4, NULL, '中国美术学院', '中国美术学院是中国第一所综合性的国立高等艺术学府。', '上海市杨浦区四平路1239号', '021-65982200', 'info@tongji.edu.cn', 'https://www.tongji.edu.cn', 'COMPREHENSIVE', 'UNDERGRADUATE', '', '0', NULL, 1, '2025-06-28 14:54:27', 1, '2025-06-28 15:46:54', '上海市', '杨浦区', '上海市杨浦区', 8, 52000, 2814, 29, 96, 1, 1, 1, 1);
+INSERT INTO `des_school` VALUES (5, NULL, '广州美术学院', '广州美术学院是华南地区唯一一所高等美术学府。', '广东省广州市海珠区昌岗东路257号', '020-84017740', 'info@gzarts.edu.cn', 'https://www.gzarts.edu.cn', 'ART', 'UNDERGRADUATE', '', '0', NULL, 1, '2025-06-28 14:54:27', 1, '2025-06-28 15:46:54', '广东省', '广州市', '广东省广州市', 22, 8000, 700, 12, 25, 1, 0, 0, 0);
+INSERT INTO `des_school` VALUES (6, NULL, '江南大学', '江南大学设计学院是国内工业设计教育的重要基地。', '江苏省无锡市蠡湖大道1800号', '0510-85197011', 'info@jiangnan.edu.cn', 'https://www.jiangnan.edu.cn', 'COMPREHENSIVE', 'UNDERGRADUATE', '', '0', NULL, 1, '2025-06-28 14:54:27', 1, '2025-06-28 15:46:54', '江苏省', '无锡市', '江苏省无锡市', 28, 20000, 1564, 18, 55, 1, 0, 1, 1);
+INSERT INTO `des_school` VALUES (7, NULL, '北京理工大学', '北京理工大学设计与艺术学院致力于培养具有创新精神的设计人才。', '湖南省长沙市岳麓区麓山南路2号', '0731-88822523', 'info@hnu.edu.cn', 'https://www.hnu.edu.cn', 'COMPREHENSIVE', 'UNDERGRADUATE', '', '0', NULL, 1, '2025-06-28 14:54:27', 1, '2025-06-28 15:46:54', '湖南省', '长沙市', '湖南省长沙市', 35, 36000, 2100, 25, 75, 1, 1, 1, 1);
+INSERT INTO `des_school` VALUES (8, NULL, '湖南大学', '湖南大学设计艺术学院是国内最早设立工业设计专业的院校之一。', '北京市海淀区中关村南大街5号', '010-68912114', 'info@bit.edu.cn', 'https://www.bit.edu.cn', 'ENGINEERING', 'UNDERGRADUATE', '', '0', NULL, 1, '2025-06-28 14:54:27', 1, '2025-06-28 15:46:54', '北京市', '海淀区', '北京市海淀区', 18, 32000, 2850, 20, 68, 1, 1, 1, 1);
+
+-- ----------------------------
+-- Table structure for des_school_achievement_stats
+-- ----------------------------
+DROP TABLE IF EXISTS `des_school_achievement_stats`;
+CREATE TABLE `des_school_achievement_stats`  (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `school_id` bigint NOT NULL COMMENT '院校ID',
+  `international_awards` int NULL DEFAULT 0 COMMENT '国际奖项数量',
+  `national_awards` int NULL DEFAULT 0 COMMENT '国家级奖项数量',
+  `provincial_awards` int NULL DEFAULT 0 COMMENT '省级奖项数量',
+  `patents` int NULL DEFAULT 0 COMMENT '专利数量',
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '成果描述',
+  `create_by` bigint NULL DEFAULT NULL,
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_by` bigint NULL DEFAULT NULL,
+  `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `school_id`(`school_id` ASC) USING BTREE,
+  CONSTRAINT `des_school_achievement_stats_ibfk_1` FOREIGN KEY (`school_id`) REFERENCES `des_school` (`school_id`) ON DELETE CASCADE ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 17 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '院校学生成果统计表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of des_school_achievement_stats
+-- ----------------------------
+INSERT INTO `des_school_achievement_stats` VALUES (9, 1, 126, 287, 453, 192, '清华大学设计系学生在国内外各类设计竞赛中表现突出，近五年来获得红点设计奖、IF设计奖、IDEA设计奖等国际知名设计奖项126项，国家级学科竞赛奖项287项。学生作品多次入选国内外重要设计展览，部分优秀设计成果已实现产业化转化。', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_achievement_stats` VALUES (10, 2, 89, 195, 328, 67, '中央美术学院设计学院学生在国际艺术与设计竞赛中屡获殊荣，作品在威尼斯双年展、卡塞尔文献展等重要展览中展出。学生在传统工艺复兴、当代艺术创作等领域表现优异，多项作品被国内外重要美术馆收藏。', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_achievement_stats` VALUES (11, 3, 98, 234, 387, 156, '同济大学设计创意学院学生在国际设计竞赛中成绩斐然，特别在可持续设计、城市创新、交通工具设计等领域获得广泛认可。学生作品在米兰设计周、荷兰设计周等国际设计展上频频亮相，体现了学院的国际化教学水平。', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_achievement_stats` VALUES (12, 4, 76, 168, 295, 45, '中国美术学院设计艺术学院学生传承学院深厚的艺术传统，在传统工艺创新、当代艺术表达等方面独树一帜。学生作品在国际陶艺双年展、亚洲纤维艺术展等专业展览中获得重要奖项，展现了东方美学的当代价值。', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_achievement_stats` VALUES (13, 5, 52, 145, 267, 38, '广州美术学院设计学院学生立足粤港澳大湾区，在商业设计、数字创意等领域表现出色。学生作品在亚洲数字艺术大奖、粤港澳设计展等区域性竞赛中获得优异成绩，体现了岭南文化的创新活力。', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_achievement_stats` VALUES (14, 6, 134, 298, 421, 203, '江南大学设计学院学生在工业设计和用户体验设计领域表现卓越，连续多年在国际顶级设计竞赛中获奖。学生作品在红点设计奖、IF设计奖等国际竞赛中屡获殊荣，多项设计成果实现产业化应用，体现了设计的实用价值。', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_achievement_stats` VALUES (15, 7, 67, 156, 234, 187, '北京理工大学设计与艺术学院学生凭借强大的技术背景，在高科技设计领域独占鳌头。学生作品在国际工业设计竞赛、科技创新大赛中频获大奖，特别在航空航天设计、军工产品设计等专业领域具有显著优势。', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_achievement_stats` VALUES (16, 8, 78, 189, 312, 142, '湖南大学设计艺术学院学生在汽车设计和工业设计领域成绩突出，作品在国际汽车设计竞赛中多次获奖。学生设计作品体现了深厚的工程底蕴和创新思维，多项成果与知名汽车企业建立合作，实现了学术与产业的良性互动。', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+
+-- ----------------------------
+-- Table structure for des_school_award_work
+-- ----------------------------
+DROP TABLE IF EXISTS `des_school_award_work`;
+CREATE TABLE `des_school_award_work`  (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `school_id` bigint NOT NULL COMMENT '院校ID',
+  `title` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '作品标题',
+  `award` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '奖项名称',
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '作品描述',
+  `create_by` bigint NULL DEFAULT NULL,
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_by` bigint NULL DEFAULT NULL,
+  `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_award_work_school`(`school_id` ASC) USING BTREE,
+  CONSTRAINT `des_school_award_work_ibfk_1` FOREIGN KEY (`school_id`) REFERENCES `des_school` (`school_id`) ON DELETE CASCADE ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 31 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '院校获奖作品表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of des_school_award_work
+-- ----------------------------
+INSERT INTO `des_school_award_work` VALUES (1, 1, '智慧城市数据可视化系统', '国际信息设计协会金奖', '为智慧城市建设设计的大数据可视化系统，通过创新的界面设计提升了城市管理效率', NULL, '2025-06-28 14:54:57', NULL, '2025-06-28 14:54:57');
+INSERT INTO `des_school_award_work` VALUES (2, 1, '传统文化数字化展示平台', '中国设计红星奖', '运用现代数字技术展示传统文化，实现了古典与现代的完美融合', NULL, '2025-06-28 14:54:57', NULL, '2025-06-28 14:54:57');
+INSERT INTO `des_school_award_work` VALUES (3, 1, '可持续发展主题海报设计', '德国红点设计大奖', '以环保为主题的系列海报设计，传达了可持续发展的重要理念', NULL, '2025-06-28 14:54:57', NULL, '2025-06-28 14:54:57');
+INSERT INTO `des_school_award_work` VALUES (4, 2, '新时代主题油画创作', '全国美展金奖', '反映新时代社会变迁的大型油画作品，具有强烈的时代特色和艺术感染力', NULL, '2025-06-28 14:54:57', NULL, '2025-06-28 14:54:57');
+INSERT INTO `des_school_award_work` VALUES (5, 2, '传统工艺现代转化设计', '中国工艺美术大奖', '将传统手工艺与现代设计理念结合，创造出具有当代价值的工艺品', NULL, '2025-06-28 14:54:57', NULL, '2025-06-28 14:54:57');
+INSERT INTO `des_school_award_work` VALUES (6, 2, '公共艺术装置作品', '国际公共艺术大赛银奖', '为城市公共空间设计的大型艺术装置，提升了城市文化品位', NULL, '2025-06-28 14:54:57', NULL, '2025-06-28 14:54:57');
+INSERT INTO `des_school_award_work` VALUES (7, 1, '「循迹」智能导盲系统', '2024 红点设计奖 · 最佳设计奖', '基于计算机视觉和触觉反馈的创新型导盲设备，为视障人士提供更安全、便捷的出行体验。', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_award_work` VALUES (8, 1, '「量子」交互界面设计', '2023 IF设计奖 · 交互设计金奖', '面向量子计算时代的用户界面设计，通过创新的视觉语言让复杂的量子概念变得易懂。', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_award_work` VALUES (9, 1, '「智链」区块链可视化系统', '2023 IDEA设计奖 · 银奖', '将抽象的区块链技术通过直观的视觉化设计呈现，帮助用户理解去中心化金融概念。', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_award_work` VALUES (10, 2, '「古韵新声」传统文化复兴计划', '2024 威尼斯双年展 · 金狮奖', '通过当代艺术手法重新诠释中国传统文化符号，在国际舞台展现东方美学的时代价值。', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_award_work` VALUES (11, 2, '「山水间」数字影像装置', '2023 卡塞尔文献展 · 特别提名奖', '融合传统山水画与新媒体技术，创造出诗意而富有哲思的沉浸式艺术体验。', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_award_work` VALUES (12, 2, '「器韵」陶瓷艺术系列', '2023 国际陶艺双年展 · 金奖', '在传统陶瓷工艺基础上融入当代设计理念，展现中华文化的深厚底蕴和时代活力。', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_award_work` VALUES (13, 3, '「未来出行」可持续交通系统', '2024 米兰设计周 · 最佳概念奖', '整合城市规划、交通工具和服务设计的综合性可持续出行解决方案。', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_award_work` VALUES (14, 3, '「绿洲」城市更新设计', '2023 威尼斯建筑双年展 · 金狮奖', '通过生态设计理念改造城市废弃空间，为都市居民创造绿色宜居的生活环境。', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_award_work` VALUES (15, 3, '「智慧城市」服务设计平台', '2023 红点设计奖 · 概念设计奖', '运用服务设计思维构建智慧城市生态系统，提升城市管理效率和居民生活质量。', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_award_work` VALUES (16, 4, '「丝路印象」纤维艺术作品', '2024 国际纤维艺术三年展 · 大奖', '以丝绸之路为主题的大型纤维装置，展现东西方文化交流的历史脉络和当代意义。', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_award_work` VALUES (17, 4, '「水墨新境」数字绘画系统', '2023 亚洲数字艺术奖 · 创新奖', '将传统水墨画技法与数字技术结合，为水墨艺术的传承与发展开辟新的可能性。', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_award_work` VALUES (18, 4, '「匠心」传统工艺复兴项目', '2023 联合国教科文组织 · 文化遗产保护奖', '通过设计介入保护和传承濒危传统工艺，让古老技艺在当代社会焕发新的生命力。', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_award_work` VALUES (19, 5, '「粤韵」岭南文化品牌设计', '2024 亚洲品牌设计奖 · 金奖', '提取岭南文化精髓，为粤港澳大湾区文化产业打造具有地域特色的品牌形象。', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_award_work` VALUES (20, 5, '「次元世界」游戏美术设计', '2023 独立游戏节 · 最佳视觉奖', '融合中华传统文化元素与现代数字艺术，创造出独具特色的游戏视觉体验。', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_award_work` VALUES (21, 5, '「潮玩宇宙」文创产品系列', '2023 中国文创产品大赛 · 金奖', '将传统广府文化与潮流文化相结合，设计出深受年轻人喜爱的文创产品。', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_award_work` VALUES (22, 6, '「智慧家庭」物联网产品系统', '2024 红点设计奖 · 产品设计奖', '基于用户需求洞察设计的智能家居生态系统，提供无缝连接的智慧生活体验。', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_award_work` VALUES (23, 6, '「适老化」无障碍设计解决方案', '2023 IF设计奖 · 社会影响力奖', '关注老龄化社会需求，通过人性化设计提升老年人的生活品质和社会参与度。', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_award_work` VALUES (24, 6, '「绿色制造」可持续产品设计', '2023 IDEA设计奖 · 环境责任奖', '贯彻循环经济理念的产品设计，在全生命周期中最大化减少环境影响。', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_award_work` VALUES (25, 7, '「天眼」卫星导航系统界面', '2024 国际工业设计大赛 · 特等奖', '为北斗卫星导航系统设计的专业级用户界面，提升了系统的操作效率和用户体验。', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_award_work` VALUES (26, 7, '「战鹰」无人机操控系统', '2023 军用装备设计竞赛 · 金奖', '集成先进人机工程学理念的无人机操控界面，显著提升了操作精度和安全性。', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_award_work` VALUES (27, 7, '「精工」精密仪器设计', '2023 中国工业设计奖 · 金奖', '运用先进制造工艺设计的高精度测量仪器，在航空航天领域实现重要应用。', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_award_work` VALUES (28, 8, '「风驰」电动汽车造型设计', '2024 国际汽车设计大赛 · 最佳造型奖', '融合空气动力学与美学的电动汽车外观设计，体现了新能源时代的设计理念。', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_award_work` VALUES (29, 8, '「湘韵」文化创意产品', '2023 中华传统文化设计大赛 · 金奖', '提取湖湘文化元素设计的文创产品系列，传承和弘扬了深厚的地域文化。', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_award_work` VALUES (30, 8, '「重器」工程机械设计', '2023 全国机械设计大赛 · 一等奖', '结合人机工程学和工业美学的工程机械设计，提升了操作体验和工作效率。', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+
+-- ----------------------------
+-- Table structure for des_school_card_stats
+-- ----------------------------
+DROP TABLE IF EXISTS `des_school_card_stats`;
+CREATE TABLE `des_school_card_stats`  (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `school_id` bigint NOT NULL COMMENT '院校ID',
+  `employment_rates` json NULL COMMENT '就业率数组',
+  `faculty_strengths` json NULL COMMENT '师资力量评分数组',
+  `student_scores` json NULL COMMENT '学生评分数组',
+  `advantage_programs` json NULL COMMENT '优势专业按院校类型分类',
+  `create_by` bigint NULL DEFAULT NULL,
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_by` bigint NULL DEFAULT NULL,
+  `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `school_id`(`school_id` ASC) USING BTREE,
+  CONSTRAINT `des_school_card_stats_ibfk_1` FOREIGN KEY (`school_id`) REFERENCES `des_school` (`school_id`) ON DELETE CASCADE ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '院校卡片统计数据表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of des_school_card_stats
+-- ----------------------------
+INSERT INTO `des_school_card_stats` VALUES (3, 1, '[\"96.8%\"]', '[\"5.0\"]', '[\"4.9\"]', '{\"COMPREHENSIVE\": [\"信息艺术设计\", \"智能产品设计\", \"交互设计\"]}', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_card_stats` VALUES (4, 2, '[\"97.2%\"]', '[\"4.9\"]', '[\"4.8\"]', '{\"COMPREHENSIVE\": [\"工业设计\", \"用户体验设计\", \"智能产品设计\"]}', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 16:26:58');
+INSERT INTO `des_school_card_stats` VALUES (5, 3, '[\"95.7%\"]', '[\"4.8\"]', '[\"4.7\"]', '{\"COMPREHENSIVE\": [\"汽车设计\", \"可持续设计\", \"城市设计\"]}', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_card_stats` VALUES (6, 4, '[\"92.1%\"]', '[\"4.8\"]', '[\"4.7\"]', '{\"ART\": [\"陶瓷艺术\", \"纤维艺术\", \"文化创意设计\"]}', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_card_stats` VALUES (7, 5, '[\"93.8%\"]', '[\"4.6\"]', '[\"4.5\"]', '{\"ART\": [\"游戏美术设计\", \"岭南文化设计\", \"商业设计\"]}', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_card_stats` VALUES (8, 6, '[\"97.2%\"]', '[\"4.9\"]', '[\"4.8\"]', '{\"COMPREHENSIVE\": [\"工业设计\", \"用户体验设计\", \"智能产品设计\"]}', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_card_stats` VALUES (9, 7, '[\"96.5%\"]', '[\"4.7\"]', '[\"4.6\"]', '{\"ENGINEERING\": [\"军工设计\", \"精密仪器设计\", \"AI设计\"]}', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_card_stats` VALUES (10, 8, '[\"95.1%\"]', '[\"4.7\"]', '[\"4.6\"]', '{\"COMPREHENSIVE\": [\"汽车造型设计\", \"工程机械设计\", \"文化设计\"]}', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+
+-- ----------------------------
+-- Table structure for des_school_chart_data
+-- ----------------------------
+DROP TABLE IF EXISTS `des_school_chart_data`;
+CREATE TABLE `des_school_chart_data`  (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `school_id` bigint NOT NULL COMMENT '院校ID',
+  `industry_data` json NULL COMMENT '行业分布数据',
+  `salary_data` json NULL COMMENT '薪资分布数据',
+  `salary_labels` json NULL COMMENT '薪资区间标签',
+  `create_by` bigint NULL DEFAULT NULL,
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_by` bigint NULL DEFAULT NULL,
+  `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `school_id`(`school_id` ASC) USING BTREE,
+  CONSTRAINT `des_school_chart_data_ibfk_1` FOREIGN KEY (`school_id`) REFERENCES `des_school` (`school_id`) ON DELETE CASCADE ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '院校就业图表数据表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of des_school_chart_data
+-- ----------------------------
+INSERT INTO `des_school_chart_data` VALUES (3, 1, '[{\"name\": \"互联网科技\", \"value\": 45}, {\"name\": \"设计咨询\", \"value\": 18}, {\"name\": \"高校研究\", \"value\": 15}, {\"name\": \"国际企业\", \"value\": 12}, {\"name\": \"其他行业\", \"value\": 10}]', '[2, 8, 15, 35, 25, 15]', '[\"8K-\", \"8-12K\", \"12-15K\", \"15-20K\", \"20-25K\", \"25K+\"]', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_chart_data` VALUES (4, 2, '[{\"name\": \"文化艺术\", \"value\": 35}, {\"name\": \"广告传媒\", \"value\": 25}, {\"name\": \"教育培训\", \"value\": 20}, {\"name\": \"互联网科技\", \"value\": 12}, {\"name\": \"其他行业\", \"value\": 8}]', '[8, 18, 30, 25, 15, 4]', '[\"8K-\", \"8-12K\", \"12-15K\", \"15-20K\", \"20-25K\", \"25K+\"]', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_chart_data` VALUES (5, 3, '[{\"name\": \"汽车设计\", \"value\": 30}, {\"name\": \"建筑设计\", \"value\": 25}, {\"name\": \"互联网科技\", \"value\": 20}, {\"name\": \"设计咨询\", \"value\": 15}, {\"name\": \"其他行业\", \"value\": 10}]', '[3, 10, 20, 35, 22, 10]', '[\"8K-\", \"8-12K\", \"12-15K\", \"15-20K\", \"20-25K\", \"25K+\"]', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_chart_data` VALUES (6, 4, '[{\"name\": \"文化创意\", \"value\": 40}, {\"name\": \"传统工艺\", \"value\": 22}, {\"name\": \"教育培训\", \"value\": 18}, {\"name\": \"互联网科技\", \"value\": 12}, {\"name\": \"其他行业\", \"value\": 8}]', '[12, 22, 28, 22, 12, 4]', '[\"8K-\", \"8-12K\", \"12-15K\", \"15-20K\", \"20-25K\", \"25K+\"]', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_chart_data` VALUES (7, 5, '[{\"name\": \"游戏动漫\", \"value\": 32}, {\"name\": \"商业设计\", \"value\": 28}, {\"name\": \"互联网科技\", \"value\": 20}, {\"name\": \"广告传媒\", \"value\": 12}, {\"name\": \"其他行业\", \"value\": 8}]', '[6, 15, 28, 30, 18, 3]', '[\"8K-\", \"8-12K\", \"12-15K\", \"15-20K\", \"20-25K\", \"25K+\"]', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_chart_data` VALUES (8, 6, '[{\"name\": \"制造业设计\", \"value\": 38}, {\"name\": \"互联网科技\", \"value\": 25}, {\"name\": \"消费电子\", \"value\": 18}, {\"name\": \"设计咨询\", \"value\": 12}, {\"name\": \"其他行业\", \"value\": 7}]', '[4, 12, 25, 32, 20, 7]', '[\"8K-\", \"8-12K\", \"12-15K\", \"15-20K\", \"20-25K\", \"25K+\"]', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_chart_data` VALUES (9, 7, '[{\"name\": \"科技制造\", \"value\": 35}, {\"name\": \"国防科技\", \"value\": 25}, {\"name\": \"互联网科技\", \"value\": 20}, {\"name\": \"精密仪器\", \"value\": 12}, {\"name\": \"其他行业\", \"value\": 8}]', '[2, 6, 18, 30, 28, 16]', '[\"8K-\", \"8-12K\", \"12-15K\", \"15-20K\", \"20-25K\", \"25K+\"]', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_chart_data` VALUES (10, 8, '[{\"name\": \"汽车制造\", \"value\": 40}, {\"name\": \"工程机械\", \"value\": 22}, {\"name\": \"互联网科技\", \"value\": 18}, {\"name\": \"设计咨询\", \"value\": 12}, {\"name\": \"其他行业\", \"value\": 8}]', '[5, 14, 26, 30, 20, 5]', '[\"8K-\", \"8-12K\", \"12-15K\", \"15-20K\", \"20-25K\", \"25K+\"]', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+
+-- ----------------------------
+-- Table structure for des_school_course_group
+-- ----------------------------
+DROP TABLE IF EXISTS `des_school_course_group`;
+CREATE TABLE `des_school_course_group`  (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `school_id` bigint NOT NULL COMMENT '院校ID',
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '课程组名称',
+  `courses` json NULL COMMENT '课程列表',
+  `create_by` bigint NULL DEFAULT NULL,
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_by` bigint NULL DEFAULT NULL,
+  `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_course_group_school`(`school_id` ASC) USING BTREE,
+  CONSTRAINT `des_school_course_group_ibfk_1` FOREIGN KEY (`school_id`) REFERENCES `des_school` (`school_id`) ON DELETE CASCADE ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 41 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '院校课程体系表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of des_school_course_group
+-- ----------------------------
+INSERT INTO `des_school_course_group` VALUES (1, 1, '基础理论课程', '[\"设计史论\", \"艺术概论\", \"美学原理\", \"设计心理学\"]', NULL, '2025-06-28 14:54:27', NULL, '2025-06-28 14:54:27');
+INSERT INTO `des_school_course_group` VALUES (2, 1, '专业核心课程', '[\"设计方法学\", \"创意思维训练\", \"设计表现技法\", \"数字媒体技术\"]', NULL, '2025-06-28 14:54:27', NULL, '2025-06-28 14:54:27');
+INSERT INTO `des_school_course_group` VALUES (3, 1, '实践应用课程', '[\"项目实战\", \"企业合作项目\", \"毕业设计\", \"创新创业实践\"]', NULL, '2025-06-28 14:54:27', NULL, '2025-06-28 14:54:27');
+INSERT INTO `des_school_course_group` VALUES (4, 1, '前沿拓展课程', '[\"人工智能设计\", \"可持续设计\", \"跨文化设计\", \"设计管理\"]', NULL, '2025-06-28 14:54:27', NULL, '2025-06-28 14:54:27');
+INSERT INTO `des_school_course_group` VALUES (5, 2, '造型基础课程', '[\"素描基础\", \"色彩基础\", \"速写技法\", \"构图原理\"]', NULL, '2025-06-28 14:54:57', NULL, '2025-06-28 14:54:57');
+INSERT INTO `des_school_course_group` VALUES (6, 2, '专业技能课程', '[\"油画技法\", \"版画制作\", \"雕塑实践\", \"装置创作\"]', NULL, '2025-06-28 14:54:57', NULL, '2025-06-28 14:54:57');
+INSERT INTO `des_school_course_group` VALUES (7, 2, '理论研究课程', '[\"美术史\", \"艺术理论\", \"美学概论\", \"批评写作\"]', NULL, '2025-06-28 14:54:57', NULL, '2025-06-28 14:54:57');
+INSERT INTO `des_school_course_group` VALUES (8, 2, '创作实践课程', '[\"主题创作\", \"展览策划\", \"艺术市场\", \"职业规划\"]', NULL, '2025-06-28 14:54:57', NULL, '2025-06-28 14:54:57');
+INSERT INTO `des_school_course_group` VALUES (9, 1, '基础理论', '[\"设计史论\", \"设计美学\", \"人机工程学\", \"设计心理学\"]', NULL, '2025-06-28 14:55:16', NULL, '2025-06-28 14:55:16');
+INSERT INTO `des_school_course_group` VALUES (10, 1, '专业核心', '[\"信息设计基础\", \"交互设计方法\", \"视觉传达设计\", \"产品系统设计\"]', NULL, '2025-06-28 14:55:16', NULL, '2025-06-28 14:55:16');
+INSERT INTO `des_school_course_group` VALUES (11, 1, '技术应用', '[\"数字媒体技术\", \"人工智能应用\", \"虚拟现实技术\", \"数据可视化\"]', NULL, '2025-06-28 14:55:16', NULL, '2025-06-28 14:55:16');
+INSERT INTO `des_school_course_group` VALUES (12, 1, '实践项目', '[\"企业合作项目\", \"创新创业实践\", \"国际交流项目\", \"毕业设计\"]', NULL, '2025-06-28 14:55:16', NULL, '2025-06-28 14:55:16');
+INSERT INTO `des_school_course_group` VALUES (13, 2, '基础理论', '[\"中外美术史\", \"设计史\", \"美学原理\", \"艺术概论\"]', NULL, '2025-06-28 14:55:16', NULL, '2025-06-28 14:55:16');
+INSERT INTO `des_school_course_group` VALUES (14, 2, '专业核心', '[\"视觉传达设计\", \"数字媒体艺术\", \"产品设计\", \"服装设计\"]', NULL, '2025-06-28 14:55:16', NULL, '2025-06-28 14:55:16');
+INSERT INTO `des_school_course_group` VALUES (15, 2, '传统技艺', '[\"书法篆刻\", \"传统工艺\", \"民族艺术\", \"文物保护\"]', NULL, '2025-06-28 14:55:16', NULL, '2025-06-28 14:55:16');
+INSERT INTO `des_school_course_group` VALUES (16, 2, '创作实践', '[\"个人创作\", \"主题创作\", \"社会实践\", \"毕业创作\"]', NULL, '2025-06-28 14:55:16', NULL, '2025-06-28 14:55:16');
+INSERT INTO `des_school_course_group` VALUES (17, 3, '基础理论', '[\"岭南文化史\", \"设计史论\", \"色彩学\", \"构成学\"]', NULL, '2025-06-28 14:55:16', NULL, '2025-06-28 14:55:16');
+INSERT INTO `des_school_course_group` VALUES (18, 3, '专业核心', '[\"视觉传达设计\", \"产品设计\", \"环境设计\", \"数字媒体艺术\"]', NULL, '2025-06-28 14:55:16', NULL, '2025-06-28 14:55:16');
+INSERT INTO `des_school_course_group` VALUES (19, 3, '地域特色', '[\"岭南建筑\", \"粤绣工艺\", \"陶瓷艺术\", \"民间美术\"]', NULL, '2025-06-28 14:55:16', NULL, '2025-06-28 14:55:16');
+INSERT INTO `des_school_course_group` VALUES (20, 3, '产业实践', '[\"企业实习\", \"创意产业实践\", \"文创产品开发\", \"毕业设计\"]', NULL, '2025-06-28 14:55:16', NULL, '2025-06-28 14:55:16');
+INSERT INTO `des_school_course_group` VALUES (21, 4, '基础理论', '[\"设计史论\", \"工程基础\", \"建筑学基础\", \"可持续发展理论\"]', NULL, '2025-06-28 14:55:16', NULL, '2025-06-28 14:55:16');
+INSERT INTO `des_school_course_group` VALUES (22, 4, '专业核心', '[\"工业设计\", \"环境设计\", \"数字媒体艺术\", \"动画设计\"]', NULL, '2025-06-28 14:55:16', NULL, '2025-06-28 14:55:16');
+INSERT INTO `des_school_course_group` VALUES (23, 4, '技术融合', '[\"工程技术\", \"建筑技术\", \"信息技术\", \"新材料技术\"]', NULL, '2025-06-28 14:55:16', NULL, '2025-06-28 14:55:16');
+INSERT INTO `des_school_course_group` VALUES (24, 4, '创新实践', '[\"设计创新项目\", \"跨学科合作\", \"国际工作坊\", \"毕业设计\"]', NULL, '2025-06-28 14:55:16', NULL, '2025-06-28 14:55:16');
+INSERT INTO `des_school_course_group` VALUES (25, 5, '基础理论', '[\"中国美术史\", \"西方美术史\", \"美学哲学\", \"艺术理论\"]', NULL, '2025-06-28 14:55:16', NULL, '2025-06-28 14:55:16');
+INSERT INTO `des_school_course_group` VALUES (26, 5, '专业核心', '[\"视觉传达设计\", \"陶瓷艺术\", \"纤维艺术\", \"综合艺术\"]', NULL, '2025-06-28 14:55:16', NULL, '2025-06-28 14:55:16');
+INSERT INTO `des_school_course_group` VALUES (27, 5, '传统工艺', '[\"传统陶艺\", \"丝绸工艺\", \"金属工艺\", \"漆器工艺\"]', NULL, '2025-06-28 14:55:16', NULL, '2025-06-28 14:55:16');
+INSERT INTO `des_school_course_group` VALUES (28, 5, '当代实践', '[\"当代艺术实践\", \"实验艺术\", \"公共艺术\", \"毕业创作\"]', NULL, '2025-06-28 14:55:16', NULL, '2025-06-28 14:55:16');
+INSERT INTO `des_school_course_group` VALUES (29, 6, '基础理论', '[\"设计学概论\", \"工业设计史\", \"人机工程学\", \"设计管理\"]', NULL, '2025-06-28 14:55:16', NULL, '2025-06-28 14:55:16');
+INSERT INTO `des_school_course_group` VALUES (30, 6, '专业核心', '[\"工业设计\", \"视觉传达设计\", \"环境设计\", \"数字媒体艺术\"]', NULL, '2025-06-28 14:55:16', NULL, '2025-06-28 14:55:16');
+INSERT INTO `des_school_course_group` VALUES (31, 6, '技术应用', '[\"产品开发技术\", \"制造工艺\", \"材料工艺\", \"数字化技术\"]', NULL, '2025-06-28 14:55:16', NULL, '2025-06-28 14:55:16');
+INSERT INTO `des_school_course_group` VALUES (32, 6, '产业实践', '[\"企业实习\", \"产品开发项目\", \"设计竞赛\", \"毕业设计\"]', NULL, '2025-06-28 14:55:16', NULL, '2025-06-28 14:55:16');
+INSERT INTO `des_school_course_group` VALUES (33, 7, '基础理论', '[\"设计学基础\", \"工程基础\", \"军工设计史\", \"技术美学\"]', NULL, '2025-06-28 14:55:16', NULL, '2025-06-28 14:55:16');
+INSERT INTO `des_school_course_group` VALUES (34, 7, '专业核心', '[\"工业设计\", \"视觉传达设计\", \"环境设计\", \"数字媒体艺术\"]', NULL, '2025-06-28 14:55:16', NULL, '2025-06-28 14:55:16');
+INSERT INTO `des_school_course_group` VALUES (35, 7, '技术前沿', '[\"智能制造\", \"航空航天技术\", \"机器人技术\", \"人工智能\"]', NULL, '2025-06-28 14:55:16', NULL, '2025-06-28 14:55:16');
+INSERT INTO `des_school_course_group` VALUES (36, 7, '军工特色', '[\"军工产品设计\", \"国防科技应用\", \"特种环境设计\", \"毕业设计\"]', NULL, '2025-06-28 14:55:16', NULL, '2025-06-28 14:55:16');
+INSERT INTO `des_school_course_group` VALUES (37, 8, '基础理论', '[\"设计史论\", \"工业设计基础\", \"湖湘文化\", \"设计方法学\"]', NULL, '2025-06-28 14:55:16', NULL, '2025-06-28 14:55:16');
+INSERT INTO `des_school_course_group` VALUES (38, 8, '专业核心', '[\"工业设计\", \"视觉传达设计\", \"环境设计\", \"数字媒体艺术\"]', NULL, '2025-06-28 14:55:16', NULL, '2025-06-28 14:55:16');
+INSERT INTO `des_school_course_group` VALUES (39, 8, '技术应用', '[\"汽车设计技术\", \"智能制造\", \"新材料应用\", \"数字化设计\"]', NULL, '2025-06-28 14:55:16', NULL, '2025-06-28 14:55:16');
+INSERT INTO `des_school_course_group` VALUES (40, 8, '地域实践', '[\"湖湘文化实践\", \"乡村振兴设计\", \"生态设计实践\", \"毕业设计\"]', NULL, '2025-06-28 14:55:16', NULL, '2025-06-28 14:55:16');
+
+-- ----------------------------
+-- Table structure for des_school_employer
+-- ----------------------------
+DROP TABLE IF EXISTS `des_school_employer`;
+CREATE TABLE `des_school_employer`  (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `school_id` bigint NOT NULL COMMENT '院校ID',
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '雇主名称',
+  `industry` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '行业类型',
+  `create_by` bigint NULL DEFAULT NULL,
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_by` bigint NULL DEFAULT NULL,
+  `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_employer_school`(`school_id` ASC) USING BTREE,
+  CONSTRAINT `des_school_employer_ibfk_1` FOREIGN KEY (`school_id`) REFERENCES `des_school` (`school_id`) ON DELETE CASCADE ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 65 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '院校代表性雇主表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of des_school_employer
+-- ----------------------------
+INSERT INTO `des_school_employer` VALUES (1, 1, '腾讯', '互联网科技', NULL, '2025-06-28 14:54:57', NULL, '2025-06-28 14:54:57');
+INSERT INTO `des_school_employer` VALUES (2, 1, '阿里巴巴', '电子商务', NULL, '2025-06-28 14:54:57', NULL, '2025-06-28 14:54:57');
+INSERT INTO `des_school_employer` VALUES (3, 1, '华为', '通信技术', NULL, '2025-06-28 14:54:57', NULL, '2025-06-28 14:54:57');
+INSERT INTO `des_school_employer` VALUES (4, 1, '字节跳动', '互联网科技', NULL, '2025-06-28 14:54:57', NULL, '2025-06-28 14:54:57');
+INSERT INTO `des_school_employer` VALUES (5, 1, '小米', '智能硬件', NULL, '2025-06-28 14:54:57', NULL, '2025-06-28 14:54:57');
+INSERT INTO `des_school_employer` VALUES (6, 1, '百度', '人工智能', NULL, '2025-06-28 14:54:57', NULL, '2025-06-28 14:54:57');
+INSERT INTO `des_school_employer` VALUES (7, 1, '蔚来汽车', '新能源汽车', NULL, '2025-06-28 14:54:57', NULL, '2025-06-28 14:54:57');
+INSERT INTO `des_school_employer` VALUES (8, 1, '故宫博物院', '文化创意', NULL, '2025-06-28 14:54:57', NULL, '2025-06-28 14:54:57');
+INSERT INTO `des_school_employer` VALUES (9, 2, '中央电视台', '传媒', NULL, '2025-06-28 14:54:57', NULL, '2025-06-28 14:54:57');
+INSERT INTO `des_school_employer` VALUES (10, 2, '人民美术出版社', '出版', NULL, '2025-06-28 14:54:57', NULL, '2025-06-28 14:54:57');
+INSERT INTO `des_school_employer` VALUES (11, 2, '中国美术馆', '文化艺术', NULL, '2025-06-28 14:54:57', NULL, '2025-06-28 14:54:57');
+INSERT INTO `des_school_employer` VALUES (12, 2, '798艺术区', '艺术园区', NULL, '2025-06-28 14:54:57', NULL, '2025-06-28 14:54:57');
+INSERT INTO `des_school_employer` VALUES (13, 2, '奥美广告', '广告营销', NULL, '2025-06-28 14:54:57', NULL, '2025-06-28 14:54:57');
+INSERT INTO `des_school_employer` VALUES (14, 2, '东方卫视', '传媒', NULL, '2025-06-28 14:54:57', NULL, '2025-06-28 14:54:57');
+INSERT INTO `des_school_employer` VALUES (15, 2, '新华社', '新闻媒体', NULL, '2025-06-28 14:54:57', NULL, '2025-06-28 14:54:57');
+INSERT INTO `des_school_employer` VALUES (16, 2, '国家大剧院', '文化艺术', NULL, '2025-06-28 14:54:57', NULL, '2025-06-28 14:54:57');
+INSERT INTO `des_school_employer` VALUES (17, 3, '奔驰设计', '汽车设计', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (18, 3, '宝马集团', '汽车设计', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (19, 3, 'IDEO', '设计咨询', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (20, 3, '腾讯', '互联网科技', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (21, 3, '上海建工', '建筑设计', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (22, 3, '华建集团', '建筑设计', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (23, 3, '迪士尼', '娱乐设计', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (24, 3, '上汽集团', '汽车制造', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (25, 4, '浙江博物馆', '文化机构', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (26, 4, '西湖艺术馆', '艺术机构', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (27, 4, '阿里巴巴', '互联网科技', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (28, 4, '网易', '互联网科技', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (29, 4, '朵云轩', '传统工艺', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (30, 4, '景德镇陶瓷', '传统工艺', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (31, 4, '天猫设计', '电商设计', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (32, 4, '今日头条', '新媒体', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (33, 5, '腾讯游戏', '游戏设计', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (34, 5, '网易游戏', '游戏设计', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (35, 5, '奥飞娱乐', '动漫制作', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (36, 5, '美的集团', '家电设计', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (37, 5, '比亚迪', '汽车设计', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (38, 5, '华为', '通信科技', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (39, 5, '字节跳动', '互联网科技', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (40, 5, '正佳集团', '商业设计', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (41, 6, '海尔集团', '家电制造', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (42, 6, '美的集团', '家电制造', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (43, 6, '小米科技', '消费电子', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (44, 6, '华为', '通信科技', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (45, 6, '腾讯', '互联网科技', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (46, 6, '阿里巴巴', '互联网科技', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (47, 6, 'OPPO', '消费电子', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (48, 6, 'vivo', '消费电子', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (49, 7, '中科院', '科研院所', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (50, 7, '航天科技', '航空航天', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (51, 7, '兵器工业', '军工企业', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (52, 7, '华为', '通信科技', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (53, 7, '小米', '消费电子', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (54, 7, '字节跳动', '互联网科技', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (55, 7, '中船重工', '重工制造', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (56, 7, '大疆创新', '无人机', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (57, 8, '上汽集团', '汽车制造', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (58, 8, '一汽集团', '汽车制造', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (59, 8, '广汽集团', '汽车制造', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (60, 8, '比亚迪', '新能源汽车', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (61, 8, '三一重工', '工程机械', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (62, 8, '中联重科', '工程机械', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (63, 8, '华为', '通信科技', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_employer` VALUES (64, 8, '腾讯', '互联网科技', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+
+-- ----------------------------
+-- Table structure for des_school_employment_stats
+-- ----------------------------
+DROP TABLE IF EXISTS `des_school_employment_stats`;
+CREATE TABLE `des_school_employment_stats`  (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `school_id` bigint NOT NULL COMMENT '院校ID',
+  `employment_rate` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '就业率',
+  `average_salary` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '平均薪资',
+  `further_study_rate` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '深造率',
+  `overseas_employment_rate` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '海外就业率',
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '就业描述',
+  `create_by` bigint NULL DEFAULT NULL,
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_by` bigint NULL DEFAULT NULL,
+  `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `school_id`(`school_id` ASC) USING BTREE,
+  CONSTRAINT `des_school_employment_stats_ibfk_1` FOREIGN KEY (`school_id`) REFERENCES `des_school` (`school_id`) ON DELETE CASCADE ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 25 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '院校就业统计表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of des_school_employment_stats
+-- ----------------------------
+INSERT INTO `des_school_employment_stats` VALUES (17, 1, '96.8%', '18.5K', '38.2%', '22.1%', '清华大学设计系毕业生就业情况良好，就业率常年保持在95%以上。毕业生主要就业方向包括互联网科技公司、设计咨询公司、广告传媒机构、高校及研究机构等。近年来，随着设计与科技的深度融合，越来越多的毕业生选择在科技企业从事用户体验设计、交互设计等工作，也有部分学生选择自主创业。', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_employment_stats` VALUES (18, 2, '94.3%', '16.8K', '42.6%', '28.7%', '中央美术学院设计学院毕业生在艺术与设计领域享有极高声誉，就业前景广阔。主要就业去向包括美术馆、画廊、文化创意机构、影视制作公司、出版社等。许多毕业生选择继续深造或海外留学，也有不少成为独立艺术家或设计师，在国内外艺术市场具有重要影响力。', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_employment_stats` VALUES (19, 3, '95.7%', '17.2K', '35.4%', '19.8%', '同济大学设计创意学院毕业生凭借扎实的工程背景和创新设计能力，在就业市场上具有独特优势。主要就业领域包括汽车设计、建筑设计、城市规划、工业设计等。许多毕业生进入世界500强企业担任设计职务，也有部分选择在设计咨询公司或自主创业。', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_employment_stats` VALUES (20, 4, '92.1%', '15.6K', '45.3%', '31.2%', '中国美术学院设计艺术学院毕业生在传统工艺与当代设计结合方面具有独特优势。主要就业方向包括文化创意产业、工艺美术企业、设计工作室、教育机构等。学院注重培养学生的艺术修养和文化内涵，许多毕业生成为具有影响力的艺术家和设计师。', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_employment_stats` VALUES (21, 5, '93.8%', '14.9K', '28.7%', '15.4%', '广州美术学院设计学院毕业生立足粤港澳大湾区，在文化创意产业和商业设计领域具有显著优势。主要就业方向包括游戏公司、动漫制作、广告设计、包装设计、电商平台等。许多毕业生选择在深圳、广州等一线城市发展，也有部分进入港澳地区工作。', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_employment_stats` VALUES (22, 6, '97.2%', '16.3K', '31.8%', '17.6%', '江南大学设计学院毕业生在工业设计和用户体验设计领域具有显著优势，就业率连续多年保持在95%以上。主要就业方向包括制造业企业、互联网公司、设计咨询机构等。许多毕业生进入华为、小米、海尔等知名企业担任设计师职务，薪资水平在同类院校中处于领先地位。', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_employment_stats` VALUES (23, 7, '96.5%', '17.8K', '33.7%', '16.9%', '北京理工大学设计与艺术学院毕业生凭借强大的工程技术背景，在高科技设计领域具有独特竞争力。主要就业方向包括航空航天企业、军工集团、科技公司、精密仪器制造等。许多毕业生进入中科院、航天科技、兵器工业等国家重点单位，在国防科技设计领域发挥重要作用。', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_employment_stats` VALUES (24, 8, '95.1%', '16.7K', '29.3%', '14.2%', '湖南大学设计艺术学院毕业生在汽车设计和工业设计领域享有盛誉，就业前景良好。主要就业方向包括汽车制造企业、工程机械公司、家电制造、设计咨询等。许多毕业生进入上汽、一汽、广汽、三一重工等知名企业，在汽车造型设计和工业产品设计方面具有重要影响力。', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+
+-- ----------------------------
+-- Table structure for des_school_faculty_stats
+-- ----------------------------
+DROP TABLE IF EXISTS `des_school_faculty_stats`;
+CREATE TABLE `des_school_faculty_stats`  (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `school_id` bigint NOT NULL COMMENT '院校ID',
+  `total_faculty` int NULL DEFAULT 0 COMMENT '师资总数',
+  `professors` int NULL DEFAULT 0 COMMENT '教授人数',
+  `doctor_degree` int NULL DEFAULT 0 COMMENT '博士学位人数',
+  `overseas_background` int NULL DEFAULT 0 COMMENT '海外背景人数',
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '师资描述',
+  `create_by` bigint NULL DEFAULT NULL,
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_by` bigint NULL DEFAULT NULL,
+  `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `school_id`(`school_id` ASC) USING BTREE,
+  CONSTRAINT `des_school_faculty_stats_ibfk_1` FOREIGN KEY (`school_id`) REFERENCES `des_school` (`school_id`) ON DELETE CASCADE ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 25 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '院校师资统计表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of des_school_faculty_stats
+-- ----------------------------
+INSERT INTO `des_school_faculty_stats` VALUES (17, 1, 68, 42, 53, 35, '清华大学美术学院设计系拥有一支高水平的师资队伍，包括长江学者特聘教授2名，国家杰出青年基金获得者3名，国家级教学名师2名。教师团队中有多位在国际设计领域具有重要影响力的专家学者，以及来自行业一线的兼职教师。学院注重教师的国际交流与合作，定期邀请国际知名设计师和学者来校讲学。', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_faculty_stats` VALUES (18, 2, 95, 58, 67, 42, '中央美术学院设计学院汇聚了国内外顶尖的艺术与设计人才，拥有中国美术家协会理事12名，国际平面设计联盟(AGI)会员3名。师资队伍中既有在传统艺术领域造诣深厚的艺术大师，也有活跃在当代设计前沿的青年学者。学院与世界各大美术学院建立了广泛的交流合作关系。', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_faculty_stats` VALUES (19, 3, 75, 48, 61, 38, '同济大学设计创意学院师资力量雄厚，拥有国家级教学团队1个，教育部新世纪优秀人才4名。学院注重产学研结合，多位教师担任国际知名企业设计顾问。师资队伍具有深厚的工程背景和国际视野，在可持续设计、智慧城市设计等领域具有重要影响力。', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_faculty_stats` VALUES (20, 4, 120, 72, 89, 51, '中国美术学院设计艺术学院拥有深厚的学术传统和卓越的师资力量，包括国务院学科评议组成员、全国艺术专业学位研究生教育指导委员会委员等学术带头人。学院师资在传统工艺传承与当代艺术创新方面具有独特优势，多位教师作品被国内外重要美术馆收藏。', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_faculty_stats` VALUES (21, 5, 85, 51, 64, 35, '广州美术学院设计学院立足岭南文化，面向粤港澳大湾区，拥有一支具有地域特色和国际视野的师资队伍。学院与港澳台地区以及海外设计院校建立了密切的合作关系，多位教师具有海外留学或工作背景，在文化创意产业和商业设计领域具有丰富经验。', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_faculty_stats` VALUES (22, 6, 92, 56, 71, 48, '江南大学设计学院师资力量雄厚，拥有国家级教学名师1名，教育部新世纪优秀人才5名，江苏省教学名师3名。学院在工业设计领域具有深厚积淀，师资队伍实践经验丰富，与众多知名企业建立了长期合作关系，在用户体验设计和智能产品设计方面处于国内领先地位。', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_faculty_stats` VALUES (23, 7, 78, 45, 58, 32, '北京理工大学设计与艺术学院依托学校强大的工程技术背景，形成了独特的\"技术+艺术\"师资特色。学院拥有国防科技创新团队1个，多位教师具有军工企业工作背景。师资队伍在智能装备设计、航空航天设计等高科技领域具有显著优势。', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_faculty_stats` VALUES (24, 8, 88, 52, 66, 36, '湖南大学设计艺术学院历史悠久，师资力量深厚，拥有国家级教学团队1个，湖南省芙蓉学者特聘教授2名。学院在汽车造型设计和工业设计领域具有传统优势，与国内外汽车企业建立了广泛合作，师资队伍实践经验丰富，在设计教育和产业应用方面成果显著。', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+
+-- ----------------------------
+-- Table structure for des_school_major_category
+-- ----------------------------
+DROP TABLE IF EXISTS `des_school_major_category`;
+CREATE TABLE `des_school_major_category`  (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `school_id` bigint NOT NULL COMMENT '院校ID',
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '专业名称',
+  `icon` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '图标',
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '专业描述',
+  `skills` json NULL COMMENT '技能列表',
+  `create_by` bigint NULL DEFAULT NULL,
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_by` bigint NULL DEFAULT NULL,
+  `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_major_category_school`(`school_id` ASC) USING BTREE,
+  CONSTRAINT `des_school_major_category_ibfk_1` FOREIGN KEY (`school_id`) REFERENCES `des_school` (`school_id`) ON DELETE CASCADE ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 77 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '院校专业分类表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of des_school_major_category
+-- ----------------------------
+INSERT INTO `des_school_major_category` VALUES (45, 1, '信息艺术设计', 'ri-computer-line', '结合清华理工科优势，培养具备信息可视化、人机交互等前沿设计能力的复合型人才。', '[\"信息可视化\", \"交互设计\", \"数据艺术\", \"智能界面设计\"]', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_major_category` VALUES (46, 1, '视觉传达设计', 'ri-palette-line', '传承清华美院深厚底蕴，培养具备国际视野和创新思维的视觉传达设计人才。', '[\"品牌战略设计\", \"文化创意设计\", \"出版物设计\", \"导视系统设计\"]', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_major_category` VALUES (47, 1, '产品设计', 'ri-lightbulb-line', '依托清华工科背景，注重设计与工程的深度融合，培养具备创新思维的产品设计师。', '[\"智能产品设计\", \"交通工具设计\", \"可持续设计\", \"设计研究\"]', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_major_category` VALUES (48, 1, '环境设计', 'ri-building-line', '结合建筑学科优势，培养具备空间设计和环境营造能力的高端设计人才。', '[\"展示空间设计\", \"公共艺术\", \"景观规划\", \"智慧空间设计\"]', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_major_category` VALUES (49, 2, '视觉传达设计', 'ri-palette-line', '立足传统文化，面向当代设计，培养具有深厚艺术底蕴和国际视野的设计师。', '[\"文字设计\", \"海报设计\", \"书籍装帧\", \"文化传播设计\"]', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_major_category` VALUES (50, 2, '数字媒体艺术', 'ri-computer-line', '探索艺术与科技融合，培养具备新媒体创作能力的当代艺术家和设计师。', '[\"新媒体艺术\", \"数字影像\", \"虚拟现实艺术\", \"交互装置\"]', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_major_category` VALUES (51, 2, '产品设计', 'ri-lightbulb-line', '注重设计的文化内涵和艺术表达，培养具有人文关怀的产品设计师。', '[\"生活方式设计\", \"文创产品设计\", \"家居用品设计\", \"艺术衍生品设计\"]', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_major_category` VALUES (52, 2, '服装与服饰设计', 'ri-shirt-line', '传承中华服饰文化，融合国际时尚趋势，培养具有原创能力的服装设计师。', '[\"时装设计\", \"传统服饰研究\", \"纺织品设计\", \"时尚插画\"]', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_major_category` VALUES (53, 3, '工业设计', 'ri-tools-line', '依托同济工程优势，培养具备系统思维和创新能力的工业设计师。', '[\"交通工具设计\", \"智能制造设计\", \"服务设计\", \"可持续设计\"]', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_major_category` VALUES (54, 3, '环境设计', 'ri-building-line', '结合建筑学科背景，培养具备空间设计和城市规划视野的环境设计师。', '[\"城市家具设计\", \"景观建筑\", \"展览空间设计\", \"历史建筑改造\"]', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_major_category` VALUES (55, 3, '数字媒体艺术', 'ri-computer-line', '融合技术与艺术，培养能够运用前沿技术进行创意表达的数字艺术家。', '[\"计算机图形学\", \"增强现实\", \"人工智能艺术\", \"数字建造\"]', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_major_category` VALUES (56, 3, '动画设计', 'ri-film-line', '培养具备动画创作和数字影像制作能力的专业人才。', '[\"角色动画\", \"建筑动画\", \"科学可视化\", \"影视后期\"]', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_major_category` VALUES (57, 4, '视觉传达设计', 'ri-palette-line', '传承国美深厚学术传统，培养具有东方美学素养和国际视野的视觉设计师。', '[\"传统图形设计\", \"当代海报设计\", \"书法与字体\", \"文化品牌设计\"]', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_major_category` VALUES (58, 4, '陶瓷艺术设计', 'ri-goblet-line', '发扬中国陶瓷艺术传统，培养具备现代设计理念的陶瓷艺术家。', '[\"传统陶艺\", \"现代陶瓷设计\", \"釉料研究\", \"陶瓷产品设计\"]', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_major_category` VALUES (59, 4, '纤维艺术', 'ri-thread-line', '探索纤维材料的艺术表达，培养具备创新精神的纤维艺术家。', '[\"编织艺术\", \"纤维装置\", \"服装艺术\", \"材料创新\"]', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_major_category` VALUES (60, 4, '综合艺术', 'ri-artboard-line', '跨媒介艺术实践，培养具备多元化表达能力的当代艺术家。', '[\"装置艺术\", \"行为艺术\", \"影像艺术\", \"公共艺术\"]', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_major_category` VALUES (61, 5, '视觉传达设计', 'ri-palette-line', '融合岭南文化特色，面向粤港澳大湾区，培养具有区域文化特色的设计师。', '[\"岭南文化设计\", \"粤港澳文创\", \"商业设计\", \"包装设计\"]', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_major_category` VALUES (62, 5, '产品设计', 'ri-lightbulb-line', '立足制造业发达的珠三角地区，培养具备产业化思维的产品设计师。', '[\"家电产品设计\", \"消费电子设计\", \"玩具设计\", \"文创产品\"]', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_major_category` VALUES (63, 5, '环境设计', 'ri-building-line', '结合岭南建筑文化和现代城市发展需求，培养环境设计专业人才。', '[\"岭南园林设计\", \"商业空间设计\", \"旅游景观设计\", \"文化空间设计\"]', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_major_category` VALUES (64, 5, '数字媒体艺术', 'ri-computer-line', '面向数字创意产业，培养具备新媒体创作能力的数字艺术人才。', '[\"游戏美术设计\", \"动漫设计\", \"短视频创作\", \"VR/AR艺术\"]', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_major_category` VALUES (65, 6, '工业设计', 'ri-tools-line', '国内工业设计领域领军专业，培养具备系统设计思维的工业设计师。', '[\"产品系统设计\", \"用户研究\", \"设计策略\", \"智能产品设计\"]', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_major_category` VALUES (66, 6, '视觉传达设计', 'ri-palette-line', '注重设计的功能性和商业价值，培养市场导向的视觉设计师。', '[\"品牌形象设计\", \"包装设计\", \"网页设计\", \"移动界面设计\"]', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_major_category` VALUES (67, 6, '环境设计', 'ri-building-line', '强调设计的人文关怀和生态理念，培养可持续发展的环境设计师。', '[\"可持续设计\", \"无障碍设计\", \"老龄化设计\", \"绿色建筑设计\"]', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_major_category` VALUES (68, 6, '服装与服饰设计', 'ri-shirt-line', '结合纺织工程优势，培养具备技术背景的服装设计师。', '[\"功能性服装\", \"智能纺织品\", \"时尚设计\", \"纺织品图案设计\"]', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_major_category` VALUES (69, 7, '工业设计', 'ri-tools-line', '依托理工科优势，培养具备工程技术背景的工业设计师。', '[\"机械产品设计\", \"军工产品设计\", \"精密仪器设计\", \"智能装备设计\"]', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_major_category` VALUES (70, 7, '数字媒体技术', 'ri-computer-line', '结合计算机科学与艺术设计，培养技术与艺术兼备的复合型人才。', '[\"计算机图形学\", \"虚拟现实技术\", \"人工智能应用\", \"数字娱乐技术\"]', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_major_category` VALUES (71, 7, '传播设计', 'ri-broadcast-line', '面向信息时代传播需求，培养具备新媒体素养的传播设计师。', '[\"信息设计\", \"数据可视化\", \"交互媒体设计\", \"科技传播设计\"]', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_major_category` VALUES (72, 7, '文化遗产保护', 'ri-ancient-pavilion-line', '运用现代技术手段保护和传承文化遗产，培养文化科技融合人才。', '[\"数字文保\", \"虚拟博物馆\", \"文物数字化\", \"文化传播技术\"]', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_major_category` VALUES (73, 8, '工业设计', 'ri-tools-line', '历史悠久的工业设计专业，培养具备深厚理论基础和实践能力的设计师。', '[\"汽车造型设计\", \"机械产品设计\", \"智能硬件设计\", \"设计管理\"]', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_major_category` VALUES (74, 8, '视觉传达设计', 'ri-palette-line', '融合湖湘文化特色，培养具有地域特色和时代精神的视觉设计师。', '[\"湖湘文化设计\", \"品牌设计\", \"数字媒体设计\", \"文创产品设计\"]', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_major_category` VALUES (75, 8, '建筑学', 'ri-building-2-line', '依托建筑学科优势，培养具备空间设计能力的建筑师。', '[\"建筑设计\", \"城市设计\", \"历史建筑保护\", \"绿色建筑\"]', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+INSERT INTO `des_school_major_category` VALUES (76, 8, '环境艺术设计', 'ri-plant-line', '结合环境工程背景，培养生态环境与艺术设计兼备的专业人才。', '[\"景观设计\", \"环境雕塑\", \"生态修复设计\", \"园林艺术\"]', NULL, '2025-06-28 15:46:54', NULL, '2025-06-28 15:46:54');
+
+-- ----------------------------
+-- Table structure for des_school_teacher
+-- ----------------------------
+DROP TABLE IF EXISTS `des_school_teacher`;
+CREATE TABLE `des_school_teacher`  (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `school_id` bigint NOT NULL COMMENT '院校ID',
+  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '教师姓名',
+  `title` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '职称',
+  `expertise` json NULL COMMENT '专业领域',
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '教师描述',
+  `create_by` bigint NULL DEFAULT NULL,
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_by` bigint NULL DEFAULT NULL,
+  `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_teacher_school`(`school_id` ASC) USING BTREE,
+  CONSTRAINT `des_school_teacher_ibfk_1` FOREIGN KEY (`school_id`) REFERENCES `des_school` (`school_id`) ON DELETE CASCADE ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 28 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '院校代表性教师表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of des_school_teacher
+-- ----------------------------
+INSERT INTO `des_school_teacher` VALUES (1, 1, '王铁军', '教授、博士生导师', '[\"信息设计\", \"交互设计\"]', '清华大学美术学院信息艺术设计系主任，在信息可视化设计领域具有重要影响', NULL, '2025-06-28 14:54:27', NULL, '2025-06-28 14:54:27');
+INSERT INTO `des_school_teacher` VALUES (2, 1, '李薇', '教授', '[\"视觉传达\", \"品牌设计\"]', '知名视觉传达设计专家，多项作品获国际设计大奖', NULL, '2025-06-28 14:54:27', NULL, '2025-06-28 14:54:27');
+INSERT INTO `des_school_teacher` VALUES (3, 1, '张明', '副教授', '[\"工业设计\", \"可持续设计\"]', '专注于可持续设计研究，主持多项国家级科研项目', NULL, '2025-06-28 14:54:27', NULL, '2025-06-28 14:54:27');
+INSERT INTO `des_school_teacher` VALUES (4, 1, '李德华', '教授、博士生导师', '[\"信息设计\", \"交互设计\", \"用户体验\"]', '国际知名信息设计专家，主导多个重要的信息可视化项目。', NULL, '2025-06-28 14:58:42', NULL, '2025-06-28 14:58:42');
+INSERT INTO `des_school_teacher` VALUES (5, 1, '王美玲', '副教授、硕士生导师', '[\"视觉传达\", \"品牌设计\", \"文化创意\"]', '在品牌设计和文化创意领域有深入研究，作品多次获得国际奖项。', NULL, '2025-06-28 14:58:42', NULL, '2025-06-28 14:58:42');
+INSERT INTO `des_school_teacher` VALUES (6, 1, '张建国', '教授、博士生导师', '[\"产品设计\", \"可持续设计\", \"设计创新\"]', '可持续设计理念倡导者，在绿色设计领域具有重要影响力。', NULL, '2025-06-28 14:58:42', NULL, '2025-06-28 14:58:42');
+INSERT INTO `des_school_teacher` VALUES (7, 2, '陈雅琳', '教授、博士生导师', '[\"视觉传达\", \"传统文化\", \"当代艺术\"]', '著名视觉艺术家，在传统文化与当代设计结合方面有突出贡献。', NULL, '2025-06-28 14:58:42', NULL, '2025-06-28 14:58:42');
+INSERT INTO `des_school_teacher` VALUES (8, 2, '刘志强', '副教授、硕士生导师', '[\"数字媒体\", \"新媒体艺术\", \"交互装置\"]', '新媒体艺术领域的先锋人物，作品在国内外多次展出。', NULL, '2025-06-28 14:58:42', NULL, '2025-06-28 14:58:42');
+INSERT INTO `des_school_teacher` VALUES (9, 2, '马丽华', '教授、博士生导师', '[\"服装设计\", \"纺织艺术\", \"时尚理论\"]', '国际知名服装设计师，在时尚教育领域具有重要地位。', NULL, '2025-06-28 14:58:42', NULL, '2025-06-28 14:58:42');
+INSERT INTO `des_school_teacher` VALUES (10, 3, '黄志明', '教授、博士生导师', '[\"岭南文化\", \"文创设计\", \"区域品牌\"]', '岭南文化研究专家，致力于地域文化的现代化表达。', NULL, '2025-06-28 14:58:42', NULL, '2025-06-28 14:58:42');
+INSERT INTO `des_school_teacher` VALUES (11, 3, '林秀珍', '副教授、硕士生导师', '[\"产品设计\", \"玩具设计\", \"儿童用品\"]', '在儿童产品设计领域有深入研究，设计作品深受市场认可。', NULL, '2025-06-28 14:58:42', NULL, '2025-06-28 14:58:42');
+INSERT INTO `des_school_teacher` VALUES (12, 3, '周建军', '教授、博士生导师', '[\"数字媒体\", \"游戏设计\", \"动漫产业\"]', '数字创意产业专家，在游戏和动漫设计教育方面贡献突出。', NULL, '2025-06-28 14:58:42', NULL, '2025-06-28 14:58:42');
+INSERT INTO `des_school_teacher` VALUES (13, 4, '范志华', '教授、博士生导师', '[\"工业设计\", \"交通工具\", \"可持续发展\"]', '国际著名工业设计师，在交通工具设计领域享有盛誉。', NULL, '2025-06-28 14:58:42', NULL, '2025-06-28 14:58:42');
+INSERT INTO `des_school_teacher` VALUES (14, 4, '孙美娟', '副教授、硕士生导师', '[\"环境设计\", \"城市规划\", \"景观建筑\"]', '在城市环境设计和景观规划方面有丰富经验。', NULL, '2025-06-28 14:58:42', NULL, '2025-06-28 14:58:42');
+INSERT INTO `des_school_teacher` VALUES (15, 4, '吴建国', '教授、博士生导师', '[\"数字建造\", \"参数化设计\", \"智能制造\"]', '数字化设计领域的领军人物，推动设计与技术的深度融合。', NULL, '2025-06-28 14:58:42', NULL, '2025-06-28 14:58:42');
+INSERT INTO `des_school_teacher` VALUES (16, 5, '徐志明', '教授、博士生导师', '[\"传统工艺\", \"陶瓷艺术\", \"文化传承\"]', '国家级非物质文化遗产传承人，在传统工艺保护和发展方面贡献卓越。', NULL, '2025-06-28 14:58:42', NULL, '2025-06-28 14:58:42');
+INSERT INTO `des_school_teacher` VALUES (17, 5, '赵雅丽', '副教授、硕士生导师', '[\"纤维艺术\", \"材料创新\", \"当代艺术\"]', '当代纤维艺术家，在材料创新和艺术表达方面有独特见解。', NULL, '2025-06-28 14:58:42', NULL, '2025-06-28 14:58:42');
+INSERT INTO `des_school_teacher` VALUES (18, 5, '钱建华', '教授、博士生导师', '[\"综合艺术\", \"公共艺术\", \"跨媒介实践\"]', '著名当代艺术家，在公共艺术和跨媒介创作方面影响深远。', NULL, '2025-06-28 14:58:42', NULL, '2025-06-28 14:58:42');
+INSERT INTO `des_school_teacher` VALUES (19, 6, '何人可', '教授、博士生导师', '[\"工业设计\", \"设计理论\", \"产品创新\"]', '中国工业设计教育的奠基人之一，在设计理论和实践方面贡献巨大。', NULL, '2025-06-28 14:58:42', NULL, '2025-06-28 14:58:42');
+INSERT INTO `des_school_teacher` VALUES (20, 6, '李艳霞', '副教授、硕士生导师', '[\"包装设计\", \"品牌形象\", \"视觉识别\"]', '包装设计专家，在品牌视觉识别系统设计方面经验丰富。', NULL, '2025-06-28 14:58:42', NULL, '2025-06-28 14:58:42');
+INSERT INTO `des_school_teacher` VALUES (21, 6, '辛向阳', '教授、博士生导师', '[\"交互设计\", \"服务设计\", \"用户体验\"]', '交互设计领域的权威专家，在用户体验设计方面有深入研究。', NULL, '2025-06-28 14:58:42', NULL, '2025-06-28 14:58:42');
+INSERT INTO `des_school_teacher` VALUES (22, 7, '杨建军', '教授、博士生导师', '[\"军工设计\", \"智能装备\", \"国防科技\"]', '军工设计专家，在国防科技产品设计方面有重要贡献。', NULL, '2025-06-28 14:58:42', NULL, '2025-06-28 14:58:42');
+INSERT INTO `des_school_teacher` VALUES (23, 7, '王丽萍', '副教授、硕士生导师', '[\"界面设计\", \"人机交互\", \"信息可视化\"]', '人机交互专家，在军用设备界面设计方面有丰富经验。', NULL, '2025-06-28 14:58:42', NULL, '2025-06-28 14:58:42');
+INSERT INTO `des_school_teacher` VALUES (24, 7, '陈志强', '教授、博士生导师', '[\"机器人设计\", \"人工智能\", \"智能制造\"]', '智能设计领域的领军人物，在机器人和AI应用方面成果显著。', NULL, '2025-06-28 14:58:42', NULL, '2025-06-28 14:58:42');
+INSERT INTO `des_school_teacher` VALUES (25, 8, '何晓佑', '教授、博士生导师', '[\"汽车设计\", \"交通工具\", \"造型设计\"]', '著名汽车设计师，多次参与重要汽车项目的设计工作。', NULL, '2025-06-28 14:58:42', NULL, '2025-06-28 14:58:42');
+INSERT INTO `des_school_teacher` VALUES (26, 8, '唐智慧', '副教授、硕士生导师', '[\"湖湘文化\", \"地域设计\", \"文化传承\"]', '湖湘文化研究专家，在地域文化设计方面有深入探索。', NULL, '2025-06-28 14:58:42', NULL, '2025-06-28 14:58:42');
+INSERT INTO `des_school_teacher` VALUES (27, 8, '贺雪梅', '教授、博士生导师', '[\"生态设计\", \"乡村振兴\", \"可持续发展\"]', '生态设计倡导者，在乡村振兴和可持续发展方面贡献突出。', NULL, '2025-06-28 14:58:42', NULL, '2025-06-28 14:58:42');
+
+-- ----------------------------
+-- Table structure for des_school_trend_data
+-- ----------------------------
+DROP TABLE IF EXISTS `des_school_trend_data`;
+CREATE TABLE `des_school_trend_data`  (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `school_id` bigint NOT NULL COMMENT '院校ID',
+  `years` json NULL COMMENT '年份数组',
+  `international_data` json NULL COMMENT '国际奖项数据',
+  `national_data` json NULL COMMENT '国家级奖项数据',
+  `provincial_data` json NULL COMMENT '省级奖项数据',
+  `create_by` bigint NULL DEFAULT NULL,
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_by` bigint NULL DEFAULT NULL,
+  `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `school_id`(`school_id` ASC) USING BTREE,
+  CONSTRAINT `des_school_trend_data_ibfk_1` FOREIGN KEY (`school_id`) REFERENCES `des_school` (`school_id`) ON DELETE CASCADE ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '院校获奖趋势数据表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of des_school_trend_data
+-- ----------------------------
+INSERT INTO `des_school_trend_data` VALUES (3, 1, '[\"2019\", \"2020\", \"2021\", \"2022\", \"2023\", \"2024\"]', '[18, 22, 26, 28, 25, 27]', '[45, 48, 52, 56, 53, 57]', '[72, 78, 84, 82, 78, 85]', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_trend_data` VALUES (4, 2, '[\"2019\", \"2020\", \"2021\", \"2022\", \"2023\", \"2024\"]', '[12, 15, 18, 20, 17, 19]', '[28, 32, 36, 39, 35, 38]', '[48, 55, 62, 58, 52, 56]', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_trend_data` VALUES (5, 3, '[\"2019\", \"2020\", \"2021\", \"2022\", \"2023\", \"2024\"]', '[14, 17, 21, 24, 22, 24]', '[35, 39, 43, 47, 44, 46]', '[58, 65, 72, 69, 65, 68]', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_trend_data` VALUES (6, 4, '[\"2019\", \"2020\", \"2021\", \"2022\", \"2023\", \"2024\"]', '[10, 13, 16, 18, 15, 17]', '[24, 28, 32, 35, 31, 34]', '[42, 48, 55, 52, 47, 51]', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_trend_data` VALUES (7, 5, '[\"2019\", \"2020\", \"2021\", \"2022\", \"2023\", \"2024\"]', '[8, 11, 14, 16, 13, 15]', '[22, 26, 30, 33, 29, 32]', '[38, 44, 51, 48, 43, 47]', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_trend_data` VALUES (8, 6, '[\"2019\", \"2020\", \"2021\", \"2022\", \"2023\", \"2024\"]', '[20, 24, 28, 31, 28, 30]', '[48, 52, 56, 62, 58, 61]', '[75, 82, 89, 86, 81, 86]', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_trend_data` VALUES (9, 7, '[\"2019\", \"2020\", \"2021\", \"2022\", \"2023\", \"2024\"]', '[11, 14, 17, 19, 16, 18]', '[26, 30, 34, 37, 33, 36]', '[38, 44, 48, 45, 41, 44]', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
+INSERT INTO `des_school_trend_data` VALUES (10, 8, '[\"2019\", \"2020\", \"2021\", \"2022\", \"2023\", \"2024\"]', '[13, 16, 19, 21, 18, 20]', '[28, 32, 36, 39, 35, 38]', '[45, 52, 58, 55, 50, 54]', NULL, '2025-06-30 10:43:08', NULL, '2025-06-30 10:43:08');
 
 -- ----------------------------
 -- Table structure for des_user_binding
@@ -735,16 +1299,32 @@ CREATE TABLE `des_user_binding`  (
 -- ----------------------------
 -- Records of des_user_binding
 -- ----------------------------
-INSERT INTO `des_user_binding` VALUES (1933060633574916097, 1932364765288480770, 'designer', 1933060633507807234, '1', '2025-06-12 15:15:44', '2025-06-12 15:15:44', 103, 1932364765288480770, 1932364765288480770);
-INSERT INTO `des_user_binding` VALUES (1933072972231254018, 1933072715447574530, 'designer', 1933072972164145153, '1', '2025-06-12 16:04:46', '2025-06-12 16:04:46', 103, 1933072715447574530, 1933072715447574530);
 INSERT INTO `des_user_binding` VALUES (1933075789029351426, 1933072715447574530, 'enterprise', 1933075788966436865, '1', '2025-06-12 16:15:58', '2025-06-12 16:15:58', 103, 1933072715447574530, 1933072715447574530);
 INSERT INTO `des_user_binding` VALUES (1933075905337401345, 1933072715447574530, 'school', 1933075905270292482, '1', '2025-06-12 16:16:25', '2025-06-12 16:16:25', 103, 1933072715447574530, 1933072715447574530);
-INSERT INTO `des_user_binding` VALUES (1933082896713682946, 1933082743395094530, 'designer', 1933082896646574081, '1', '2025-06-12 16:44:12', '2025-06-12 17:23:29', 103, 1933082743395094530, 1933082743395094530);
 INSERT INTO `des_user_binding` VALUES (1933092972279123970, 1933082743395094530, 'enterprise', 1933092972216209410, '1', '2025-06-12 17:24:14', '2025-06-12 17:24:14', 103, 1933082743395094530, 1933082743395094530);
 INSERT INTO `des_user_binding` VALUES (1933093400651780099, 1933082743395094530, 'school', 1933093400651780098, '1', '2025-06-12 17:25:57', '2025-06-12 17:25:57', 103, 1933082743395094530, 1933082743395094530);
 INSERT INTO `des_user_binding` VALUES (1933345376941760513, 1, 'school', 1933345376878845953, '1', '2025-06-13 10:07:12', '2025-06-13 10:07:12', 103, 1, 1);
 INSERT INTO `des_user_binding` VALUES (1933345394062909443, 1, 'enterprise', 3, '1', '2025-06-13 10:07:16', '2025-06-13 17:53:30', 103, 1, 1);
-INSERT INTO `des_user_binding` VALUES (1933350394109485058, 1, 'designer', 1933350394109485057, '1', '2025-06-13 10:27:09', '2025-06-13 10:27:09', 103, 1, 1);
+
+-- ----------------------------
+-- Table structure for des_user_favorite
+-- ----------------------------
+DROP TABLE IF EXISTS `des_user_favorite`;
+CREATE TABLE `des_user_favorite`  (
+  `favorite_id` bigint NOT NULL AUTO_INCREMENT COMMENT '收藏ID',
+  `user_id` bigint NOT NULL COMMENT '用户ID',
+  `entity_id` bigint NOT NULL COMMENT '实体ID',
+  `entity_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '实体类型（SCHOOL/DESIGNER/ENTERPRISE/WORK）',
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`favorite_id`) USING BTREE,
+  UNIQUE INDEX `uk_user_entity_favorite`(`user_id` ASC, `entity_id` ASC, `entity_type` ASC) USING BTREE,
+  INDEX `idx_user_id`(`user_id` ASC) USING BTREE,
+  INDEX `idx_entity`(`entity_type` ASC, `entity_id` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户收藏表' ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of des_user_favorite
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for des_work
@@ -774,14 +1354,20 @@ CREATE TABLE `des_work`  (
   INDEX `idx_work_type`(`work_type` ASC) USING BTREE,
   INDEX `idx_is_featured`(`is_featured` ASC) USING BTREE,
   CONSTRAINT `des_work_ibfk_1` FOREIGN KEY (`designer_id`) REFERENCES `des_designer` (`designer_id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '设计师作品表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '设计师作品表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of des_work
 -- ----------------------------
-INSERT INTO `des_work` VALUES (1, 1, '社交媒体应用 UI 设计', '移动应用界面设计', 'image', 'https://via.placeholder.com/400x300?text=Mobile+UI', NULL, NULL, NULL, 0, 0, '1', '0', NULL, NULL, '2025-06-23 16:32:34', NULL, '2025-06-23 16:33:55');
-INSERT INTO `des_work` VALUES (2, 2, '数据分析仪表盘', 'Web 应用界面设计', 'image', 'https://via.placeholder.com/400x300?text=Brand+Design', NULL, NULL, NULL, 0, 0, '1', '0', NULL, NULL, '2025-06-23 16:32:34', NULL, '2025-06-23 16:33:55');
-INSERT INTO `des_work` VALUES (3, 1, '电商应用产品页', '电子商务 UI 设计', 'image', 'https://via.placeholder.com/400x300/ec4899/ffffff?text=E-commerce+UI', 'https://via.placeholder.com/400x300/ec4899/ffffff?text=E-commerce+UI', NULL, '[\"UI设计\", \"电商\", \"产品页面\"]', 0, 0, '1', '0', NULL, NULL, '2023-10-01 00:00:00', NULL, '2025-06-23 16:33:55');
+INSERT INTO `des_work` VALUES (1, 1, '智慧出行APP界面设计', '专为城市通勤者设计的智能出行应用，整合多种交通方式，提供一站式出行解决方案', 'image', 'https://via.placeholder.com/400x300/6366f1/ffffff?text=Smart+Travel+UI', 'https://via.placeholder.com/200x150/6366f1/ffffff?text=Smart+Travel+UI', NULL, '[\"UI设计\", \"移动应用\", \"交通出行\", \"用户体验\"]', 156, 2340, '1', '0', NULL, NULL, '2023-06-01 00:00:00', NULL, '2023-06-01 00:00:00');
+INSERT INTO `des_work` VALUES (2, 1, '数据分析仪表盘重设计', '为企业级数据分析平台设计的新一代仪表盘界面，提升数据可视化效果和用户操作体验', 'image', 'https://via.placeholder.com/400x300/8b5cf6/ffffff?text=Dashboard+UI', NULL, NULL, '[\"Web设计\", \"数据可视化\", \"企业应用\", \"B端产品\"]', 89, 1567, '0', '0', NULL, NULL, '2023-08-01 00:00:00', NULL, '2023-08-01 00:00:00');
+INSERT INTO `des_work` VALUES (3, 1, '电商购物应用UI设计', '现代化的电商购物应用界面设计，注重购物流程优化和视觉体验提升', 'image', 'https://via.placeholder.com/400x300/ec4899/ffffff?text=E-commerce+UI', NULL, NULL, '[\"UI设计\", \"电商\", \"移动应用\", \"购物体验\"]', 203, 3210, '1', '0', NULL, NULL, '2023-10-01 00:00:00', NULL, '2023-10-01 00:00:00');
+INSERT INTO `des_work` VALUES (4, 2, '绿色科技公司品牌设计', '为新能源科技公司设计的完整品牌形象，包括LOGO、VI系统和品牌应用', 'image', 'https://via.placeholder.com/400x300/10b981/ffffff?text=Green+Tech+Brand', NULL, NULL, '[\"品牌设计\", \"LOGO设计\", \"VI系统\", \"绿色科技\"]', 128, 1890, '1', '0', NULL, NULL, '2023-07-15 00:00:00', NULL, '2023-07-15 00:00:00');
+INSERT INTO `des_work` VALUES (5, 2, '咖啡品牌包装设计', '为精品咖啡品牌设计的系列包装，融合现代简约风格与传统咖啡文化', 'image', 'https://via.placeholder.com/400x300/f59e0b/ffffff?text=Coffee+Package', NULL, NULL, '[\"包装设计\", \"品牌设计\", \"咖啡\", \"消费品\"]', 95, 1456, '0', '0', NULL, NULL, '2023-09-20 00:00:00', NULL, '2023-09-20 00:00:00');
+INSERT INTO `des_work` VALUES (6, 3, '科幻角色设计系列', '原创科幻题材角色设计，展现未来世界的多元文化和技术融合', 'image', 'https://via.placeholder.com/400x300/8b5cf6/ffffff?text=Sci-Fi+Characters', NULL, NULL, '[\"角色设计\", \"3D建模\", \"科幻\", \"概念设计\"]', 312, 4567, '1', '0', NULL, NULL, '2023-05-10 00:00:00', NULL, '2023-05-10 00:00:00');
+INSERT INTO `des_work` VALUES (7, 3, '产品宣传动画', '为智能家居产品制作的3D宣传动画，展示产品功能和使用场景', 'video', 'https://via.placeholder.com/400x300/ef4444/ffffff?text=Product+Animation', NULL, NULL, '[\"3D动画\", \"产品展示\", \"智能家居\", \"宣传片\"]', 178, 2890, '0', '0', NULL, NULL, '2023-11-05 00:00:00', NULL, '2023-11-05 00:00:00');
+INSERT INTO `des_work` VALUES (8, 4, '企业管理系统界面设计', '为大型企业设计的管理系统界面，注重信息架构和操作效率', 'image', 'https://via.placeholder.com/400x300/3b82f6/ffffff?text=Enterprise+UI', NULL, NULL, '[\"Web设计\", \"企业应用\", \"B端产品\", \"管理系统\"]', 67, 1234, '0', '0', NULL, NULL, '2023-08-15 00:00:00', NULL, '2023-08-15 00:00:00');
+INSERT INTO `des_work` VALUES (9, 5, '移动端交互原型设计', '为金融应用设计的交互原型，展示完整的用户操作流程', 'image', 'https://via.placeholder.com/400x300/10b981/ffffff?text=Mobile+Prototype', NULL, NULL, '[\"交互设计\", \"原型设计\", \"移动应用\", \"金融产品\"]', 145, 2100, '1', '0', NULL, NULL, '2023-09-10 00:00:00', NULL, '2023-09-10 00:00:00');
 
 -- ----------------------------
 -- Table structure for des_work_experience
@@ -809,13 +1395,19 @@ CREATE TABLE `des_work_experience`  (
   INDEX `idx_start_date`(`start_date` ASC) USING BTREE,
   INDEX `idx_is_current`(`is_current` ASC) USING BTREE,
   CONSTRAINT `fk_work_experience_designer` FOREIGN KEY (`designer_id`) REFERENCES `des_designer` (`designer_id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '设计师工作经历表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '设计师工作经历表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of des_work_experience
 -- ----------------------------
-INSERT INTO `des_work_experience` VALUES (1, 1, '腾讯', '高级 UI/UX 设计师', '2022-03-01', NULL, 1, '负责腾讯社交产品的用户体验设计，主导产品界面改版与优化，建立设计规范与组件库。参与用户研究与需求分析，提出基于数据的设计解决方案。', NULL, NULL, '0', NULL, NULL, '2025-06-23 16:32:34', NULL, '2025-06-23 16:33:55');
-INSERT INTO `des_work_experience` VALUES (2, 1, '字节跳动', 'UI 设计师', '2020-06-01', NULL, 0, '参与短视频应用的界面设计工作，负责功能迭代与视觉优化，协助建立设计规范。与产品和开发团队紧密合作，确保设计方案的顺利实现。', NULL, NULL, '0', NULL, NULL, '2025-06-23 16:32:34', NULL, '2025-06-23 16:33:55');
+INSERT INTO `des_work_experience` VALUES (1, 1, '腾讯科技有限公司', '高级 UI/UX 设计师', '2022-03-01', NULL, 1, '负责腾讯社交产品的用户体验设计，主导产品界面改版与优化，建立设计规范与组件库。参与用户研究与需求分析，提出基于数据的设计解决方案。带领团队完成多个重要项目，包括微信小程序设计规范制定、QQ音乐界面重设计等。', '深圳市南山区', '互联网', '0', NULL, NULL, '2022-03-01 00:00:00', NULL, '2025-06-24 14:46:16');
+INSERT INTO `des_work_experience` VALUES (2, 1, '字节跳动', 'UI 设计师', '2020-06-01', '2022-02-28', 0, '参与短视频应用的界面设计工作，负责功能迭代与视觉优化，协助建立设计规范。与产品和开发团队紧密合作，确保设计方案的顺利实现。主要参与抖音、今日头条等产品的设计优化工作。', '北京市朝阳区', '互联网', '0', NULL, NULL, '2020-06-01 00:00:00', NULL, '2022-02-28 00:00:00');
+INSERT INTO `des_work_experience` VALUES (3, 1, '美团', '初级 UI 设计师', '2018-07-01', '2020-05-31', 0, '负责美团外卖和美团App的界面设计工作，参与产品功能迭代和视觉优化。学习和掌握了大型互联网产品的设计流程和方法，积累了丰富的移动端设计经验。', '北京市朝阳区', '互联网', '0', NULL, NULL, '2018-07-01 00:00:00', NULL, '2020-05-31 00:00:00');
+INSERT INTO `des_work_experience` VALUES (4, 2, '4A广告公司', '资深视觉设计师', '2021-01-01', NULL, 1, '负责品牌视觉设计和广告创意执行，为多个知名品牌提供视觉设计服务。参与品牌策略制定和视觉识别系统构建，擅长整合营销传播设计。主要服务客户包括汽车、快消、金融等行业头部企业。', '上海市静安区', '广告', '0', NULL, NULL, '2021-01-01 00:00:00', NULL, '2025-06-24 14:46:16');
+INSERT INTO `des_work_experience` VALUES (5, 2, '设计工作室', '品牌设计师', '2018-03-01', '2020-12-31', 0, '在精品设计工作室负责品牌设计项目，参与从品牌策略到视觉执行的全流程工作。为中小企业和创业公司提供品牌设计服务，积累了丰富的品牌设计经验和客户沟通技巧。', '上海市徐汇区', '设计服务', '0', NULL, NULL, '2018-03-01 00:00:00', NULL, '2020-12-31 00:00:00');
+INSERT INTO `des_work_experience` VALUES (6, 3, '游戏公司', '3D美术设计师', '2021-08-01', NULL, 1, '负责手机游戏的3D美术设计工作，包括角色建模、场景设计和动画制作。参与多款热门游戏的美术制作，在角色设计和场景构建方面有丰富经验。', '北京市海淀区', '游戏', '0', NULL, NULL, '2021-08-01 00:00:00', NULL, '2025-06-24 14:46:16');
+INSERT INTO `des_work_experience` VALUES (7, 4, '阿里巴巴', '产品设计师', '2020-09-01', NULL, 1, '负责B端产品的用户体验设计，参与阿里云、钉钉等企业级产品的设计工作。专注于复杂业务场景下的用户体验优化，具备丰富的B端产品设计经验。', '杭州市西湖区', '互联网', '0', NULL, NULL, '2020-09-01 00:00:00', NULL, '2025-06-24 14:46:16');
+INSERT INTO `des_work_experience` VALUES (8, 5, '腾讯', '交互设计师', '2020-07-15', NULL, 1, '负责腾讯多个产品的交互设计工作，主要参与微信、QQ等社交产品的功能迭代和用户体验优化。在移动端交互设计方面有深入研究，善于通过用户研究和数据分析优化产品体验。', '成都市高新区', '互联网', '0', NULL, NULL, '2020-07-15 00:00:00', NULL, '2025-06-24 14:46:16');
 
 -- ----------------------------
 -- Table structure for gen_table
@@ -1212,7 +1804,7 @@ CREATE TABLE `sys_file_info`  (
   `update_ip` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '更新IP',
   `tenant_id` bigint NOT NULL DEFAULT 0 COMMENT '租户Id',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '文件记录表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '文件记录表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_file_info
@@ -1335,6 +1927,8 @@ INSERT INTO `sys_logininfor` VALUES (1935902589660954626, '00000', 'admin', '127
 INSERT INTO `sys_logininfor` VALUES (1935945738370543618, '00000', 'admin', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', '0', '登录成功', '2025-06-20 14:20:07');
 INSERT INTO `sys_logininfor` VALUES (1935945760659075074, '00000', 'admin', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', '0', '登录成功', '2025-06-20 14:20:12');
 INSERT INTO `sys_logininfor` VALUES (1935946154663604225, '00000', 'admin', '127.0.0.1', '内网IP', 'Chrome', 'Windows 10 or Windows Server 2016', '0', '登录成功', '2025-06-20 14:21:46');
+INSERT INTO `sys_logininfor` VALUES (1938070466291847169, '00000', 'admin', '127.0.0.1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', '0', '登录成功', '2025-06-26 11:03:01');
+INSERT INTO `sys_logininfor` VALUES (1938532635525513217, '00000', 'admin', '127.0.0.1', '内网IP', 'Chrome', 'Windows 10 or Windows Server 2016', '0', '登录成功', '2025-06-27 17:39:31');
 
 -- ----------------------------
 -- Table structure for sys_menu
@@ -2367,7 +2961,7 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (1, NULL, '1', 100.00, '00000', 103, 'admin', '111222333', 'sys_user', 'Free', 'ageerle@163.com', '15888888888', '0', 'http://panda-1253683406.cos.ap-guangzhou.myqcloud.com/panda/2024/10/07/09bd580f55954b50a3093231945123e0.jpg', NULL, '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', '2025-06-20 14:21:46', NULL, 103, 1, '2023-05-14 15:19:39', 1, '2025-06-20 14:21:46', '管理员');
+INSERT INTO `sys_user` VALUES (1, NULL, '1', 100.00, '00000', 103, 'admin', '111222333', 'sys_user', 'Free', 'ageerle@163.com', '15888888888', '0', 'http://panda-1253683406.cos.ap-guangzhou.myqcloud.com/panda/2024/10/07/09bd580f55954b50a3093231945123e0.jpg', NULL, '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', '2025-06-27 17:39:31', NULL, 103, 1, '2023-05-14 15:19:39', 1, '2025-06-27 17:39:31', '管理员');
 INSERT INTO `sys_user` VALUES (1714176194496339970, NULL, '1', 88.88, '00000', NULL, 'pandarobot@163.com', '问答助手', 'sys_user', 'Free', '', '', '0', 'http://panda-1253683406.cos.ap-guangzhou.myqcloud.com/panda/2024/04/28/346796f5c32744c1987bf28d5820325b.jpg', NULL, '$2a$10$u3LIdNBg6kM3iYqHFJe2IOWCMbT2h5NUI.CeXlF5dyBGcy3nwW836', '1', '2', '127.0.0.1', '2025-03-05 17:18:42', NULL, 103, 1713440206715650049, '2023-10-17 15:07:07', 1714176194496339970, '2025-03-05 17:18:42', NULL);
 INSERT INTO `sys_user` VALUES (1898270044544028674, NULL, '1', 1.00, '00000', NULL, '1150039659@qq.com', '1150039659@qq.com', 'sys_user', 'Free', '', '', '0', NULL, NULL, '$2a$10$Mw9T.kzBuYqvT14ZDP2VoORLU9WMWdaT/iatJxEtCQCZoBYBNmKw6', '0', '2', '127.0.0.1', '2025-03-09 23:01:03', '192.168.20.162', NULL, NULL, '2025-03-08 15:10:21', 1898270044544028674, '2025-03-09 23:01:03', NULL);
 INSERT INTO `sys_user` VALUES (1898283021590552578, NULL, '0', 1.00, '00000', NULL, '1434841024@qq.com', '1434841024@qq.com', 'sys_user', 'Free', '', '', '0', NULL, NULL, '$2a$10$R6rClsJdJK5Ovhp14Xc0w.IITFBDyocgxWqsJ9SS7AhWW6.vCKiAa', '0', '2', '192.168.20.161', '2025-03-08 17:04:37', '127.0.0.1', NULL, NULL, '2025-03-08 16:01:55', 1898283021590552578, '2025-03-08 17:04:37', NULL);

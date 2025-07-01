@@ -317,4 +317,264 @@ public class SchoolController extends BaseController {
         
         return R.ok(schoolService.getEmploymentDistribution(schoolId));
     }
+
+    // =================== Mock数据API扩展接口 ===================
+
+    /**
+     * 获取院校专业分类
+     */
+    @Operation(summary = "获取院校专业分类", description = "获取指定院校的专业分类信息")
+    @Parameter(name = "schoolId", description = "院校ID", required = true)
+    @SaCheckPermission("designer:school:query")
+    @GetMapping("/{schoolId}/major-categories")
+    public R<List<org.ruoyi.designer.domain.MajorCategory>> getMajorCategories(@PathVariable Long schoolId) {
+        checkSchoolAccess(schoolId);
+        return R.ok(schoolService.getMajorCategories(schoolId));
+    }
+
+    /**
+     * 获取院校课程体系
+     */
+    @Operation(summary = "获取院校课程体系", description = "获取指定院校的课程体系信息")
+    @Parameter(name = "schoolId", description = "院校ID", required = true)
+    @SaCheckPermission("designer:school:query")
+    @GetMapping("/{schoolId}/course-system")
+    public R<List<org.ruoyi.designer.domain.CourseGroup>> getCourseSystem(@PathVariable Long schoolId) {
+        checkSchoolAccess(schoolId);
+        return R.ok(schoolService.getCourseSystem(schoolId));
+    }
+
+    /**
+     * 获取院校师资统计
+     */
+    @Operation(summary = "获取院校师资统计", description = "获取指定院校的师资统计信息")
+    @Parameter(name = "schoolId", description = "院校ID", required = true)
+    @SaCheckPermission("designer:school:query")
+    @GetMapping("/{schoolId}/faculty-stats")
+    public R<org.ruoyi.designer.domain.FacultyStats> getFacultyStats(@PathVariable Long schoolId) {
+        checkSchoolAccess(schoolId);
+        return R.ok(schoolService.getFacultyStats(schoolId));
+    }
+
+    /**
+     * 获取院校代表性教师
+     */
+    @Operation(summary = "获取院校代表性教师", description = "获取指定院校的代表性教师信息")
+    @Parameter(name = "schoolId", description = "院校ID", required = true)
+    @SaCheckPermission("designer:school:query")
+    @GetMapping("/{schoolId}/faculty-members")
+    public R<List<org.ruoyi.designer.domain.Teacher>> getFacultyMembers(@PathVariable Long schoolId) {
+        checkSchoolAccess(schoolId);
+        return R.ok(schoolService.getFacultyMembers(schoolId));
+    }
+
+    /**
+     * 获取院校就业统计（扩展版）
+     */
+    @Operation(summary = "获取院校就业统计", description = "获取指定院校的详细就业统计信息")
+    @Parameter(name = "schoolId", description = "院校ID", required = true)
+    @SaCheckPermission("designer:school:query")
+    @GetMapping("/{schoolId}/employment-stats")
+    public R<org.ruoyi.designer.domain.EmploymentStats> getSchoolEmploymentStats(@PathVariable Long schoolId) {
+        checkSchoolAccess(schoolId);
+        return R.ok(schoolService.getSchoolEmploymentStats(schoolId));
+    }
+
+    /**
+     * 获取院校代表性雇主
+     */
+    @Operation(summary = "获取院校代表性雇主", description = "获取指定院校的代表性雇主信息")
+    @Parameter(name = "schoolId", description = "院校ID", required = true)
+    @SaCheckPermission("designer:school:query")
+    @GetMapping("/{schoolId}/employers")
+    public R<List<org.ruoyi.designer.domain.Employer>> getEmployers(@PathVariable Long schoolId) {
+        checkSchoolAccess(schoolId);
+        return R.ok(schoolService.getEmployers(schoolId));
+    }
+
+    /**
+     * 获取院校就业图表数据
+     */
+    @Operation(summary = "获取院校就业图表数据", description = "获取指定院校的就业图表数据")
+    @Parameter(name = "schoolId", description = "院校ID", required = true)
+    @SaCheckPermission("designer:school:query")
+    @GetMapping("/{schoolId}/employment-charts")
+    public R<org.ruoyi.designer.domain.ChartData> getEmploymentCharts(@PathVariable Long schoolId) {
+        checkSchoolAccess(schoolId);
+        return R.ok(schoolService.getEmploymentCharts(schoolId));
+    }
+
+    /**
+     * 获取院校学生成果统计
+     */
+    @Operation(summary = "获取院校学生成果统计", description = "获取指定院校的学生成果统计信息")
+    @Parameter(name = "schoolId", description = "院校ID", required = true)
+    @SaCheckPermission("designer:school:query")
+    @GetMapping("/{schoolId}/achievement-stats")
+    public R<org.ruoyi.designer.domain.AchievementStats> getAchievementStats(@PathVariable Long schoolId) {
+        checkSchoolAccess(schoolId);
+        return R.ok(schoolService.getAchievementStats(schoolId));
+    }
+
+    /**
+     * 获取院校获奖趋势数据
+     */
+    @Operation(summary = "获取院校获奖趋势数据", description = "获取指定院校的获奖趋势数据")
+    @Parameter(name = "schoolId", description = "院校ID", required = true)
+    @SaCheckPermission("designer:school:query")
+    @GetMapping("/{schoolId}/award-trends")
+    public R<org.ruoyi.designer.domain.TrendData> getAwardTrends(@PathVariable Long schoolId) {
+        checkSchoolAccess(schoolId);
+        return R.ok(schoolService.getAwardTrends(schoolId));
+    }
+
+    /**
+     * 获取院校获奖作品
+     */
+    @Operation(summary = "获取院校获奖作品", description = "获取指定院校的获奖作品信息")
+    @Parameter(name = "schoolId", description = "院校ID", required = true)
+    @SaCheckPermission("designer:school:query")
+    @GetMapping("/{schoolId}/award-works")
+    public R<List<org.ruoyi.designer.domain.AwardWork>> getAwardWorks(@PathVariable Long schoolId) {
+        checkSchoolAccess(schoolId);
+        return R.ok(schoolService.getAwardWorks(schoolId));
+    }
+
+    /**
+     * 获取院校卡片统计数据
+     */
+    @Operation(summary = "获取院校卡片统计数据", description = "获取指定院校的卡片统计数据")
+    @Parameter(name = "schoolId", description = "院校ID", required = true)
+    @SaCheckPermission("designer:school:query")
+    @GetMapping("/{schoolId}/card-stats")
+    public R<org.ruoyi.designer.domain.SchoolCardStats> getCardStats(@PathVariable Long schoolId) {
+        checkSchoolAccess(schoolId);
+        return R.ok(schoolService.getCardStats(schoolId));
+    }
+
+    /**
+     * 获取院校完整信息
+     */
+    @Operation(summary = "获取院校完整信息", description = "一次性获取院校的所有相关数据")
+    @Parameter(name = "schoolId", description = "院校ID", required = true)
+    @SaCheckPermission("designer:school:query")
+    @GetMapping("/{schoolId}/full-info")
+    public R<org.ruoyi.designer.domain.vo.SchoolFullInfoVo> getSchoolFullInfo(@PathVariable Long schoolId) {
+        checkSchoolAccess(schoolId);
+        return R.ok(schoolService.getSchoolFullInfo(schoolId));
+    }
+
+    // =================== 格式化数据接口 ===================
+
+    /**
+     * 获取格式化的就业率
+     */
+    @Operation(summary = "获取格式化的就业率", description = "获取指定院校的格式化就业率")
+    @Parameter(name = "schoolId", description = "院校ID", required = true)
+    @SaCheckPermission("designer:school:query")
+    @GetMapping("/{schoolId}/formatted/employment-rate")
+    public R<String> getFormattedEmploymentRate(@PathVariable Long schoolId) {
+        checkSchoolAccess(schoolId);
+        return R.ok(schoolService.getFormattedEmploymentRate(schoolId));
+    }
+
+    /**
+     * 获取格式化的师资力量评分
+     */
+    @Operation(summary = "获取格式化的师资力量评分", description = "获取指定院校的格式化师资力量评分")
+    @Parameter(name = "schoolId", description = "院校ID", required = true)
+    @SaCheckPermission("designer:school:query")
+    @GetMapping("/{schoolId}/formatted/faculty-strength")
+    public R<String> getFormattedFacultyStrength(@PathVariable Long schoolId) {
+        checkSchoolAccess(schoolId);
+        return R.ok(schoolService.getFormattedFacultyStrength(schoolId));
+    }
+
+    /**
+     * 获取格式化的学生评分
+     */
+    @Operation(summary = "获取格式化的学生评分", description = "获取指定院校的格式化学生评分")
+    @Parameter(name = "schoolId", description = "院校ID", required = true)
+    @SaCheckPermission("designer:school:query")
+    @GetMapping("/{schoolId}/formatted/student-score")
+    public R<String> getFormattedStudentScore(@PathVariable Long schoolId) {
+        checkSchoolAccess(schoolId);
+        return R.ok(schoolService.getFormattedStudentScore(schoolId));
+    }
+
+    /**
+     * 获取格式化的优势专业
+     */
+    @Operation(summary = "获取格式化的优势专业", description = "获取指定院校的格式化优势专业")
+    @Parameter(name = "schoolId", description = "院校ID", required = true)
+    @SaCheckPermission("designer:school:query")
+    @GetMapping("/{schoolId}/formatted/advantage-programs")
+    public R<String> getFormattedAdvantagePrograms(@PathVariable Long schoolId) {
+        checkSchoolAccess(schoolId);
+        School school = schoolService.selectSchoolById(schoolId);
+        if (school == null) {
+            return R.fail("院校不存在");
+        }
+        return R.ok(schoolService.getFormattedAdvantagePrograms(school));
+    }
+
+    // =================== 扩展查询接口 ===================
+
+    /**
+     * 扩展院校列表查询（支持新字段筛选）
+     */
+    @Operation(summary = "扩展院校列表查询", description = "支持多条件筛选的院校列表查询")
+    @SaCheckPermission("designer:school:list")
+    @GetMapping("/list-extended")
+    public TableDataInfo<School> listExtended(
+            School school,
+            @RequestParam(required = false) String province,
+            @RequestParam(required = false) String city,
+            @RequestParam(required = false) String schoolType,
+            @RequestParam(required = false) String level,
+            @RequestParam(required = false) Boolean isKey,
+            @RequestParam(required = false) Boolean is985,
+            @RequestParam(required = false) Boolean is211,
+            @RequestParam(required = false) Boolean isDoubleFirst,
+            PageQuery pageQuery) {
+        
+        Long userId = LoginHelper.getUserId();
+        
+        // 检查用户是否为管理员
+        if (LoginHelper.isSuperAdmin()) {
+            // 管理员可以查看所有院校
+            return schoolService.selectSchoolListWithFilters(school, province, city, schoolType, level, 
+                isKey, is985, is211, isDoubleFirst, pageQuery);
+        } else {
+            // 非管理员用户，检查是否绑定了院校
+            Long schoolId = userBindingService.getSchoolIdByUserId(userId);
+            if (schoolId != null) {
+                // 院校管理员只能查看自己绑定的院校
+                school.setSchoolId(schoolId);
+                return schoolService.selectSchoolListWithFilters(school, province, city, schoolType, level, 
+                    isKey, is985, is211, isDoubleFirst, pageQuery);
+            } else {
+                // 没有绑定院校的用户无权访问
+                return TableDataInfo.build();
+            }
+        }
+    }
+
+    /**
+     * 权限检查通用方法
+     */
+    private void checkSchoolAccess(Long schoolId) {
+        Long userId = LoginHelper.getUserId();
+        
+        // 管理员可访问所有数据
+        if (LoginHelper.isSuperAdmin()) {
+            return;
+        }
+        
+        // 院校管理员只能访问绑定院校
+        Long userSchoolId = userBindingService.getSchoolIdByUserId(userId);
+        if (userSchoolId == null || !userSchoolId.equals(schoolId)) {
+            throw new RuntimeException("无权访问该院校信息");
+        }
+    }
 }

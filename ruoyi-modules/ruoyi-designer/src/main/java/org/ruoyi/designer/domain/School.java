@@ -1,8 +1,10 @@
 package org.ruoyi.designer.domain;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -27,7 +29,7 @@ public class School extends BaseEntity {
     /**
      * 院校ID
      */
-    @JsonIgnore
+    @JsonProperty("id")
     @Schema(description = "院校ID", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     @TableId(value = "school_id")
     private Long schoolId;
@@ -100,4 +102,109 @@ public class School extends BaseEntity {
      */
     @Schema(description = "状态", example = "0", allowableValues = {"0", "1"})
     private String status;
+
+    /**
+     * 省份
+     */
+    @Schema(description = "省份", example = "北京市")
+    private String province;
+
+    /**
+     * 城市
+     */
+    @Schema(description = "城市", example = "海淀区")
+    private String city;
+
+    /**
+     * 完整地址位置描述
+     */
+    @Schema(description = "完整地址位置描述", example = "北京市海淀区")
+    private String location;
+
+    /**
+     * 院校排名
+     */
+    @Schema(description = "院校排名", example = "1")
+    private Integer ranking;
+
+    /**
+     * 学生总数
+     */
+    @Schema(description = "学生总数", example = "30000")
+    private Integer totalStudents;
+
+    /**
+     * 教师总数
+     */
+    @Schema(description = "教师总数", example = "2000")
+    private Integer totalTeachers;
+
+    /**
+     * 院系数量
+     */
+    @Schema(description = "院系数量", example = "20")
+    private Integer facultyCount;
+
+    /**
+     * 专业数量
+     */
+    @Schema(description = "专业数量", example = "80")
+    private Integer majorCount;
+
+    /**
+     * 是否重点院校
+     */
+    @Schema(description = "是否重点院校", example = "true")
+    private Boolean isKey;
+
+    /**
+     * 是否985院校
+     */
+    @Schema(description = "是否985院校", example = "true")
+    @TableField("is_985")
+    private Boolean is985;
+
+    /**
+     * 是否211院校
+     */
+    @Schema(description = "是否211院校", example = "true")
+    @TableField("is_211")
+    private Boolean is211;
+
+    /**
+     * 是否双一流院校
+     */
+    @Schema(description = "是否双一流院校", example = "true")
+    @TableField("is_double_first")
+    private Boolean isDoubleFirst;
+
+    // ============ 卡片统计数据字段（非数据库字段，用于前端卡片展示） ============
+    
+    /**
+     * 就业率（用于卡片显示）
+     */
+    @Schema(description = "就业率", example = "96.8%", accessMode = Schema.AccessMode.READ_ONLY)
+    @TableField(exist = false)
+    private String employmentRate;
+
+    /**
+     * 师资力量评分（用于卡片显示）
+     */
+    @Schema(description = "师资力量评分", example = "5.0", accessMode = Schema.AccessMode.READ_ONLY)
+    @TableField(exist = false)
+    private String facultyStrength;
+
+    /**
+     * 学生评分（用于卡片显示）
+     */
+    @Schema(description = "学生评分", example = "4.9", accessMode = Schema.AccessMode.READ_ONLY)
+    @TableField(exist = false)
+    private String studentScore;
+
+    /**
+     * 优势专业（用于卡片显示）
+     */
+    @Schema(description = "优势专业", example = "信息艺术设计、智能产品设计、交互设计", accessMode = Schema.AccessMode.READ_ONLY)
+    @TableField(exist = false)
+    private String advantagePrograms;
 } 
