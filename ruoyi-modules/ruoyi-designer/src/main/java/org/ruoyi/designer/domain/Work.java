@@ -2,7 +2,9 @@ package org.ruoyi.designer.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -31,7 +33,7 @@ public class Work extends BaseEntity {
     /**
      * 作品ID
      */
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Schema(description = "作品ID", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     @TableId(value = "work_id")
     @NotNull(message = "作品ID不能为空", groups = { EditGroup.class })
@@ -116,4 +118,10 @@ public class Work extends BaseEntity {
      */
     @Schema(description = "状态", example = "0", allowableValues = {"0", "1"})
     private String status;
+
+    /**
+     * 逻辑删除
+     */
+    @TableLogic
+    private String delFlag;
 } 

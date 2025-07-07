@@ -2,7 +2,9 @@ package org.ruoyi.designer.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -31,7 +33,7 @@ public class Award extends BaseEntity {
     /**
      * 获奖ID
      */
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Schema(description = "获奖ID", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     @TableId(value = "award_id")
     private Long awardId;
@@ -105,4 +107,11 @@ public class Award extends BaseEntity {
      */
     @Schema(description = "状态", example = "0", allowableValues = {"0", "1"})
     private String status;
+
+    /**
+     * 删除标志（0代表存在 1代表删除）
+     */
+    @TableLogic
+    @Schema(description = "删除标志", example = "0", allowableValues = {"0", "1"})
+    private String delFlag;
 } 

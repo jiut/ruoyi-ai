@@ -11,7 +11,9 @@ import org.ruoyi.designer.domain.Work;
 import org.ruoyi.designer.mapper.WorkMapper;
 import org.ruoyi.designer.service.IWorkService;
 import org.springframework.stereotype.Service;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -24,6 +26,7 @@ import java.util.List;
 public class WorkServiceImpl extends ServiceImpl<WorkMapper, Work> implements IWorkService {
 
     private final WorkMapper workMapper;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     /**
      * 查询作品列表
@@ -91,6 +94,10 @@ public class WorkServiceImpl extends ServiceImpl<WorkMapper, Work> implements IW
         if (StringUtils.isBlank(work.getIsFeatured())) {
             work.setIsFeatured("0");
         }
+        
+        // 处理tags字段格式转换
+        processWorkTags(work);
+        
         return workMapper.insert(work) > 0;
     }
 
@@ -102,7 +109,40 @@ public class WorkServiceImpl extends ServiceImpl<WorkMapper, Work> implements IW
      */
     @Override
     public Boolean updateWork(Work work) {
+        // 处理tags字段格式转换
+        processWorkTags(work);
         return workMapper.updateById(work) > 0;
+    }
+
+    /**
+     * 处理作品标签字段：将逗号分隔的字符串转换为JSON数组格式
+     *
+     * @param work 作品对象
+     */
+    private void processWorkTags(Work work) {
+        if (StringUtils.isNotBlank(work.getTags())) {
+            String tags = work.getTags().trim();
+            // 检查是否已经是JSON数组格式
+            if (!tags.startsWith("[") || !tags.endsWith("]")) {
+                // 如果不是JSON格式，则将逗号分隔的字符串转换为JSON数组
+                try {
+                    List<String> tagList = Arrays.asList(tags.split(","));
+                    // 去掉每个标签的前后空格
+                    tagList = tagList.stream()
+                            .map(String::trim)
+                            .filter(tag -> !tag.isEmpty())
+                            .toList();
+                    String jsonTags = objectMapper.writeValueAsString(tagList);
+                    work.setTags(jsonTags);
+                } catch (Exception e) {
+                    // 如果转换失败，设置为空的JSON数组
+                    work.setTags("[]");
+                }
+            }
+        } else {
+            // 如果tags为空，设置为空的JSON数组
+            work.setTags("[]");
+        }
     }
 
     /**

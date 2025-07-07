@@ -2,7 +2,9 @@ package org.ruoyi.designer.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -32,7 +34,7 @@ public class WorkExperience extends BaseEntity {
     /**
      * 工作经历ID
      */
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Schema(description = "工作经历ID", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     @TableId(value = "experience_id")
     @NotNull(message = "工作经历ID不能为空", groups = { EditGroup.class })
@@ -101,4 +103,11 @@ public class WorkExperience extends BaseEntity {
      */
     @Schema(description = "状态", example = "0", allowableValues = {"0", "1"})
     private String status;
+
+    /**
+     * 删除标志（0代表存在 1代表删除）
+     */
+    @TableLogic
+    @Schema(description = "删除标志", example = "0", allowableValues = {"0", "1"})
+    private String delFlag;
 } 

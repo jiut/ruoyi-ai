@@ -2,7 +2,9 @@ package org.ruoyi.designer.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -29,7 +31,7 @@ public class Education extends BaseEntity {
     /**
      * 教育背景ID
      */
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Schema(description = "教育背景ID", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     @TableId(value = "education_id")
     private Long educationId;
@@ -119,4 +121,11 @@ public class Education extends BaseEntity {
     @Pattern(regexp = "^[01]$", message = "状态只能是0或1")
     @Schema(description = "状态", example = "0", allowableValues = {"0", "1"})
     private String status;
+
+    /**
+     * 删除标志（0代表存在 1代表删除）
+     */
+    @TableLogic
+    @Schema(description = "删除标志", example = "0", allowableValues = {"0", "1"})
+    private String delFlag;
 } 

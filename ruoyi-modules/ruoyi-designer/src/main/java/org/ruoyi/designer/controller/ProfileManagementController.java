@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.ruoyi.common.core.domain.R;
 import org.ruoyi.common.core.utils.StringUtils;
 import org.ruoyi.common.log.annotation.Log;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * 统一档案管理Controller
@@ -32,6 +34,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/designer")
+@Slf4j
 public class ProfileManagementController extends BaseController {
 
     private final IWorkExperienceService workExperienceService;
@@ -435,33 +438,74 @@ public class ProfileManagementController extends BaseController {
     // ========== 聚合查询接口 ==========
 
     /**
-     * 查询设计师完整档案（聚合API）
+     * 查询设计师完整档案（聚合API）- 优化版本
      */
-    @Operation(summary = "查询设计师完整档案", description = "一次性获取设计师的所有档案信息")
+    @Operation(
+        summary = "查询设计师完整档案", 
+        description = "一次性获取设计师的完整详情信息，包括基本信息、作品集、工作经历、教育背景、获奖情况",
+        parameters = @Parameter(name = "designerId", description = "设计师ID", required = true, example = "1")
+    )
     @GetMapping("/designer/{designerId}/complete")
-    public R<CompleteProfileVo> getCompleteProfile(
-        @Parameter(description = "设计师ID") @PathVariable Long designerId) {
-        
-        if (!permissionUtils.isValidDesignerId(designerId)) {
-            return R.fail("设计师ID无效");
+    public R<CompleteProfileVo> getDesignerComplete(@PathVariable Long designerId) {
+        try {
+            // 权限验证逻辑
+            Long userId = LoginHelper.getUserId();
+            if (!LoginHelper.isSuperAdmin()) {
+                if (permissionUtils.isDesigner()) {
+                    // 设计师只能查看自己的详情
+                    Long currentDesignerId = permissionUtils.getCurrentDesignerIdSafely();
+                    if (currentDesignerId == null || !currentDesignerId.equals(designerId)) {
+                        return R.fail("权限不足：只能查看自己的设计师信息");
+                    }
+                } else if (permissionUtils.isSchool()) {
+                    // 院校管理员只能查看本校设计师
+                    Designer designerInfo = designerService.selectDesignerById(designerId);
+                    if (designerInfo == null) {
+                        return R.fail("设计师不存在");
+                    }
+                    Long schoolId = permissionUtils.getCurrentSchoolId();
+                    if (designerInfo.getSchoolId() == null || !designerInfo.getSchoolId().equals(schoolId)) {
+                        return R.fail("权限不足：只能查看本校设计师信息");
+                    }
+                }
+                // 企业管理员可以查看所有公开信息，无需额外检查
+            }
+
+            // 获取设计师基本信息
+            Designer designer = designerService.selectDesignerById(designerId);
+            if (designer == null) {
+                return R.fail("设计师不存在");
+            }
+
+            // 并行获取相关数据以提升性能
+            CompletableFuture<List<Work>> worksFuture = CompletableFuture
+                .supplyAsync(() -> workService.selectWorkByDesignerId(designerId));
+
+            CompletableFuture<List<WorkExperience>> workExpFuture = CompletableFuture
+                .supplyAsync(() -> workExperienceService.selectWorkExperienceByDesignerId(designerId));
+
+            CompletableFuture<List<Education>> educationFuture = CompletableFuture
+                .supplyAsync(() -> educationService.selectEducationByDesignerId(designerId));
+
+            CompletableFuture<List<Award>> awardsFuture = CompletableFuture
+                .supplyAsync(() -> awardService.selectAwardByDesignerId(designerId));
+
+            // 等待所有异步任务完成
+            CompletableFuture.allOf(worksFuture, workExpFuture, educationFuture, awardsFuture).join();
+
+            // 构造返回数据
+            CompleteProfileVo profile = new CompleteProfileVo();
+            profile.setDesigner(designer);
+            profile.setWorks(worksFuture.get());
+            profile.setWorkExperiences(workExpFuture.get());
+            profile.setEducations(educationFuture.get());
+            profile.setAwards(awardsFuture.get());
+
+            return R.ok(profile);
+        } catch (Exception e) {
+            log.error("获取设计师完整信息失败，设计师ID: {}", designerId, e);
+            return R.fail("获取设计师信息失败");
         }
-        
-        // 查询设计师基础信息
-        Designer designer = designerService.selectDesignerById(designerId);
-        if (designer == null) {
-            return R.fail("设计师不存在");
-        }
-        
-        CompleteProfileVo profile = new CompleteProfileVo();
-        profile.setDesigner(designer);
-        
-        // 查询相关档案信息
-        profile.setWorkExperiences(workExperienceService.selectWorkExperienceByDesignerId(designerId));
-        profile.setEducations(educationService.selectEducationByDesignerId(designerId));
-        profile.setWorks(workService.selectWorkByDesignerId(designerId));
-        profile.setAwards(awardService.selectAwardByDesignerId(designerId));
-        
-        return R.ok(profile);
     }
 
     // ========== 档案完整度接口 ==========

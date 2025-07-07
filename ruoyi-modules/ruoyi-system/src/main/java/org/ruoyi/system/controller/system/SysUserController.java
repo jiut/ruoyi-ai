@@ -31,6 +31,7 @@ import org.ruoyi.system.domain.vo.*;
 import org.ruoyi.system.listener.SysUserImportListener;
 import org.ruoyi.system.service.*;
 import org.ruoyi.system.mapper.SysUserRoleMapper;
+import org.ruoyi.system.mapper.SysRoleMapper;
 import org.ruoyi.system.domain.SysUserRole;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.http.MediaType;
@@ -62,6 +63,7 @@ public class SysUserController extends BaseController {
     private final ISysTenantService tenantService;
     private final ISysOssService ossService;
     private final SysUserRoleMapper userRoleMapper;
+    private final SysRoleMapper roleMapper;
     /**
      * 获取用户列表
      */
@@ -341,8 +343,8 @@ public class SysUserController extends BaseController {
         LoginUser loginUser = LoginHelper.getLoginUser();
         Long userId = loginUser.getUserId();
         
-        // 获取用户当前角色列表
-        List<SysRoleVo> userRoles = roleService.selectRolesByUserId(userId);
+        // 获取用户实际拥有的角色列表 - 修复：直接从mapper获取，绕过数据权限检查
+        List<SysRoleVo> userRoles = roleMapper.selectRolePermissionByUserId(userId);
         
         // 1. 检查是否为普通角色用户（角色ID=2，角色标识为common）
         boolean isNormalRole = false;
