@@ -95,7 +95,7 @@ public class JobPostingController extends BaseController {
                         {
                             "jobTitle": "高级UI设计师",
                             "description": "负责移动端产品UI设计，与产品经理和开发团队紧密合作",
-                            "requiredProfession": "UI_DESIGNER",
+                            "requiredProfession": "UI_UX_DESIGNER",
                             "requiredSkills": "[\\"prototype_design\\", \\"visual_design\\"]",
                             "workYearsRequired": "3-5年",
                             "salaryMin": 15000,
@@ -229,10 +229,11 @@ public class JobPostingController extends BaseController {
         summary = "按职业查询岗位",
         description = "根据职业要求查询相关岗位",
         parameters = @Parameter(name = "profession", description = "职业类型", required = true, 
-                               example = "UI_DESIGNER",
+                               example = "UI_UX_DESIGNER",
                                schema = @Schema(allowableValues = {"ILLUSTRATOR", "INTERACTION_DESIGNER", 
                                                                  "BRAND_DESIGNER", "UI_DESIGNER", "UX_DESIGNER", 
-                                                                 "GRAPHIC_DESIGNER", "PRODUCT_DESIGNER", "MOTION_DESIGNER"}))
+                                                                 "UI_UX_DESIGNER", "GRAPHIC_DESIGNER", "PRODUCT_DESIGNER", 
+                                                                 "MOTION_DESIGNER", "VISUAL_DESIGNER", "THREE_D_DESIGNER"}))
     )
     @SaCheckPermission("designer:job:query")
     @GetMapping("/profession/{profession}")
@@ -298,7 +299,7 @@ public class JobPostingController extends BaseController {
                                         "jobId": 1,
                                         "jobTitle": "高级UI设计师",
                                         "enterpriseId": 1,
-                                        "requiredProfession": "UI_DESIGNER",
+                                        "requiredProfession": "UI_UX_DESIGNER",
                                         "requiredSkills": "[\\"prototype_design\\", \\"visual_design\\", \\"ui_design\\"]",
                                         "salaryMin": 15000,
                                         "salaryMax": 25000,

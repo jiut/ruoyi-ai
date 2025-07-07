@@ -56,17 +56,17 @@ public class SysRegisterService {
         sysUser.setNickName(username);
         sysUser.setPassword(BCrypt.hashpw(password));
         if (!userService.checkUserNameUnique(sysUser)) {
-            throw new UserException("添加用户失败", username);
+            throw new UserException(MessageUtils.message("user.add.failed"), username);
         }
         sysUser.setUserBalance(1.0);
         SysUser user = userService.registerUser(sysUser, tenantId);
         if (user == null) {
-            throw new UserException("用户注册失败!");
+            throw new UserException(MessageUtils.message("user.register.failed"));
         }
-        // 设置默认角色
+        // 设置默认角色（普通角色）
         SysUserRole sysRole = new SysUserRole();
         sysRole.setUserId(user.getUserId());
-        sysRole.setRoleId(1L);
+        sysRole.setRoleId(2L);  // 2为普通角色ID
         userRoleMapper.insert(sysRole);
         recordLogininfor(tenantId, username, Constants.REGISTER, MessageUtils.message("user.register.success"));
     }

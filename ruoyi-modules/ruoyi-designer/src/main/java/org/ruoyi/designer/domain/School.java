@@ -10,6 +10,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.ruoyi.core.domain.BaseEntity;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Min;
 import java.io.Serial;
 
 /**
@@ -44,6 +48,7 @@ public class School extends BaseEntity {
     /**
      * 院校名称
      */
+    @NotBlank(message = "院校名称不能为空")
     @Schema(description = "院校名称", example = "北京设计学院", requiredMode = Schema.RequiredMode.REQUIRED)
     private String schoolName;
 
@@ -62,33 +67,41 @@ public class School extends BaseEntity {
     /**
      * 联系电话
      */
+    @Pattern(regexp = "^(0\\d{2,3}-?\\d{7,8}|1[3-9]\\d{9})$", message = "联系电话格式不正确")
     @Schema(description = "联系电话", example = "010-12345678")
     private String phone;
 
     /**
      * 联系邮箱
      */
+    @Email(message = "邮箱格式不正确")
     @Schema(description = "联系邮箱", example = "contact@school.edu.cn")
     private String email;
 
     /**
      * 院校网站
      */
+    @Pattern(regexp = "^https?://[\\w\\-]+(\\.[\\w\\-]+)+([\\w\\-\\.,@?^=%&:/~\\+#]*[\\w\\-\\@?^=%&/~\\+#])?$", 
+             message = "网站地址格式不正确")
     @Schema(description = "院校网站", example = "https://www.school.edu.cn")
     private String website;
 
     /**
      * 院校类型
      */
-    @Schema(description = "院校类型", example = "UNIVERSITY",
-            allowableValues = {"UNIVERSITY", "COLLEGE", "VOCATIONAL_SCHOOL", "TRAINING_INSTITUTION"})
+    @Pattern(regexp = "^(COMPREHENSIVE|ART|ENGINEERING|NORMAL|FINANCE)$", 
+             message = "院校类型不在允许的范围内")
+    @Schema(description = "院校类型", example = "COMPREHENSIVE",
+            allowableValues = {"COMPREHENSIVE", "ART", "ENGINEERING", "NORMAL", "FINANCE"})
     private String schoolType;
 
     /**
      * 院校等级
      */
-    @Schema(description = "院校等级", example = "本科",
-            allowableValues = {"专科", "本科", "硕士", "博士", "其他"})
+    @Pattern(regexp = "^(UNDERGRADUATE|GRADUATE|VOCATIONAL)$", 
+             message = "院校等级不在允许的范围内")
+    @Schema(description = "院校等级", example = "UNDERGRADUATE",
+            allowableValues = {"UNDERGRADUATE", "GRADUATE", "VOCATIONAL"})
     private String level;
 
     /**
@@ -100,6 +113,7 @@ public class School extends BaseEntity {
     /**
      * 状态（0正常 1停用）
      */
+    @Pattern(regexp = "^[01]$", message = "状态值必须为0或1")
     @Schema(description = "状态", example = "0", allowableValues = {"0", "1"})
     private String status;
 
@@ -124,30 +138,35 @@ public class School extends BaseEntity {
     /**
      * 院校排名
      */
+    @Min(value = 1, message = "院校排名必须大于0")
     @Schema(description = "院校排名", example = "1")
     private Integer ranking;
 
     /**
      * 学生总数
      */
+    @Min(value = 0, message = "学生总数不能小于0")
     @Schema(description = "学生总数", example = "30000")
     private Integer totalStudents;
 
     /**
      * 教师总数
      */
+    @Min(value = 0, message = "教师总数不能小于0")
     @Schema(description = "教师总数", example = "2000")
     private Integer totalTeachers;
 
     /**
      * 院系数量
      */
+    @Min(value = 0, message = "院系数量不能小于0")
     @Schema(description = "院系数量", example = "20")
     private Integer facultyCount;
 
     /**
      * 专业数量
      */
+    @Min(value = 0, message = "专业数量不能小于0")
     @Schema(description = "专业数量", example = "80")
     private Integer majorCount;
 

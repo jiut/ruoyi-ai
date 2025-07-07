@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.ruoyi.common.core.constant.Constants;
 import org.ruoyi.common.core.domain.R;
 import org.ruoyi.common.core.domain.model.*;
+import org.ruoyi.common.core.domain.model.LoginUser;
 import org.ruoyi.common.core.utils.MapstructUtils;
 import org.ruoyi.common.core.utils.StreamUtils;
 import org.ruoyi.common.core.utils.StringUtils;

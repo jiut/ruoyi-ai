@@ -1,10 +1,13 @@
 package org.ruoyi.designer.util;
 
 import org.ruoyi.common.satoken.utils.LoginHelper;
+import org.ruoyi.designer.domain.UserBinding;
 import org.ruoyi.designer.domain.enums.UserEntityType;
 import org.ruoyi.designer.service.IUserBindingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * 设计师权限控制工具类
@@ -148,5 +151,70 @@ public class DesignerPermissionUtils {
         }
         
         return false;
+    }
+
+    /**
+     * 检查用户是否有权限编辑指定设计师的数据
+     * 
+     * @param designerId 设计师ID
+     * @return 是否有权限
+     */
+    public boolean hasPermissionToEdit(Long designerId) {
+        // 管理员有所有权限
+        if (LoginHelper.isSuperAdmin()) {
+            return true;
+        }
+        
+        // 检查是否为当前用户的设计师ID
+        Long currentDesignerId = getCurrentDesignerIdSafely();
+        return currentDesignerId != null && currentDesignerId.equals(designerId);
+    }
+
+    /**
+     * 获取当前用户的设计师ID（安全版本）
+     * 
+     * @return 设计师ID，如果未绑定则返回null
+     */
+    public Long getCurrentDesignerIdSafely() {
+        try {
+            Long userId = LoginHelper.getUserId();
+            if (userId == null) {
+                return null;
+            }
+            
+            List<UserBinding> bindings = userBindingService.getBindingsByUserId(userId);
+            return extractDesignerId(bindings);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * 从用户绑定信息中提取设计师ID
+     * 
+     * @param bindings 绑定信息列表
+     * @return 设计师ID
+     */
+    public Long extractDesignerId(List<UserBinding> bindings) {
+        if (bindings == null || bindings.isEmpty()) {
+            return null;
+        }
+        
+        return bindings.stream()
+            .filter(binding -> UserEntityType.DESIGNER.getCode().equals(binding.getEntityType()) 
+                            && "1".equals(binding.getBindingStatus()))
+            .map(UserBinding::getEntityId)
+            .findFirst()
+            .orElse(null);
+    }
+
+    /**
+     * 验证设计师ID是否有效
+     * 
+     * @param designerId 设计师ID
+     * @return 是否有效
+     */
+    public boolean isValidDesignerId(Long designerId) {
+        return designerId != null && designerId > 0;
     }
 } 

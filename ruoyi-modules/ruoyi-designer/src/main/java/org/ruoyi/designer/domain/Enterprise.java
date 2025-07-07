@@ -9,6 +9,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.ruoyi.core.domain.BaseEntity;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
 import java.io.Serial;
 
 /**
@@ -43,6 +46,7 @@ public class Enterprise extends BaseEntity {
     /**
      * 企业名称
      */
+    @NotBlank(message = "企业名称不能为空")
     @Schema(description = "企业名称", example = "创新科技有限公司", requiredMode = Schema.RequiredMode.REQUIRED)
     private String enterpriseName;
 
@@ -61,33 +65,41 @@ public class Enterprise extends BaseEntity {
     /**
      * 联系电话
      */
+    @Pattern(regexp = "^(0\\d{2,3}-?\\d{7,8}|1[3-9]\\d{9})$", message = "联系电话格式不正确")
     @Schema(description = "联系电话", example = "010-12345678")
     private String phone;
 
     /**
      * 联系邮箱
      */
+    @Email(message = "邮箱格式不正确")
     @Schema(description = "联系邮箱", example = "contact@company.com")
     private String email;
 
     /**
      * 企业网站
      */
+    @Pattern(regexp = "^https?://[\\w\\-]+(\\.[\\w\\-]+)+([\\w\\-\\.,@?^=%&:/~\\+#]*[\\w\\-\\@?^=%&/~\\+#])?$", 
+             message = "网站地址格式不正确")
     @Schema(description = "企业网站", example = "https://www.company.com")
     private String website;
 
-    /**
+        /**
      * 企业规模
      */
-    @Schema(description = "企业规模", example = "100-500人", 
-            allowableValues = {"1-50人", "50-100人", "100-500人", "500-1000人", "1000人以上"})
+    @Pattern(regexp = "^(1-50人|50-100人|100-500人|500-1000人|1000-5000人|5000-10000人|10000\\+人)$", 
+             message = "企业规模不在允许的范围内")
+    @Schema(description = "企业规模", example = "5000-10000人",
+            allowableValues = {"1-50人", "50-100人", "100-500人", "500-1000人", "1000-5000人", "5000-10000人", "10000+人"})
     private String scale;
 
     /**
      * 行业类型
      */
+    @Pattern(regexp = "^(互联网|软件开发|游戏|电子商务|智能硬件|金融|教育|医疗|制造业|其他)$", 
+             message = "行业类型不在允许的范围内")
     @Schema(description = "行业类型", example = "互联网",
-            allowableValues = {"互联网", "软件开发", "游戏", "电商", "金融", "教育", "医疗", "制造业", "其他"})
+            allowableValues = {"互联网", "软件开发", "游戏", "电子商务", "智能硬件", "金融", "教育", "医疗", "制造业", "其他"})
     private String industry;
 
     /**
@@ -99,6 +111,7 @@ public class Enterprise extends BaseEntity {
     /**
      * 状态（0正常 1停用）
      */
+    @Pattern(regexp = "^[01]$", message = "状态值必须为0或1")
     @Schema(description = "状态", example = "0", allowableValues = {"0", "1"})
     private String status;
     

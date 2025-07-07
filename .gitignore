@@ -53,3 +53,5 @@ nbdist/
 !*/build/*.xml
 
 .flattened-pom.xml
+
+script/sql/ruoyi.sql

@@ -77,9 +77,10 @@ public class JobPosting extends BaseEntity {
     /**
      * 职业要求（对应设计师职业）
      */
-    @Schema(description = "职业要求", example = "UI_DESIGNER",
+    @Schema(description = "职业要求", example = "UI_UX_DESIGNER",
             allowableValues = {"ILLUSTRATOR", "INTERACTION_DESIGNER", "BRAND_DESIGNER", "UI_DESIGNER", 
-                             "UX_DESIGNER", "GRAPHIC_DESIGNER", "PRODUCT_DESIGNER", "MOTION_DESIGNER"},
+                             "UX_DESIGNER", "UI_UX_DESIGNER", "GRAPHIC_DESIGNER", "PRODUCT_DESIGNER", 
+                             "MOTION_DESIGNER", "VISUAL_DESIGNER", "THREE_D_DESIGNER"},
             requiredMode = Schema.RequiredMode.REQUIRED)
     private String requiredProfession;
 

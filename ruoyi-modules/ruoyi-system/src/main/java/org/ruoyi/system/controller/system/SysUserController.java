@@ -6,7 +6,10 @@ import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.ruoyi.common.core.constant.UserConstants;
 import org.ruoyi.common.core.domain.R;
 import org.ruoyi.common.core.domain.model.LoginUser;
 import org.ruoyi.common.core.utils.MapstructUtils;
@@ -27,12 +30,16 @@ import org.ruoyi.system.domain.request.UserRequest;
 import org.ruoyi.system.domain.vo.*;
 import org.ruoyi.system.listener.SysUserImportListener;
 import org.ruoyi.system.service.*;
+import org.ruoyi.system.mapper.SysUserRoleMapper;
+import org.ruoyi.system.domain.SysUserRole;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,6 +48,7 @@ import java.util.stream.Collectors;
  *
  * @author Lion Li
  */
+@Slf4j
 @Validated
 @RequiredArgsConstructor
 @RestController
@@ -53,6 +61,7 @@ public class SysUserController extends BaseController {
     private final ISysDeptService deptService;
     private final ISysTenantService tenantService;
     private final ISysOssService ossService;
+    private final SysUserRoleMapper userRoleMapper;
     /**
      * 获取用户列表
      */
@@ -320,6 +329,90 @@ public class SysUserController extends BaseController {
     public R<List> deptTree(SysDeptBo dept) {
         List<Tree<Long>> trees = deptService.selectDeptTreeList(dept);
         return R.ok(trees);
+    }
+
+    /**
+     * 普通用户角色选择（专用接口）
+     * 仅允许普通角色用户选择专业角色，绕过数据权限检查
+     * 限制：1. 只能由普通角色用户调用；2. 用户只能选择一次角色
+     */
+    @PostMapping("/selectRole")
+    public R<Void> selectRole(@RequestBody SelectRoleRequest request) {
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        Long userId = loginUser.getUserId();
+        
+        // 获取用户当前角色列表
+        List<SysRoleVo> userRoles = roleService.selectRolesByUserId(userId);
+        
+        // 1. 检查是否为普通角色用户（角色ID=2，角色标识为common）
+        boolean isNormalRole = false;
+        boolean hasSelectedProfessionalRole = false;
+        
+        for (SysRoleVo role : userRoles) {
+            // 检查是否有普通角色
+            if (role.getRoleId().equals(UserConstants.RoleIds.COMMON_ROLE_ID) && UserConstants.RoleKeys.COMMON.equals(role.getRoleKey())) {
+                isNormalRole = true;
+            }
+            // 检查是否已经有专业角色 - 改为使用角色key进行验证
+            String roleKey = role.getRoleKey();
+            if (UserConstants.RoleKeys.DESIGNER.equals(roleKey) || // 设计师
+                UserConstants.RoleKeys.ENTERPRISE.equals(roleKey) || // 企业管理员  
+                UserConstants.RoleKeys.SCHOOL.equals(roleKey)) { // 院校管理员
+                hasSelectedProfessionalRole = true;
+            }
+        }
+        
+        // 只允许普通角色用户调用
+        if (!isNormalRole) {
+            log.warn("非普通角色用户尝试选择角色 - userId: {}, userRoles: {}", userId, userRoles);
+            return R.fail("只有普通角色用户可以选择角色");
+        }
+        
+        // 2. 检查用户是否已经选择过专业角色（一次性选择限制）
+        if (hasSelectedProfessionalRole) {
+            log.warn("用户已选择专业角色，不能重复选择 - userId: {}, userRoles: {}", userId, userRoles);
+            return R.fail("您已经选择过角色，不能重复选择");
+        }
+        
+        // 3. 验证目标角色是否为允许的专业角色 - 改为使用角色ID验证（因为请求中传的是角色ID）
+        Long[] allowedRoleIds = {
+            UserConstants.RoleIds.DESIGNER_ROLE_ID, 
+            UserConstants.RoleIds.ENTERPRISE_ROLE_ID, 
+            UserConstants.RoleIds.SCHOOL_ROLE_ID
+        };
+        Long targetRoleId = request.getRoleId();
+        if (!Arrays.asList(allowedRoleIds).contains(targetRoleId)) {
+            log.warn("用户选择了无效的角色 - userId: {}, targetRoleId: {}", userId, targetRoleId);
+            return R.fail("无效的角色选择");
+        }
+        
+        // 4. 直接操作用户角色关联表，完全绕过权限检查
+        try {
+            // 删除用户现有的所有角色关联
+            userRoleMapper.delete(new LambdaQueryWrapper<SysUserRole>()
+                .eq(SysUserRole::getUserId, userId));
+            
+            // 插入新的专业角色关联
+            SysUserRole userRole = new SysUserRole();
+            userRole.setUserId(userId);
+            userRole.setRoleId(targetRoleId);
+            userRoleMapper.insert(userRole);
+            
+            log.info("用户角色选择成功 - userId: {}, 从普通角色(common)切换到专业角色: {}", userId, targetRoleId);
+            return R.ok("角色选择成功！");
+            
+        } catch (Exception e) {
+            log.error("角色选择失败 - userId: {}, roleId: {}", userId, targetRoleId, e);
+            return R.fail("角色选择失败，请重试");
+        }
+    }
+
+    /**
+     * 角色选择请求对象
+     */
+    @Data
+    public static class SelectRoleRequest {
+        private Long roleId;
     }
 
 }

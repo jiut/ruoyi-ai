@@ -449,7 +449,7 @@ public class DesignerController extends BaseController {
                             "phone": "13800138000",
                             "email": "zhangsan@example.com",
                             "description": "专业UI设计师，擅长原型设计和视觉设计",
-                            "profession": "UI_DESIGNER",
+                            "profession": "UI_UX_DESIGNER",
                             "skillTags": "[\\"prototype_design\\", \\"visual_design\\"]",
                             "workYears": 3,
                             "portfolioUrl": "https://portfolio.example.com",
@@ -499,10 +499,11 @@ public class DesignerController extends BaseController {
         summary = "按职业查询设计师",
         description = "根据职业类型查询设计师列表",
         parameters = @Parameter(name = "profession", description = "职业类型", required = true, 
-                               example = "UI_DESIGNER",
+                               example = "UI_UX_DESIGNER",
                                schema = @Schema(allowableValues = {"ILLUSTRATOR", "INTERACTION_DESIGNER", 
                                                                  "BRAND_DESIGNER", "UI_DESIGNER", "UX_DESIGNER", 
-                                                                 "GRAPHIC_DESIGNER", "PRODUCT_DESIGNER", "MOTION_DESIGNER"}))
+                                                                 "UI_UX_DESIGNER", "GRAPHIC_DESIGNER", "PRODUCT_DESIGNER", 
+                                                                 "MOTION_DESIGNER", "VISUAL_DESIGNER", "THREE_D_DESIGNER"}))
     )
     @SaCheckPermission("designer:designer:query")
     @GetMapping("/profession/{profession}")

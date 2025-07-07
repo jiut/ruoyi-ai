@@ -76,7 +76,7 @@ ALTER TABLE `des_designer` ADD COLUMN `user_id` BIGINT COMMENT '关联用户ID';
 
 ```
 GET    /designer/designer/list           # 查询设计师列表
-GET    /designer/designer/{id}           # 获取设计师详情
+GET    /designer/designer/{designerId}           # 获取设计师详情
 POST   /designer/designer                # 新增设计师
 PUT    /designer/designer                # 修改设计师
 DELETE /designer/designer/{ids}          # 删除设计师
@@ -131,7 +131,7 @@ POST   /designer/application/apply       # 申请岗位
 PUT    /designer/application/process     # 处理申请
 PUT    /designer/application/withdraw    # 撤回申请
 GET    /designer/application/job/{id}    # 岗位的申请列表
-GET    /designer/application/designer/{id} # 设计师的申请列表
+GET    /designer/application/designer/{designerId} # 设计师的申请列表
 ```
 
 ### 用户注册绑定接口
@@ -190,7 +190,7 @@ Content-Type: application/json
 
 {
     "schoolName": "设计学院",
-    "schoolType": "UNIVERSITY",
+    "schoolType": "COMPREHENSIVE",
     "level": "本科",
     "address": "上海市浦东新区",
     "description": "知名设计院校"

@@ -129,4 +129,79 @@ public interface UserConstants {
      */
     Long SUPER_ADMIN_ID = 1L;
 
+    /**
+     * 角色标识常量
+     */
+    interface RoleKeys {
+        /**
+         * 设计师角色标识
+         */
+        String DESIGNER = "designer";
+        
+        /**
+         * 企业管理员角色标识
+         */
+        String ENTERPRISE = "enterprise";
+        
+        /**
+         * 院校管理员角色标识
+         */
+        String SCHOOL = "school";
+        
+        /**
+         * 超级管理员角色标识
+         */
+        String ADMIN = "admin";
+        
+        /**
+         * 普通用户角色标识
+         */
+        String COMMON = "common";
+    }
+
+    /**
+     * 角色ID常量（用于系统内部引用）
+     */
+    interface RoleIds {
+        /**
+         * 普通角色ID
+         */
+        Long COMMON_ROLE_ID = 2L;
+        
+        /**
+         * 设计师角色ID
+         */
+        Long DESIGNER_ROLE_ID = 1932319128081666050L;
+        
+        /**
+         * 企业管理员角色ID
+         */
+        Long ENTERPRISE_ROLE_ID = 1932319128081666051L;
+        
+        /**
+         * 院校管理员角色ID
+         */
+        Long SCHOOL_ROLE_ID = 1932319128081666052L;
+    }
+
+    /**
+     * 获取角色显示名称
+     */
+    static String getRoleDisplayName(String roleKey) {
+        switch (roleKey) {
+            case RoleKeys.DESIGNER:
+                return "设计师";
+            case RoleKeys.ENTERPRISE:
+                return "企业管理员";
+            case RoleKeys.SCHOOL:
+                return "院校管理员";
+            case RoleKeys.ADMIN:
+                return "系统管理员";
+            case RoleKeys.COMMON:
+                return "普通用户";
+            default:
+                return roleKey;
+        }
+    }
+
 }

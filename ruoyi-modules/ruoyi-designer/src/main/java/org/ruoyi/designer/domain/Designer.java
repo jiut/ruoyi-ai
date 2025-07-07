@@ -9,6 +9,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.ruoyi.core.domain.BaseEntity;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Max;
 import java.io.Serial;
 import java.time.LocalDate;
 
@@ -43,6 +48,7 @@ public class Designer extends BaseEntity {
     /**
      * 设计师姓名
      */
+    @NotBlank(message = "设计师姓名不能为空")
     @Schema(description = "设计师姓名", example = "张三", requiredMode = Schema.RequiredMode.REQUIRED)
     private String designerName;
 
@@ -55,6 +61,7 @@ public class Designer extends BaseEntity {
     /**
      * 性别（0男 1女 2未知）
      */
+    @Pattern(regexp = "^[012]$", message = "性别值必须为0、1或2")
     @Schema(description = "性别", example = "0", allowableValues = {"0", "1", "2"})
     private String gender;
 
@@ -67,13 +74,15 @@ public class Designer extends BaseEntity {
     /**
      * 联系电话
      */
-    @Schema(description = "联系电话", example = "13800138000", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Pattern(regexp = "^1[3-9]\\d{9}$", message = "手机号格式不正确")
+    @Schema(description = "联系电话", example = "13800138000")
     private String phone;
 
     /**
      * 联系邮箱
      */
-    @Schema(description = "联系邮箱", example = "zhangsan@example.com", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Email(message = "邮箱格式不正确")
+    @Schema(description = "联系邮箱", example = "zhangsan@example.com")
     private String email;
 
     /**
@@ -85,10 +94,12 @@ public class Designer extends BaseEntity {
     /**
      * 职业（插画师、交互设计师等）
      */
-    @Schema(description = "职业类型", example = "UI_DESIGNER", 
+    @Pattern(regexp = "^(ILLUSTRATOR|INTERACTION_DESIGNER|BRAND_DESIGNER|UI_DESIGNER|UX_DESIGNER|UI_UX_DESIGNER|GRAPHIC_DESIGNER|PRODUCT_DESIGNER|MOTION_DESIGNER|VISUAL_DESIGNER|THREE_D_DESIGNER)$", 
+             message = "职业类型不在允许的范围内")
+    @Schema(description = "职业类型", example = "UI_UX_DESIGNER", 
             allowableValues = {"ILLUSTRATOR", "INTERACTION_DESIGNER", "BRAND_DESIGNER", "UI_DESIGNER", 
-                             "UX_DESIGNER", "GRAPHIC_DESIGNER", "PRODUCT_DESIGNER", "MOTION_DESIGNER"},
-            requiredMode = Schema.RequiredMode.REQUIRED)
+                             "UX_DESIGNER", "UI_UX_DESIGNER", "GRAPHIC_DESIGNER", "PRODUCT_DESIGNER", 
+                             "MOTION_DESIGNER", "VISUAL_DESIGNER", "THREE_D_DESIGNER"})
     private String profession;
 
     /**
@@ -101,6 +112,8 @@ public class Designer extends BaseEntity {
     /**
      * 工作年限
      */
+    @Min(value = 0, message = "工作年限不能小于0")
+    @Max(value = 50, message = "工作年限不能大于50")
     @Schema(description = "工作年限（年）", example = "3", minimum = "0", maximum = "50")
     private Integer workYears;
 
@@ -145,6 +158,7 @@ public class Designer extends BaseEntity {
     /**
      * 工作状态（EMPLOYED在职、FREELANCER自由职业者、UNEMPLOYED求职中等）
      */
+    @Pattern(regexp = "^(EMPLOYED|FREELANCER|UNEMPLOYED|STUDENT|RETIRED)$", message = "工作状态不在允许的范围内")
     @Schema(description = "工作状态", example = "EMPLOYED", 
             allowableValues = {"EMPLOYED", "FREELANCER", "UNEMPLOYED", "STUDENT", "RETIRED"})
     private String workStatus;
@@ -158,6 +172,7 @@ public class Designer extends BaseEntity {
     /**
      * 状态（0正常 1停用）
      */
+    @Pattern(regexp = "^[01]$", message = "状态值必须为0或1")
     @Schema(description = "状态", example = "0", allowableValues = {"0", "1"})
     private String status;
 } 
