@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.Date;
+import org.ruoyi.designer.service.IUserBindingService;
+import org.ruoyi.designer.domain.enums.UserEntityType;
 
 /**
  * 设计师Service业务层处理
@@ -48,6 +50,7 @@ public class DesignerServiceImpl extends ServiceImpl<DesignerMapper, Designer> i
     private final IAwardService awardService;
     private final IJobApplicationService jobApplicationService;
     private final DesignerPermissionUtils permissionUtils;
+    private final IUserBindingService userBindingService;
 
     /**
      * 查询设计师列表
@@ -250,6 +253,9 @@ public class DesignerServiceImpl extends ServiceImpl<DesignerMapper, Designer> i
         
         // 删除岗位申请
         jobApplicationService.deleteByDesignerIds(designerIds, currentUserId, currentTime);
+
+        // 解除用户绑定关系（设置为解绑状态）
+        userBindingService.batchUnbindByEntityTypeAndIds(UserEntityType.DESIGNER, designerIds);
     }
 
     /**
@@ -308,6 +314,9 @@ public class DesignerServiceImpl extends ServiceImpl<DesignerMapper, Designer> i
         
         // 恢复岗位申请
         jobApplicationService.restoreByDesignerIds(designerIds);
+        
+        // 恢复用户绑定关系（重新激活绑定）
+        userBindingService.batchRestoreByEntityTypeAndIds(UserEntityType.DESIGNER, designerIds);
     }
 
     @Override

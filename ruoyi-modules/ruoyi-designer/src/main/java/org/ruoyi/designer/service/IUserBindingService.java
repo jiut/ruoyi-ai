@@ -110,4 +110,34 @@ public interface IUserBindingService extends IService<UserBinding> {
      * @return 绑定关系
      */
     UserBinding getBindingByUserIdAndEntityTypeAllStatus(Long userId, UserEntityType entityType);
+
+    /**
+     * 根据实体类型和实体ID删除绑定关系（设置为解绑状态）
+     * 用于实体删除时同步处理绑定关系
+     *
+     * @param entityType 实体类型
+     * @param entityId 实体ID
+     * @return 删除结果
+     */
+    Boolean unbindByEntityTypeAndId(UserEntityType entityType, Long entityId);
+
+    /**
+     * 批量根据实体类型和实体ID删除绑定关系
+     * 用于批量删除实体时同步处理绑定关系
+     *
+     * @param entityType 实体类型
+     * @param entityIds 实体ID列表
+     * @return 删除结果
+     */
+    Boolean batchUnbindByEntityTypeAndIds(UserEntityType entityType, List<Long> entityIds);
+
+    /**
+     * 批量根据实体类型和实体ID恢复绑定关系
+     * 用于恢复实体时同步处理绑定关系
+     *
+     * @param entityType 实体类型
+     * @param entityIds 实体ID列表
+     * @return 恢复结果
+     */
+    Boolean batchRestoreByEntityTypeAndIds(UserEntityType entityType, List<Long> entityIds);
 } 

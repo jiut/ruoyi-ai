@@ -1,6 +1,7 @@
 package org.ruoyi.designer.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.ruoyi.designer.domain.UserBinding;
@@ -127,5 +128,49 @@ public class UserBindingServiceImpl extends ServiceImpl<UserBindingMapper, UserB
     @Override
     public UserBinding getBindingByUserIdAndEntityTypeAllStatus(Long userId, UserEntityType entityType) {
         return userBindingMapper.selectByUserIdAndEntityTypeAllStatus(userId, entityType.getCode());
+    }
+
+    @Override
+    public Boolean unbindByEntityTypeAndId(UserEntityType entityType, Long entityId) {
+        // 查询指定实体的绑定关系
+        UserBinding binding = userBindingMapper.selectByEntityTypeAndId(entityType.getCode(), entityId);
+        if (binding != null && "1".equals(binding.getBindingStatus())) {
+            // 将绑定状态设置为解绑
+            binding.setBindingStatus("0");
+            return updateById(binding);
+        }
+        return true; // 如果没有绑定关系或已经是解绑状态，返回成功
+    }
+
+    @Override
+    public Boolean batchUnbindByEntityTypeAndIds(UserEntityType entityType, List<Long> entityIds) {
+        if (entityIds == null || entityIds.isEmpty()) {
+            return true;
+        }
+        
+        // 批量更新绑定状态为解绑
+        LambdaUpdateWrapper<UserBinding> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(UserBinding::getEntityType, entityType.getCode())
+                .in(UserBinding::getEntityId, entityIds)
+                .eq(UserBinding::getBindingStatus, "1")  // 只更新当前为绑定状态的记录
+                .set(UserBinding::getBindingStatus, "0"); // 设置为解绑状态
+        
+        return update(wrapper);
+    }
+
+    @Override
+    public Boolean batchRestoreByEntityTypeAndIds(UserEntityType entityType, List<Long> entityIds) {
+        if (entityIds == null || entityIds.isEmpty()) {
+            return true;
+        }
+        
+        // 批量恢复绑定状态
+        LambdaUpdateWrapper<UserBinding> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(UserBinding::getEntityType, entityType.getCode())
+                .in(UserBinding::getEntityId, entityIds)
+                .eq(UserBinding::getBindingStatus, "0")  // 只恢复当前为解绑状态的记录
+                .set(UserBinding::getBindingStatus, "1"); // 设置为绑定状态
+        
+        return update(wrapper);
     }
 } 
