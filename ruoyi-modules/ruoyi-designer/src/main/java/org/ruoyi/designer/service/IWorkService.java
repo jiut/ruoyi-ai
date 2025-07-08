@@ -5,6 +5,7 @@ import org.ruoyi.core.page.TableDataInfo;
 import org.ruoyi.designer.domain.Work;
 
 import java.util.List;
+import java.util.Date;
 
 /**
  * 作品Service接口
@@ -84,4 +85,22 @@ public interface IWorkService extends IService<Work> {
      * @return 结果
      */
     Boolean incrementLikeCount(Long workId);
+
+    /**
+     * 根据设计师ID批量逻辑删除作品
+     *
+     * @param designerIds 设计师ID列表
+     * @param currentUserId 当前用户ID
+     * @param currentTime 当前时间
+     * @return 结果
+     */
+    Boolean deleteByDesignerIds(List<Long> designerIds, Long currentUserId, Date currentTime);
+
+    /**
+     * 根据设计师ID批量恢复作品
+     *
+     * @param designerIds 设计师ID列表
+     * @return 结果
+     */
+    Boolean restoreByDesignerIds(List<Long> designerIds);
 } 

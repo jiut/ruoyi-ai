@@ -5,6 +5,7 @@ import org.ruoyi.core.page.TableDataInfo;
 import org.ruoyi.designer.domain.Education;
 
 import java.util.List;
+import java.util.Date;
 
 /**
  * 教育背景Service接口
@@ -68,4 +69,22 @@ public interface IEducationService extends IService<Education> {
      * @return 结果
      */
     Boolean deleteEducationByDesignerId(Long designerId);
+
+    /**
+     * 根据设计师ID批量逻辑删除教育背景
+     *
+     * @param designerIds 设计师ID列表
+     * @param currentUserId 当前用户ID
+     * @param currentTime 当前时间
+     * @return 结果
+     */
+    Boolean deleteByDesignerIds(List<Long> designerIds, Long currentUserId, Date currentTime);
+
+    /**
+     * 根据设计师ID批量恢复教育背景
+     *
+     * @param designerIds 设计师ID列表
+     * @return 结果
+     */
+    Boolean restoreByDesignerIds(List<Long> designerIds);
 } 

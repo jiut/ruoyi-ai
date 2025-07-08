@@ -6,6 +6,7 @@ import org.ruoyi.core.page.PageQuery;
 import org.ruoyi.designer.domain.JobApplication;
 
 import java.util.List;
+import java.util.Date;
 
 /**
  * 岗位申请Service接口
@@ -100,4 +101,22 @@ public interface IJobApplicationService extends IService<JobApplication> {
      * @return 结果
      */
     Boolean withdrawApplication(Long applicationId, Long designerId);
+
+    /**
+     * 根据设计师ID批量逻辑删除岗位申请
+     *
+     * @param designerIds 设计师ID列表
+     * @param currentUserId 当前用户ID
+     * @param currentTime 当前时间
+     * @return 结果
+     */
+    Boolean deleteByDesignerIds(List<Long> designerIds, Long currentUserId, Date currentTime);
+
+    /**
+     * 根据设计师ID批量恢复岗位申请
+     *
+     * @param designerIds 设计师ID列表
+     * @return 结果
+     */
+    Boolean restoreByDesignerIds(List<Long> designerIds);
 } 

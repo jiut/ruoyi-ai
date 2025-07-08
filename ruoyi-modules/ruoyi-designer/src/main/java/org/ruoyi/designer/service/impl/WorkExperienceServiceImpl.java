@@ -1,6 +1,7 @@
 package org.ruoyi.designer.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import org.ruoyi.designer.service.IWorkExperienceService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Date;
 
 /**
  * 工作经历Service业务层处理
@@ -106,6 +108,42 @@ public class WorkExperienceServiceImpl extends ServiceImpl<WorkExperienceMapper,
         LambdaQueryWrapper<WorkExperience> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(WorkExperience::getDesignerId, designerId);
         return remove(wrapper);
+    }
+
+    /**
+     * 根据设计师ID批量逻辑删除工作经历
+     */
+    @Override
+    public Boolean deleteByDesignerIds(List<Long> designerIds, Long currentUserId, Date currentTime) {
+        if (designerIds == null || designerIds.isEmpty()) {
+            return true;
+        }
+        
+        LambdaUpdateWrapper<WorkExperience> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.in(WorkExperience::getDesignerId, designerIds)
+                .set(WorkExperience::getDelFlag, "1")
+                .set(WorkExperience::getDelTime, currentTime)
+                .set(WorkExperience::getDelBy, currentUserId);
+        
+        return update(wrapper);
+    }
+
+    /**
+     * 根据设计师ID批量恢复工作经历
+     */
+    @Override
+    public Boolean restoreByDesignerIds(List<Long> designerIds) {
+        if (designerIds == null || designerIds.isEmpty()) {
+            return true;
+        }
+        
+        LambdaUpdateWrapper<WorkExperience> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.in(WorkExperience::getDesignerId, designerIds)
+                .set(WorkExperience::getDelFlag, "0")
+                .set(WorkExperience::getDelTime, null)
+                .set(WorkExperience::getDelBy, null);
+        
+        return update(wrapper);
     }
 
     /**

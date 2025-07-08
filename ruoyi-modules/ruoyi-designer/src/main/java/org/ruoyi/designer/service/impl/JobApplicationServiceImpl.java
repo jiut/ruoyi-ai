@@ -1,6 +1,7 @@
 package org.ruoyi.designer.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.ruoyi.designer.service.IJobApplicationService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Date;
 
 /**
  * 岗位申请Service业务层处理
@@ -134,5 +136,41 @@ public class JobApplicationServiceImpl extends ServiceImpl<JobApplicationMapper,
         jobApplication.setStatus("3");
         
         return updateById(jobApplication);
+    }
+
+    /**
+     * 根据设计师ID批量逻辑删除岗位申请
+     */
+    @Override
+    public Boolean deleteByDesignerIds(List<Long> designerIds, Long currentUserId, Date currentTime) {
+        if (designerIds == null || designerIds.isEmpty()) {
+            return true;
+        }
+        
+        LambdaUpdateWrapper<JobApplication> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.in(JobApplication::getDesignerId, designerIds)
+                .set(JobApplication::getDelFlag, "1")
+                .set(JobApplication::getDelTime, currentTime)
+                .set(JobApplication::getDelBy, currentUserId);
+        
+        return update(wrapper);
+    }
+
+    /**
+     * 根据设计师ID批量恢复岗位申请
+     */
+    @Override
+    public Boolean restoreByDesignerIds(List<Long> designerIds) {
+        if (designerIds == null || designerIds.isEmpty()) {
+            return true;
+        }
+        
+        LambdaUpdateWrapper<JobApplication> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.in(JobApplication::getDesignerId, designerIds)
+                .set(JobApplication::getDelFlag, "0")
+                .set(JobApplication::getDelTime, null)
+                .set(JobApplication::getDelBy, null);
+        
+        return update(wrapper);
     }
 } 

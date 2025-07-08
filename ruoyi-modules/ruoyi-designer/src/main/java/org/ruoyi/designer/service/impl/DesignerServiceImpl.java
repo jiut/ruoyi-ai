@@ -1,9 +1,11 @@
 package org.ruoyi.designer.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.ruoyi.core.page.TableDataInfo;
 import org.ruoyi.common.core.utils.StringUtils;
 import org.ruoyi.core.page.PageQuery;
@@ -12,24 +14,40 @@ import org.ruoyi.designer.domain.Designer;
 import org.ruoyi.designer.domain.enums.GenderEnum;
 import org.ruoyi.designer.mapper.DesignerMapper;
 import org.ruoyi.designer.service.IDesignerService;
+import org.ruoyi.designer.service.IWorkExperienceService;
+import org.ruoyi.designer.service.IEducationService;
+import org.ruoyi.designer.service.IWorkService;
+import org.ruoyi.designer.service.IAwardService;
+import org.ruoyi.designer.service.IJobApplicationService;
+import org.ruoyi.designer.util.DesignerPermissionUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.ruoyi.common.core.exception.ServiceException;
 
 import java.util.List;
 import java.util.Arrays;
 import java.util.stream.Collectors;
+import java.util.Date;
 
 /**
  * 设计师Service业务层处理
  *
  * @author ruoyi
  */
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class DesignerServiceImpl extends ServiceImpl<DesignerMapper, Designer> implements IDesignerService {
 
     private final DesignerMapper designerMapper;
+    private final IWorkExperienceService workExperienceService;
+    private final IEducationService educationService;
+    private final IWorkService workService;
+    private final IAwardService awardService;
+    private final IJobApplicationService jobApplicationService;
+    private final DesignerPermissionUtils permissionUtils;
 
     /**
      * 查询设计师列表
@@ -176,11 +194,120 @@ public class DesignerServiceImpl extends ServiceImpl<DesignerMapper, Designer> i
     }
 
     /**
-     * 批量删除设计师
+     * 批量逻辑删除设计师
+     * 实现逻辑删除，并级联删除关联数据
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Boolean deleteDesignerByIds(List<Long> designerIds) {
-        return removeByIds(designerIds);
+        if (designerIds == null || designerIds.isEmpty()) {
+            return false;
+        }
+
+        try {
+            // 获取当前用户ID
+            Long currentUserId = LoginHelper.getUserId();
+            Date currentTime = new Date();
+
+            // 批量更新设计师记录（逻辑删除）
+            LambdaUpdateWrapper<Designer> designerWrapper = new LambdaUpdateWrapper<>();
+            designerWrapper.in(Designer::getDesignerId, designerIds)
+                    .set(Designer::getDelFlag, "1")  // 设置为软删除状态
+                    .set(Designer::getDelTime, currentTime)
+                    .set(Designer::getDelBy, currentUserId);
+            
+            boolean result = this.update(designerWrapper);
+            
+            if (result) {
+                // 级联逻辑删除关联数据
+                cascadeDeleteRelatedData(designerIds, currentUserId, currentTime);
+            }
+            
+            return result;
+        } catch (Exception e) {
+            throw new ServiceException("删除设计师失败：" + e.getMessage());
+        }
+    }
+
+    /**
+     * 级联删除关联数据
+     * @param designerIds 设计师ID列表
+     * @param currentUserId 当前用户ID
+     * @param currentTime 当前时间
+     */
+    private void cascadeDeleteRelatedData(List<Long> designerIds, Long currentUserId, Date currentTime) {
+        // 删除工作经历
+        workExperienceService.deleteByDesignerIds(designerIds, currentUserId, currentTime);
+        
+        // 删除教育背景
+        educationService.deleteByDesignerIds(designerIds, currentUserId, currentTime);
+        
+        // 删除作品
+        workService.deleteByDesignerIds(designerIds, currentUserId, currentTime);
+        
+        // 删除获奖记录
+        awardService.deleteByDesignerIds(designerIds, currentUserId, currentTime);
+        
+        // 删除岗位申请
+        jobApplicationService.deleteByDesignerIds(designerIds, currentUserId, currentTime);
+    }
+
+    /**
+     * 恢复已删除的设计师及其关联数据
+     * @param designerIds 设计师ID列表
+     * @return 恢复结果
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean restoreDesignerByIds(List<Long> designerIds) {
+        if (designerIds == null || designerIds.isEmpty()) {
+            return false;
+        }
+
+        try {
+            // 获取当前用户ID（仅管理员可恢复）
+            if (!LoginHelper.isSuperAdmin()) {
+                throw new ServiceException("无权限恢复设计师数据");
+            }
+
+            // 批量恢复设计师记录
+            LambdaUpdateWrapper<Designer> designerWrapper = new LambdaUpdateWrapper<>();
+            designerWrapper.in(Designer::getDesignerId, designerIds)
+                    .set(Designer::getDelFlag, "0")  // 恢复为正常状态
+                    .set(Designer::getDelTime, null)
+                    .set(Designer::getDelBy, null);
+            
+            boolean result = this.update(designerWrapper);
+            
+            if (result) {
+                // 级联恢复关联数据
+                cascadeRestoreRelatedData(designerIds);
+            }
+            
+            return result;
+        } catch (Exception e) {
+            throw new ServiceException("恢复设计师失败：" + e.getMessage());
+        }
+    }
+
+    /**
+     * 级联恢复关联数据
+     * @param designerIds 设计师ID列表
+     */
+    private void cascadeRestoreRelatedData(List<Long> designerIds) {
+        // 恢复工作经历
+        workExperienceService.restoreByDesignerIds(designerIds);
+        
+        // 恢复教育背景
+        educationService.restoreByDesignerIds(designerIds);
+        
+        // 恢复作品
+        workService.restoreByDesignerIds(designerIds);
+        
+        // 恢复获奖记录
+        awardService.restoreByDesignerIds(designerIds);
+        
+        // 恢复岗位申请
+        jobApplicationService.restoreByDesignerIds(designerIds);
     }
 
     @Override
@@ -208,15 +335,18 @@ public class DesignerServiceImpl extends ServiceImpl<DesignerMapper, Designer> i
      */
     @Override
     public List<Designer> selectDesignerBySkillTags(List<String> skillTags) {
-        LambdaQueryWrapper<Designer> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(Designer::getStatus, "0");
-        
-        // 使用JSON_CONTAINS函数查询包含指定技能标签的设计师
-        for (String tag : skillTags) {
-            wrapper.apply("JSON_CONTAINS(skill_tags, {0})", "\"" + tag + "\"");
+        if (skillTags == null || skillTags.isEmpty()) {
+            return List.of();
         }
         
-        wrapper.orderByDesc(Designer::getCreateTime);
+        LambdaQueryWrapper<Designer> wrapper = new LambdaQueryWrapper<>();
+        // 使用 JSON_CONTAINS 查询技能标签
+        for (String tag : skillTags) {
+            wrapper.apply("JSON_CONTAINS(skill_tags, JSON_QUOTE({0}))", tag);
+        }
+        wrapper.eq(Designer::getStatus, "0")
+                .orderByDesc(Designer::getCreateTime);
+        
         return designerMapper.selectList(wrapper);
     }
 
@@ -245,35 +375,22 @@ public class DesignerServiceImpl extends ServiceImpl<DesignerMapper, Designer> i
     }
 
     /**
-     * 查询设计师公开信息列表（企业招聘使用）
-     * 只返回公开的设计师信息，隐藏敏感信息
+     * 查询公开的设计师列表（用于展示）
      */
     @Override
     public TableDataInfo<Designer> selectPublicDesignerList(Designer designer) {
         LambdaQueryWrapper<Designer> wrapper = new LambdaQueryWrapper<>();
+        wrapper.like(StringUtils.isNotBlank(designer.getDesignerName()), Designer::getDesignerName, designer.getDesignerName())
+                .eq(StringUtils.isNotBlank(designer.getProfession()), Designer::getProfession, designer.getProfession())
+                .eq(designer.getSchoolId() != null, Designer::getSchoolId, designer.getSchoolId())
+                .eq(designer.getEnterpriseId() != null, Designer::getEnterpriseId, designer.getEnterpriseId())
+                .eq(Designer::getStatus, "0")  // 只查询正常状态的设计师
+                .orderByDesc(Designer::getCreateTime);
         
-        // 只查询状态正常的设计师
-        wrapper.eq(Designer::getStatus, "0");
-        
-        // 根据查询条件进行筛选
-        if (StringUtils.isNotBlank(designer.getDesignerName())) {
-            wrapper.like(Designer::getDesignerName, designer.getDesignerName());
-        }
-        if (StringUtils.isNotBlank(designer.getProfession())) {
-            wrapper.eq(Designer::getProfession, designer.getProfession());
-        }
-        if (StringUtils.isNotBlank(designer.getSkillTags())) {
-            wrapper.apply("JSON_CONTAINS(skill_tags, {0})", "\"" + designer.getSkillTags() + "\"");
-        }
-        
-        // 按创建时间降序排列
-        wrapper.orderByDesc(Designer::getCreateTime);
-        
-        // 构建分页查询
-        PageQuery pageQuery = new PageQuery(20, 1);  // 使用默认分页参数
+        PageQuery pageQuery = new PageQuery(20, 1);
         Page<Designer> page = designerMapper.selectPage(pageQuery.build(), wrapper);
         
-        // 对于企业用户，需要隐藏敏感信息（如详细联系方式）
+        // 过滤敏感信息
         List<Designer> publicDesigners = page.getRecords().stream()
                 .map(this::convertToPublicDesigner)
                 .collect(Collectors.toList());
@@ -283,74 +400,231 @@ public class DesignerServiceImpl extends ServiceImpl<DesignerMapper, Designer> i
     }
 
     /**
-     * 根据院校查询设计师列表
-     * 院校管理员查看本校设计师使用
+     * 根据院校查询设计师列表（院校管理员使用）
      */
     @Override
     public TableDataInfo<Designer> selectDesignerListBySchool(Designer designer, Long schoolId) {
         LambdaQueryWrapper<Designer> wrapper = new LambdaQueryWrapper<>();
+        wrapper.like(StringUtils.isNotBlank(designer.getDesignerName()), Designer::getDesignerName, designer.getDesignerName())
+                .eq(StringUtils.isNotBlank(designer.getProfession()), Designer::getProfession, designer.getProfession())
+                .eq(Designer::getSchoolId, schoolId)  // 限制为特定院校
+                .eq(StringUtils.isNotBlank(designer.getStatus()), Designer::getStatus, designer.getStatus())
+                .orderByDesc(Designer::getCreateTime);
         
-        // 只查询指定院校的设计师
-        wrapper.eq(Designer::getSchoolId, schoolId)
-                .eq(Designer::getStatus, "0");
-        
-        // 根据查询条件进行筛选
-        if (StringUtils.isNotBlank(designer.getDesignerName())) {
-            wrapper.like(Designer::getDesignerName, designer.getDesignerName());
-        }
-        if (StringUtils.isNotBlank(designer.getProfession())) {
-            wrapper.eq(Designer::getProfession, designer.getProfession());
-        }
-        if (StringUtils.isNotBlank(designer.getSkillTags())) {
-            wrapper.apply("JSON_CONTAINS(skill_tags, {0})", "\"" + designer.getSkillTags() + "\"");
-        }
-        
-        // 按创建时间降序排列
-        wrapper.orderByDesc(Designer::getCreateTime);
-        
-        // 构建分页查询
-        PageQuery pageQuery = new PageQuery(20, 1);  // 使用默认分页参数
+        PageQuery pageQuery = new PageQuery(20, 1);
         Page<Designer> page = designerMapper.selectPage(pageQuery.build(), wrapper);
         return TableDataInfo.build(page);
     }
 
     /**
-     * 将设计师信息转换为公开信息（隐藏敏感数据）
-     * 
-     * @param designer 原始设计师信息
-     * @return 公开的设计师信息
+     * 转换为公开的设计师信息（过滤敏感信息）
      */
     private Designer convertToPublicDesigner(Designer designer) {
         Designer publicDesigner = new Designer();
-        
-        // 复制公开信息
         publicDesigner.setDesignerId(designer.getDesignerId());
         publicDesigner.setDesignerName(designer.getDesignerName());
         publicDesigner.setAvatar(designer.getAvatar());
-        publicDesigner.setGender(designer.getGender());
+        publicDesigner.setDescription(designer.getDescription());
         publicDesigner.setProfession(designer.getProfession());
         publicDesigner.setSkillTags(designer.getSkillTags());
         publicDesigner.setWorkYears(designer.getWorkYears());
-        publicDesigner.setDescription(designer.getDescription());
+        publicDesigner.setWorkStatus(designer.getWorkStatus());
+        publicDesigner.setLocation(designer.getLocation());
         publicDesigner.setPortfolioUrl(designer.getPortfolioUrl());
+        publicDesigner.setSocialLinks(designer.getSocialLinks());
         publicDesigner.setSchoolId(designer.getSchoolId());
         publicDesigner.setEnterpriseId(designer.getEnterpriseId());
-        publicDesigner.setStatus(designer.getStatus());
-        publicDesigner.setCreateTime(designer.getCreateTime());
-        
-        // 隐藏敏感信息
-        // publicDesigner.setPhone(null);  // 隐藏电话
-        // publicDesigner.setEmail(null);  // 隐藏邮箱
-        // publicDesigner.setBirthDate(null);  // 隐藏生日
-        // publicDesigner.setSocialLinks(null);  // 隐藏社交链接详情
-        
-        // 注：如果需要完全隐藏敏感信息，取消上面的注释
-        // 目前保留这些信息以便企业联系设计师
-        publicDesigner.setPhone(designer.getPhone());
-        publicDesigner.setEmail(designer.getEmail());
-        publicDesigner.setBirthDate(designer.getBirthDate());
-        publicDesigner.setSocialLinks(designer.getSocialLinks());
-        
+        // 不包含联系方式等敏感信息
         return publicDesigner;
+    }
+
+    // ==================== 新增状态控制方法实现 ====================
+
+    /**
+     * 更新设计师状态（启用/停用）
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean updateDesignerStatus(Long designerId, String status) {
+        // 1. 验证设计师是否存在
+        Designer designer = this.getById(designerId);
+        if (designer == null) {
+            throw new ServiceException("设计师不存在");
+        }
+
+        // 2. 检查权限
+        if (!hasPermissionToUpdateStatus(designerId)) {
+            throw new ServiceException("无权限修改此设计师状态");
+        }
+
+        // 3. 验证状态值
+        if (!"0".equals(status) && !"1".equals(status)) {
+            throw new ServiceException("状态值无效");
+        }
+
+        // 4. 更新状态
+        LambdaUpdateWrapper<Designer> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(Designer::getDesignerId, designerId)
+                .set(Designer::getStatus, status);
+
+        boolean result = this.update(wrapper);
+
+        // 5. 记录状态变更日志
+        if (result) {
+            String operation = "0".equals(status) ? "启用" : "停用";
+            log.info("设计师状态更新成功 - 设计师ID: {}, 操作: {}, 操作人: {}", 
+                    designerId, operation, LoginHelper.getUserId());
+        }
+
+        return result;
+    }
+
+    /**
+     * 批量更新设计师状态
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean batchUpdateDesignerStatus(List<Long> designerIds, String status) {
+        if (designerIds == null || designerIds.isEmpty()) {
+            return false;
+        }
+
+        // 验证权限
+        for (Long designerId : designerIds) {
+            if (!hasPermissionToUpdateStatus(designerId)) {
+                throw new ServiceException("无权限修改设计师ID " + designerId + " 的状态");
+            }
+        }
+
+        // 验证状态值
+        if (!"0".equals(status) && !"1".equals(status)) {
+            throw new ServiceException("状态值无效");
+        }
+
+        // 批量更新状态
+        LambdaUpdateWrapper<Designer> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.in(Designer::getDesignerId, designerIds)
+                .set(Designer::getStatus, status);
+
+        boolean result = this.update(wrapper);
+
+        if (result) {
+            String operation = "0".equals(status) ? "启用" : "停用";
+            log.info("设计师状态批量更新成功 - 设计师IDs: {}, 操作: {}, 操作人: {}", 
+                    designerIds, operation, LoginHelper.getUserId());
+        }
+
+        return result;
+    }
+
+    /**
+     * 检查状态更新权限
+     */
+    private boolean hasPermissionToUpdateStatus(Long designerId) {
+        // 超级管理员无限制
+        if (LoginHelper.isSuperAdmin()) {
+            return true;
+        }
+
+        // 获取当前用户信息
+        Long userId = LoginHelper.getUserId();
+        
+        // 院校管理员只能修改本校设计师状态
+        if (permissionUtils.isSchool()) {
+            Designer designer = this.getById(designerId);
+            if (designer == null) return false;
+
+            Long schoolId = permissionUtils.getCurrentSchoolId();
+            return designer.getSchoolId() != null && designer.getSchoolId().equals(schoolId);
+        }
+
+        // 企业管理员只能修改本企业设计师状态
+        if (permissionUtils.isEnterprise()) {
+            Designer designer = this.getById(designerId);
+            if (designer == null) return false;
+
+            Long enterpriseId = permissionUtils.getCurrentEnterpriseId();
+            return designer.getEnterpriseId() != null && designer.getEnterpriseId().equals(enterpriseId);
+        }
+
+        // 设计师不能修改状态
+        return false;
+    }
+
+    // ==================== 新增回收站查询方法实现 ====================
+
+    /**
+     * 查询包含已删除数据的设计师列表（管理员专用）
+     */
+    @Override
+    public TableDataInfo<Designer> selectDesignerListIncludeDeleted(Designer designer) {
+        // 只有超级管理员可以查看已删除数据
+        if (!LoginHelper.isSuperAdmin()) {
+            throw new ServiceException("无权限查看已删除的设计师数据");
+        }
+
+        // 注意：由于@TableLogic的限制，这里需要特殊处理
+        // 暂时返回空列表，等待后续Mapper方法扩展
+        PageQuery pageQuery = new PageQuery(20, 1);
+        Page<Designer> emptyPage = new Page<>(pageQuery.getPageNum(), pageQuery.getPageSize());
+        emptyPage.setRecords(List.of());
+        emptyPage.setTotal(0);
+        
+        log.warn("查询已删除数据功能需要扩展Mapper方法支持");
+        return TableDataInfo.build(emptyPage);
+    }
+
+    /**
+     * 查询包含停用数据的设计师列表（管理员专用）
+     */
+    @Override
+    public TableDataInfo<Designer> selectDesignerListIncludeDisabled(Designer designer) {
+        LambdaQueryWrapper<Designer> wrapper = new LambdaQueryWrapper<>();
+        wrapper.like(StringUtils.isNotBlank(designer.getDesignerName()), Designer::getDesignerName, designer.getDesignerName())
+                .eq(StringUtils.isNotBlank(designer.getProfession()), Designer::getProfession, designer.getProfession())
+                .eq(designer.getSchoolId() != null, Designer::getSchoolId, designer.getSchoolId())
+                .eq(designer.getEnterpriseId() != null, Designer::getEnterpriseId, designer.getEnterpriseId())
+                // 查询所有状态的数据（包括停用）
+                .in(Designer::getStatus, "0", "1")
+                .orderByDesc(Designer::getCreateTime);
+
+        PageQuery pageQuery = new PageQuery(20, 1);
+        Page<Designer> page = designerMapper.selectPage(pageQuery.build(), wrapper);
+        return TableDataInfo.build(page);
+    }
+
+    /**
+     * 查询回收站中的设计师列表（仅已删除数据）
+     */
+    @Override
+    public TableDataInfo<Designer> selectRecycleDesignerList() {
+        // 只有超级管理员可以查看回收站
+        if (!LoginHelper.isSuperAdmin()) {
+            throw new ServiceException("无权限查看回收站数据");
+        }
+
+        // 注意：由于@TableLogic的限制，这里需要特殊处理
+        // 暂时返回空列表，等待后续Mapper方法扩展
+        PageQuery pageQuery = new PageQuery(20, 1);
+        Page<Designer> emptyPage = new Page<>(pageQuery.getPageNum(), pageQuery.getPageSize());
+        emptyPage.setRecords(List.of());
+        emptyPage.setTotal(0);
+        
+        log.warn("回收站查询功能需要扩展Mapper方法支持");
+        return TableDataInfo.build(emptyPage);
+    }
+
+    /**
+     * 查询停用的设计师列表
+     */
+    @Override
+    public TableDataInfo<Designer> selectDisabledDesignerList() {
+        LambdaQueryWrapper<Designer> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Designer::getStatus, "1")  // 仅查询停用状态
+                .orderByDesc(Designer::getCreateTime);
+
+        PageQuery pageQuery = new PageQuery(20, 1);
+        Page<Designer> page = designerMapper.selectPage(pageQuery.build(), wrapper);
+        return TableDataInfo.build(page);
     }
 } 

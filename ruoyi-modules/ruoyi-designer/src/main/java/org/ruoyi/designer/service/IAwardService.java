@@ -5,6 +5,7 @@ import org.ruoyi.core.page.TableDataInfo;
 import org.ruoyi.designer.domain.Award;
 
 import java.util.List;
+import java.util.Date;
 
 /**
  * 获奖Service接口
@@ -68,4 +69,22 @@ public interface IAwardService extends IService<Award> {
      * @return 结果
      */
     Boolean deleteAwardByDesignerId(Long designerId);
+
+    /**
+     * 根据设计师ID批量逻辑删除获奖记录
+     *
+     * @param designerIds 设计师ID列表
+     * @param currentUserId 当前用户ID
+     * @param currentTime 当前时间
+     * @return 结果
+     */
+    Boolean deleteByDesignerIds(List<Long> designerIds, Long currentUserId, Date currentTime);
+
+    /**
+     * 根据设计师ID批量恢复获奖记录
+     *
+     * @param designerIds 设计师ID列表
+     * @return 结果
+     */
+    Boolean restoreByDesignerIds(List<Long> designerIds);
 } 

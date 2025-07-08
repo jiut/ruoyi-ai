@@ -1,6 +1,7 @@
 package org.ruoyi.designer.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -14,6 +15,7 @@ import org.ruoyi.core.domain.BaseEntity;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serial;
+import java.util.Date;
 
 /**
  * 作品对象 des_work
@@ -117,4 +119,26 @@ public class Work extends BaseEntity {
      */
     @Schema(description = "状态", example = "0", allowableValues = {"0", "1"})
     private String status;
+
+    /**
+     * 删除标志（0正常 1软删除 2硬删除）
+     */
+    @TableLogic(value = "0", delval = "1")
+    @JsonIgnore
+    @Schema(description = "删除标志", hidden = true)
+    private String delFlag;
+
+    /**
+     * 删除时间
+     */
+    @JsonIgnore
+    @Schema(description = "删除时间", hidden = true)
+    private Date delTime;
+
+    /**
+     * 删除人ID
+     */
+    @JsonIgnore
+    @Schema(description = "删除人ID", hidden = true)
+    private Long delBy;
 } 

@@ -1,6 +1,7 @@
 package org.ruoyi.designer.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Date;
 
 /**
  * 作品Service业务层处理
@@ -199,5 +201,41 @@ public class WorkServiceImpl extends ServiceImpl<WorkMapper, Work> implements IW
             return workMapper.updateById(work) > 0;
         }
         return false;
+    }
+
+    /**
+     * 根据设计师ID批量逻辑删除作品
+     */
+    @Override
+    public Boolean deleteByDesignerIds(List<Long> designerIds, Long currentUserId, Date currentTime) {
+        if (designerIds == null || designerIds.isEmpty()) {
+            return true;
+        }
+        
+        LambdaUpdateWrapper<Work> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.in(Work::getDesignerId, designerIds)
+                .set(Work::getDelFlag, "1")
+                .set(Work::getDelTime, currentTime)
+                .set(Work::getDelBy, currentUserId);
+        
+        return update(wrapper);
+    }
+
+    /**
+     * 根据设计师ID批量恢复作品
+     */
+    @Override
+    public Boolean restoreByDesignerIds(List<Long> designerIds) {
+        if (designerIds == null || designerIds.isEmpty()) {
+            return true;
+        }
+        
+        LambdaUpdateWrapper<Work> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.in(Work::getDesignerId, designerIds)
+                .set(Work::getDelFlag, "0")
+                .set(Work::getDelTime, null)
+                .set(Work::getDelBy, null);
+        
+        return update(wrapper);
     }
 } 

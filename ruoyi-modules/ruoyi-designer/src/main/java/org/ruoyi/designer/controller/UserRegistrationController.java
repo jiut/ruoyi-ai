@@ -118,7 +118,7 @@ public class UserRegistrationController extends BaseController {
     @PostMapping("/register/designer")
     public R<Void> registerDesigner(@Validated @RequestBody Designer designer) {
         // 1. 验证用户角色权限 - 只有设计师角色才能注册设计师身份
-        R<Void> roleValidation = validateUserRole(UserConstants.RoleKeys.DESIGNER, UserConstants.getRoleDisplayName(UserConstants.RoleKeys.DESIGNER));
+        R<Void> roleValidation = validateUserRole("designer", "设计师");
         if (!R.isSuccess(roleValidation)) {
             return roleValidation;
         }
@@ -201,7 +201,7 @@ public class UserRegistrationController extends BaseController {
     @PostMapping("/register/enterprise")
     public R<Void> registerEnterprise(@Validated @RequestBody Enterprise enterprise) {
         // 1. 验证用户角色权限 - 只有企业管理员角色才能注册企业身份
-        R<Void> roleValidation = validateUserRole(UserConstants.RoleKeys.ENTERPRISE, UserConstants.getRoleDisplayName(UserConstants.RoleKeys.ENTERPRISE));
+        R<Void> roleValidation = validateUserRole("enterprise", "企业管理员");
         if (!R.isSuccess(roleValidation)) {
             return roleValidation;
         }
@@ -269,7 +269,7 @@ public class UserRegistrationController extends BaseController {
     @PostMapping("/register/school")
     public R<Void> registerSchool(@Validated @RequestBody School school) {
         // 1. 验证用户角色权限 - 只有院校管理员角色才能注册院校身份
-        R<Void> roleValidation = validateUserRole(UserConstants.RoleKeys.SCHOOL, UserConstants.getRoleDisplayName(UserConstants.RoleKeys.SCHOOL));
+        R<Void> roleValidation = validateUserRole("school", "院校管理员");
         if (!R.isSuccess(roleValidation)) {
             return roleValidation;
         }
@@ -837,15 +837,15 @@ public class UserRegistrationController extends BaseController {
 
         for (UserBinding binding : bindings) {
             switch (binding.getEntityType()) {
-                case UserConstants.RoleKeys.DESIGNER:
+                case "designer":
                     DesignerCompletenessVo designerCompleteness = calculateDesignerCompleteness(binding.getEntityId());
                     completeness.setDesigner(designerCompleteness);
                     break;
-                case UserConstants.RoleKeys.ENTERPRISE:
+                case "enterprise":
                     EnterpriseCompletenessVo enterpriseCompleteness = calculateEnterpriseCompleteness(binding.getEntityId());
                     completeness.setEnterprise(enterpriseCompleteness);
                     break;
-                case UserConstants.RoleKeys.SCHOOL:
+                case "school":
                     SchoolCompletenessVo schoolCompleteness = calculateSchoolCompleteness(binding.getEntityId());
                     completeness.setSchool(schoolCompleteness);
                     break;

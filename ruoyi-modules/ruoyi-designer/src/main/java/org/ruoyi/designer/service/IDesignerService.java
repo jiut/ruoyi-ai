@@ -63,6 +63,14 @@ public interface IDesignerService extends IService<Designer> {
     Boolean deleteDesignerByIds(List<Long> designerIds);
 
     /**
+     * 恢复已删除的设计师
+     *
+     * @param designerIds 需要恢复的设计师ID
+     * @return 结果
+     */
+    Boolean restoreDesignerByIds(List<Long> designerIds);
+
+    /**
      * 根据职业查询设计师
      *
      * @param profession 职业
@@ -112,4 +120,56 @@ public interface IDesignerService extends IService<Designer> {
      * @return 设计师集合
      */
     TableDataInfo<Designer> selectDesignerListBySchool(Designer designer, Long schoolId);
+
+    // ==================== 新增状态控制方法 ====================
+
+    /**
+     * 更新设计师状态（启用/停用）
+     *
+     * @param designerId 设计师ID
+     * @param status 状态（0正常 1停用）
+     * @return 更新结果
+     */
+    Boolean updateDesignerStatus(Long designerId, String status);
+
+    /**
+     * 批量更新设计师状态
+     *
+     * @param designerIds 设计师ID列表
+     * @param status 状态（0正常 1停用）
+     * @return 更新结果
+     */
+    Boolean batchUpdateDesignerStatus(List<Long> designerIds, String status);
+
+    // ==================== 新增回收站查询方法 ====================
+
+    /**
+     * 查询包含已删除数据的设计师列表（管理员专用）
+     *
+     * @param designer 设计师查询条件
+     * @return 设计师集合（包含已删除数据）
+     */
+    TableDataInfo<Designer> selectDesignerListIncludeDeleted(Designer designer);
+
+    /**
+     * 查询包含停用数据的设计师列表（管理员专用）
+     *
+     * @param designer 设计师查询条件
+     * @return 设计师集合（包含停用数据）
+     */
+    TableDataInfo<Designer> selectDesignerListIncludeDisabled(Designer designer);
+
+    /**
+     * 查询回收站中的设计师列表（仅已删除数据）
+     *
+     * @return 已删除的设计师集合
+     */
+    TableDataInfo<Designer> selectRecycleDesignerList();
+
+    /**
+     * 查询停用的设计师列表
+     *
+     * @return 停用的设计师集合
+     */
+    TableDataInfo<Designer> selectDisabledDesignerList();
 } 

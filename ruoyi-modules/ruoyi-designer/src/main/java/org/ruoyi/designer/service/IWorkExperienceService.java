@@ -5,6 +5,7 @@ import org.ruoyi.core.page.TableDataInfo;
 import org.ruoyi.designer.domain.WorkExperience;
 
 import java.util.List;
+import java.util.Date;
 
 /**
  * 工作经历Service接口
@@ -68,4 +69,22 @@ public interface IWorkExperienceService extends IService<WorkExperience> {
      * @return 结果
      */
     Boolean deleteWorkExperienceByDesignerId(Long designerId);
+
+    /**
+     * 根据设计师ID批量逻辑删除工作经历
+     *
+     * @param designerIds 设计师ID列表
+     * @param currentUserId 当前用户ID
+     * @param currentTime 当前时间
+     * @return 结果
+     */
+    Boolean deleteByDesignerIds(List<Long> designerIds, Long currentUserId, Date currentTime);
+
+    /**
+     * 根据设计师ID批量恢复工作经历
+     *
+     * @param designerIds 设计师ID列表
+     * @return 结果
+     */
+    Boolean restoreByDesignerIds(List<Long> designerIds);
 } 

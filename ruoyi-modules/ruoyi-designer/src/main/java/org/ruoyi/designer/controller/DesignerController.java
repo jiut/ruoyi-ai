@@ -44,6 +44,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.beans.PropertyEditorSupport;
+import lombok.Data;
+import jakarta.validation.constraints.Pattern;
 
 /**
  * 设计师管理Controller
@@ -426,5 +428,193 @@ public class DesignerController extends BaseController {
     public R<List<SkillTag>> getSkillTags() {
         checkAdminPermission();
         return R.ok(Arrays.asList(SkillTag.values()));
+    }
+
+    // ==================== 新增状态控制接口 ====================
+
+    /**
+     * 修改设计师状态（启用/停用）
+     */
+    @Operation(
+        summary = "修改设计师状态",
+        description = "启用或停用设计师账户",
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "状态修改请求",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = ChangeStatusRequest.class),
+                examples = @ExampleObject(
+                    name = "修改状态示例",
+                    value = """
+                        {
+                            "designerId": 1,
+                            "status": "0"
+                        }
+                        """
+                )
+            )
+        )
+    )
+    @SaCheckPermission("designer:designer:edit")
+    @Log(title = "设计师管理", businessType = BusinessType.UPDATE)
+    @PutMapping("/changeStatus")
+    public R<Void> changeStatus(@Validated @RequestBody ChangeStatusRequest request) {
+        try {
+            boolean result = designerService.updateDesignerStatus(request.getDesignerId(), request.getStatus());
+            if (result) {
+                String operation = "0".equals(request.getStatus()) ? "启用" : "停用";
+                log.info("设计师状态修改成功，设计师ID: {}, 操作: {}", request.getDesignerId(), operation);
+                return R.ok();
+            } else {
+                log.error("设计师状态修改失败，设计师ID: {}", request.getDesignerId());
+                return R.fail("状态修改失败");
+            }
+        } catch (Exception e) {
+            log.error("设计师状态修改异常，设计师ID: {}", request.getDesignerId(), e);
+            return R.fail("状态修改失败：" + e.getMessage());
+        }
+    }
+
+    /**
+     * 批量修改设计师状态
+     */
+    @Operation(
+        summary = "批量修改设计师状态",
+        description = "批量启用或停用设计师账户",
+        requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "批量状态修改请求",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = BatchChangeStatusRequest.class),
+                examples = @ExampleObject(
+                    name = "批量修改状态示例",
+                    value = """
+                        {
+                            "designerIds": [1, 2, 3],
+                            "status": "1"
+                        }
+                        """
+                )
+            )
+        )
+    )
+    @SaCheckPermission("designer:designer:edit")
+    @Log(title = "设计师管理", businessType = BusinessType.UPDATE)
+    @PutMapping("/batchChangeStatus")
+    public R<Void> batchChangeStatus(@Validated @RequestBody BatchChangeStatusRequest request) {
+        try {
+            boolean result = designerService.batchUpdateDesignerStatus(request.getDesignerIds(), request.getStatus());
+            if (result) {
+                String operation = "0".equals(request.getStatus()) ? "启用" : "停用";
+                log.info("设计师状态批量修改成功，设计师IDs: {}, 操作: {}", request.getDesignerIds(), operation);
+                return R.ok();
+            } else {
+                log.error("设计师状态批量修改失败，设计师IDs: {}", request.getDesignerIds());
+                return R.fail("批量状态修改失败");
+            }
+        } catch (Exception e) {
+            log.error("设计师状态批量修改异常，设计师IDs: {}", request.getDesignerIds(), e);
+            return R.fail("批量状态修改失败：" + e.getMessage());
+        }
+    }
+
+    // ==================== 新增回收站管理接口 ====================
+
+    /**
+     * 恢复已删除的设计师
+     */
+    @Operation(
+        summary = "恢复设计师",
+        description = "恢复已删除的设计师数据（仅限管理员）",
+        parameters = @Parameter(name = "designerIds", description = "设计师ID数组", required = true, example = "1,2,3")
+    )
+    @SaCheckPermission("designer:designer:restore")
+    @Log(title = "设计师管理", businessType = BusinessType.UPDATE)
+    @PostMapping("/restore/{designerIds}")
+    public R<Void> restore(@PathVariable Long[] designerIds) {
+        checkAdminPermission();
+        try {
+            boolean result = designerService.restoreDesignerByIds(Arrays.asList(designerIds));
+            if (result) {
+                log.info("设计师恢复成功，设计师IDs: {}", Arrays.toString(designerIds));
+                return R.ok();
+            } else {
+                log.error("设计师恢复失败，设计师IDs: {}", Arrays.toString(designerIds));
+                return R.fail("恢复失败");
+            }
+        } catch (Exception e) {
+            log.error("设计师恢复异常，设计师IDs: {}", Arrays.toString(designerIds), e);
+            return R.fail("恢复失败：" + e.getMessage());
+        }
+    }
+
+    /**
+     * 查询回收站数据
+     */
+    @Operation(
+        summary = "查询回收站",
+        description = "查询已删除的设计师数据（仅限管理员）"
+    )
+    @SaCheckPermission("designer:designer:recycle:list")
+    @GetMapping("/recycle/list")
+    public R<TableDataInfo<Designer>> getRecycleList() {
+        checkAdminPermission();
+        try {
+            TableDataInfo<Designer> recycleData = designerService.selectRecycleDesignerList();
+            return R.ok(recycleData);
+        } catch (Exception e) {
+            log.error("查询回收站数据异常", e);
+            return R.fail("查询回收站失败：" + e.getMessage());
+        }
+    }
+
+    /**
+     * 查询停用的设计师列表
+     */
+    @Operation(
+        summary = "查询停用设计师",
+        description = "查询被停用的设计师数据（仅限管理员）"
+    )
+    @SaCheckPermission("designer:designer:list")
+    @GetMapping("/disabled/list")
+    public R<TableDataInfo<Designer>> getDisabledList() {
+        checkAdminPermission();
+        try {
+            TableDataInfo<Designer> disabledData = designerService.selectDisabledDesignerList();
+            return R.ok(disabledData);
+        } catch (Exception e) {
+            log.error("查询停用设计师数据异常", e);
+            return R.fail("查询停用设计师失败：" + e.getMessage());
+        }
+    }
+
+    // ==================== 请求对象定义 ====================
+
+    /**
+     * 状态修改请求对象
+     */
+    @Data
+    @Schema(description = "状态修改请求")
+    public static class ChangeStatusRequest {
+        @Schema(description = "设计师ID", required = true, example = "1")
+        private Long designerId;
+
+        @Pattern(regexp = "^[01]$", message = "状态值必须为0或1")
+        @Schema(description = "状态（0正常 1停用）", required = true, example = "0", allowableValues = {"0", "1"})
+        private String status;
+    }
+
+    /**
+     * 批量状态修改请求对象
+     */
+    @Data
+    @Schema(description = "批量状态修改请求")
+    public static class BatchChangeStatusRequest {
+        @Schema(description = "设计师ID列表", required = true, example = "[1,2,3]")
+        private List<Long> designerIds;
+
+        @Pattern(regexp = "^[01]$", message = "状态值必须为0或1")
+        @Schema(description = "状态（0正常 1停用）", required = true, example = "0", allowableValues = {"0", "1"})
+        private String status;
     }
 } 

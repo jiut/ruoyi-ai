@@ -1,6 +1,7 @@
 package org.ruoyi.designer.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import org.ruoyi.designer.service.IEducationService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Date;
 
 /**
  * 教育背景Service业务层处理
@@ -97,5 +99,41 @@ public class EducationServiceImpl extends ServiceImpl<EducationMapper, Education
         LambdaQueryWrapper<Education> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Education::getDesignerId, designerId);
         return remove(wrapper);
+    }
+
+    /**
+     * 根据设计师ID批量逻辑删除教育背景
+     */
+    @Override
+    public Boolean deleteByDesignerIds(List<Long> designerIds, Long currentUserId, Date currentTime) {
+        if (designerIds == null || designerIds.isEmpty()) {
+            return true;
+        }
+        
+        LambdaUpdateWrapper<Education> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.in(Education::getDesignerId, designerIds)
+                .set(Education::getDelFlag, "1")
+                .set(Education::getDelTime, currentTime)
+                .set(Education::getDelBy, currentUserId);
+        
+        return update(wrapper);
+    }
+
+    /**
+     * 根据设计师ID批量恢复教育背景
+     */
+    @Override
+    public Boolean restoreByDesignerIds(List<Long> designerIds) {
+        if (designerIds == null || designerIds.isEmpty()) {
+            return true;
+        }
+        
+        LambdaUpdateWrapper<Education> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.in(Education::getDesignerId, designerIds)
+                .set(Education::getDelFlag, "0")
+                .set(Education::getDelTime, null)
+                .set(Education::getDelBy, null);
+        
+        return update(wrapper);
     }
 } 
