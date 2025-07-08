@@ -92,11 +92,10 @@ public class WorkExperienceServiceImpl extends ServiceImpl<WorkExperienceMapper,
 
     /**
      * 批量删除工作经历
-     * 注意：使用MyBatis-Plus逻辑删除，不会物理删除数据
      */
     @Override
     public Boolean deleteWorkExperienceByIds(List<Long> experienceIds) {
-        return removeByIds(experienceIds);  // MyBatis-Plus会自动使用逻辑删除
+        return removeByIds(experienceIds);
     }
 
     /**

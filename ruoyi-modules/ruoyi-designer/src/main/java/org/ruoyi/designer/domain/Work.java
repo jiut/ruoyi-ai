@@ -2,7 +2,6 @@ package org.ruoyi.designer.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -118,10 +117,4 @@ public class Work extends BaseEntity {
      */
     @Schema(description = "状态", example = "0", allowableValues = {"0", "1"})
     private String status;
-
-    /**
-     * 逻辑删除
-     */
-    @TableLogic
-    private String delFlag;
 } 
