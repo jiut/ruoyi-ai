@@ -76,7 +76,7 @@ public class Designer extends BaseEntity {
     /**
      * 联系电话
      */
-    @Pattern(regexp = "^1[3-9]\\d{9}$", message = "手机号格式不正确")
+    @Pattern(regexp = "^$|^1[3-9]\\d{9}$", message = "手机号格式不正确")
     @Schema(description = "联系电话", example = "13800138000")
     private String phone;
 
