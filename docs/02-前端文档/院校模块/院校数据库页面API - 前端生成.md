@@ -60,7 +60,7 @@ interface SchoolListResponse {
 interface School {
   id: number
   schoolName: string
-  schoolType: 'UNIVERSITY' | 'COLLEGE' | 'TECHNICAL' | 'VOCATIONAL'
+  schoolType: 'COMPREHENSIVE' | 'ART' | 'ENGINEERING' | 'NORMAL' | 'FINANCE'
   level: string             // 本科/专科/研究生
   address: string
   description: string

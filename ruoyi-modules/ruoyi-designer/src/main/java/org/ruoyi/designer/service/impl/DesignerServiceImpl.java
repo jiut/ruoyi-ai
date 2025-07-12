@@ -84,7 +84,12 @@ public class DesignerServiceImpl extends ServiceImpl<DesignerMapper, Designer> i
     @Override
     public Boolean insertDesigner(Designer designer) {
         // 设置当前用户ID
-        designer.setUserId(LoginHelper.getUserId());
+        Long currentUserId = LoginHelper.getUserId();
+        designer.setUserId(currentUserId);
+        
+        // 调试日志：检查自动填充前的状态
+        log.debug("新增设计师前 - createBy: {}, createTime: {}, currentUserId: {}", 
+                 designer.getCreateBy(), designer.getCreateTime(), currentUserId);
         
         // 转换性别字段：如果传入的是中文，转换为数字代码
         convertGenderField(designer);
@@ -95,7 +100,13 @@ public class DesignerServiceImpl extends ServiceImpl<DesignerMapper, Designer> i
         // 转换社交链接格式
         convertSocialLinksField(designer);
         
-        return save(designer);
+        boolean result = save(designer);
+        
+        // 调试日志：检查自动填充后的状态
+        log.debug("新增设计师后 - createBy: {}, createTime: {}, result: {}", 
+                 designer.getCreateBy(), designer.getCreateTime(), result);
+        
+        return result;
     }
 
     /**

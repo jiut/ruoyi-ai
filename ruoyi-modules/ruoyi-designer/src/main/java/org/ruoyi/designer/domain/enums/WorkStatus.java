@@ -14,9 +14,8 @@ public enum WorkStatus {
 
     EMPLOYED("EMPLOYED", "在职"),
     FREELANCER("FREELANCER", "自由职业者"),
-    UNEMPLOYED("UNEMPLOYED", "求职中"),
-    STUDENT("STUDENT", "在校学生"),
-    RETIRED("RETIRED", "退休");
+    SEEKING("SEEKING", "求职中"),
+    STUDENT("STUDENT", "在校学生");
 
     private final String code;
     private final String name;

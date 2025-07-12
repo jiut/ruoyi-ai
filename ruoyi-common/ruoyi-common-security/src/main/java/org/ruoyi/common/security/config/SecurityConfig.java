@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.ruoyi.common.core.utils.SpringUtils;
 import org.ruoyi.common.security.config.properties.SecurityProperties;
 import org.ruoyi.common.security.handler.AllUrlHandler;
+import org.ruoyi.common.core.service.BaseContext;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -43,6 +44,12 @@ public class SecurityConfig implements WebMvcConfigurer {
                 .check(() -> {
                     // 检查是否登录 是否有token
                     StpUtil.checkLogin();
+                    
+                    // 设置当前Token到BaseContext，供自动注入使用
+                    String currentToken = StpUtil.getTokenValue();
+                    if (currentToken != null) {
+                        BaseContext.setCurrentToken(currentToken);
+                    }
 
                     // 有效率影响 用于临时测试
                     // if (log.isDebugEnabled()) {

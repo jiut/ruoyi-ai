@@ -103,4 +103,14 @@ public interface IWorkService extends IService<Work> {
      * @return 结果
      */
     Boolean restoreByDesignerIds(List<Long> designerIds);
+
+    /**
+     * 逻辑删除单个作品
+     *
+     * @param workId 作品ID
+     * @param currentUserId 当前用户ID
+     * @param currentTime 当前时间
+     * @return 结果
+     */
+    Boolean logicDeleteWorkById(Long workId, Long currentUserId, Date currentTime);
 } 

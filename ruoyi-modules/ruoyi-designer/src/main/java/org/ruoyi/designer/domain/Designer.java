@@ -158,11 +158,11 @@ public class Designer extends BaseEntity {
     private String socialLinks;
 
     /**
-     * 工作状态（EMPLOYED在职、FREELANCER自由职业者、UNEMPLOYED求职中等）
+     * 工作状态（EMPLOYED在职、FREELANCER自由职业者、SEEKING求职中等）
      */
-    @Pattern(regexp = "^(EMPLOYED|FREELANCER|UNEMPLOYED|STUDENT|RETIRED)$", message = "工作状态不在允许的范围内")
+    @Pattern(regexp = "^(EMPLOYED|FREELANCER|SEEKING|STUDENT)$", message = "工作状态不在允许的范围内")
     @Schema(description = "工作状态", example = "EMPLOYED", 
-            allowableValues = {"EMPLOYED", "FREELANCER", "UNEMPLOYED", "STUDENT", "RETIRED"})
+            allowableValues = {"EMPLOYED", "FREELANCER", "SEEKING", "STUDENT"})
     private String workStatus;
 
     /**

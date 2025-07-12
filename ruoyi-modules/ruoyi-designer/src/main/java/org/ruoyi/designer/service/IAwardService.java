@@ -87,4 +87,14 @@ public interface IAwardService extends IService<Award> {
      * @return 结果
      */
     Boolean restoreByDesignerIds(List<Long> designerIds);
+
+    /**
+     * 逻辑删除单个获奖记录
+     *
+     * @param awardId 获奖ID
+     * @param currentUserId 当前用户ID
+     * @param currentTime 当前时间
+     * @return 结果
+     */
+    Boolean logicDeleteAwardById(Long awardId, Long currentUserId, Date currentTime);
 } 

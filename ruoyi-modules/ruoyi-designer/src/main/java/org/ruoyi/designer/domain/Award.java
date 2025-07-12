@@ -92,18 +92,6 @@ public class Award extends BaseEntity {
     private String description;
 
     /**
-     * 证书链接
-     */
-    @Schema(description = "证书链接", example = "https://example.com/certificate.pdf")
-    private String certificateUrl;
-
-    /**
-     * 排序号
-     */
-    @Schema(description = "排序号", example = "1")
-    private Integer sort;
-
-    /**
      * 状态（0正常 1停用）
      */
     @Schema(description = "状态", example = "0", allowableValues = {"0", "1"})

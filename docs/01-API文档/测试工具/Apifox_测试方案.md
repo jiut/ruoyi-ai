@@ -132,7 +132,7 @@ if (pm.response.code === 200) {
 ```json
 {
     "schoolName": "北京设计学院",
-    "schoolType": "UNIVERSITY",
+    "schoolType": "COMPREHENSIVE",
     "level": "本科",
     "address": "北京市海淀区",
     "description": "专业的设计教育机构"

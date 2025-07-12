@@ -5,20 +5,20 @@
 
 ## 原来的问题
 之前前端需要发起5个独立的API请求来获取设计师完整信息：
-1. `/designer/designer/{id}` - 设计师基本信息
-2. `/designer/work/designer/{id}` - 设计师作品集
-3. `/designer/work-experience/designer/{id}` - 工作经历
-4. `/designer/education/designer/{id}` - 教育背景
-5. `/designer/award/designer/{id}` - 获奖情况
+1. `/designer/designer/{designerId}` - 设计师基本信息
+2. `/designer/work/designer/{designerId}` - 设计师作品集
+3. `/designer/work-experience/designer/{designerId}` - 工作经历
+4. `/designer/education/designer/{designerId}` - 教育背景
+5. `/designer/award/designer/{designerId}` - 获奖情况
 
 ## 解决方案
-创建一个新的聚合API接口：`/designer/designer/{id}/complete`
+创建一个新的聚合API接口：`/designer/designer/{designerId}/complete`
 
 ## API规格
 
 ### 请求
 ```
-GET /designer/designer/{id}/complete
+GET /designer/designer/{designerId}/complete
 ```
 
 ### 响应格式
@@ -108,27 +108,27 @@ GET /designer/designer/{id}/complete
 @RequestMapping("/designer/designer")
 public class DesignerController {
 
-    @GetMapping("/{id}/complete")
-    public AjaxResult getDesignerComplete(@PathVariable Long id) {
+    @GetMapping("/{designerId}/complete")
+    public AjaxResult getDesignerComplete(@PathVariable Long designerId) {
         try {
             // 获取设计师基本信息
-            Designer designer = designerService.selectDesignerById(id);
+            Designer designer = designerService.selectDesignerById(designerId);
             if (designer == null) {
                 return AjaxResult.error("设计师不存在");
             }
 
             // 并行获取相关数据
             CompletableFuture<List<Work>> worksFuture = CompletableFuture
-                .supplyAsync(() -> workService.selectWorksByDesignerId(id));
+                .supplyAsync(() -> workService.selectWorksByDesignerId(designerId));
 
             CompletableFuture<List<WorkExperience>> workExpFuture = CompletableFuture
-                .supplyAsync(() -> workExperienceService.selectByDesignerId(id));
+                .supplyAsync(() -> workExperienceService.selectByDesignerId(designerId));
 
             CompletableFuture<List<Education>> educationFuture = CompletableFuture
-                .supplyAsync(() -> educationService.selectByDesignerId(id));
+                .supplyAsync(() -> educationService.selectByDesignerId(designerId));
 
             CompletableFuture<List<Award>> awardsFuture = CompletableFuture
-                .supplyAsync(() -> awardService.selectByDesignerId(id));
+                .supplyAsync(() -> awardService.selectByDesignerId(designerId));
 
             // 等待所有异步任务完成
             CompletableFuture.allOf(worksFuture, workExpFuture, educationFuture, awardsFuture).join();

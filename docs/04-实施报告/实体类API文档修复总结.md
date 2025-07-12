@@ -76,7 +76,7 @@
     "phone": "010-12345678",
     "email": "contact@school.edu.cn",
     "website": "https://www.school.edu.cn",
-    "schoolType": "UNIVERSITY",
+    "schoolType": "COMPREHENSIVE",
     "level": "本科",
     "logo": "https://www.school.edu.cn/logo.png"
 }

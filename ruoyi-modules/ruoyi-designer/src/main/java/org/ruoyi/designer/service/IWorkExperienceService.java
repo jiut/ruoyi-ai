@@ -87,4 +87,14 @@ public interface IWorkExperienceService extends IService<WorkExperience> {
      * @return 结果
      */
     Boolean restoreByDesignerIds(List<Long> designerIds);
+
+    /**
+     * 逻辑删除单个工作经历
+     *
+     * @param experienceId 工作经历ID
+     * @param currentUserId 当前用户ID
+     * @param currentTime 当前时间
+     * @return 结果
+     */
+    Boolean logicDeleteWorkExperienceById(Long experienceId, Long currentUserId, Date currentTime);
 } 

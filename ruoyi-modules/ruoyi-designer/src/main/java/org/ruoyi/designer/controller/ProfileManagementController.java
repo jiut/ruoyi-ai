@@ -21,8 +21,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 统一档案管理Controller
@@ -73,15 +76,20 @@ public class ProfileManagementController extends BaseController {
     @Operation(summary = "新增工作经历", description = "为当前用户添加工作经历")
     @Log(title = "工作经历", businessType = BusinessType.INSERT)
     @PostMapping("/work-experience")
-    public R<Void> addWorkExperience(@Validated @RequestBody WorkExperience workExperience) {
+    public R<Map<String, Object>> addWorkExperience(@Validated @RequestBody WorkExperience workExperience) {
         Long designerId = permissionUtils.getCurrentDesignerIdSafely();
         if (designerId == null) {
             return R.fail("用户未绑定设计师身份");
         }
-        
-        // 强制设置为当前用户的设计师ID
         workExperience.setDesignerId(designerId);
-        return toAjax(workExperienceService.insertWorkExperience(workExperience));
+        boolean result = workExperienceService.insertWorkExperience(workExperience);
+        if (result && workExperience.getExperienceId() != null) {
+            Map<String, Object> data = new HashMap<>();
+            data.put("experienceId", workExperience.getExperienceId());
+            return R.ok(data);
+        } else {
+            return R.fail("新增失败");
+        }
     }
 
     /**
@@ -128,7 +136,10 @@ public class ProfileManagementController extends BaseController {
             return R.fail("无权限删除此工作经历");
         }
         
-        return toAjax(workExperienceService.deleteWorkExperienceByIds(List.of(experienceId)));
+        Long currentUserId = LoginHelper.getUserId();
+        Date currentTime = new Date();
+        
+        return toAjax(workExperienceService.logicDeleteWorkExperienceById(experienceId, currentUserId, currentTime));
     }
 
     /**
@@ -173,14 +184,20 @@ public class ProfileManagementController extends BaseController {
     @Operation(summary = "新增教育背景", description = "为当前用户添加教育背景")
     @Log(title = "教育背景", businessType = BusinessType.INSERT)
     @PostMapping("/education")
-    public R<Void> addEducation(@Validated @RequestBody Education education) {
+    public R<Map<String, Object>> addEducation(@Validated @RequestBody Education education) {
         Long designerId = permissionUtils.getCurrentDesignerIdSafely();
         if (designerId == null) {
             return R.fail("用户未绑定设计师身份");
         }
-        
         education.setDesignerId(designerId);
-        return toAjax(educationService.insertEducation(education));
+        boolean result = educationService.insertEducation(education);
+        if (result && education.getEducationId() != null) {
+            Map<String, Object> data = new HashMap<>();
+            data.put("educationId", education.getEducationId());
+            return R.ok(data);
+        } else {
+            return R.fail("新增失败");
+        }
     }
 
     /**
@@ -224,7 +241,11 @@ public class ProfileManagementController extends BaseController {
             return R.fail("无权限删除此教育背景");
         }
         
-        return toAjax(educationService.deleteEducationByIds(List.of(educationId)));
+        // 使用逻辑删除，记录删除时间和删除人
+        Long currentUserId = LoginHelper.getUserId();
+        Date currentTime = new Date();
+        
+        return toAjax(educationService.logicDeleteEducationById(educationId, currentUserId, currentTime));
     }
 
     /**
@@ -269,14 +290,20 @@ public class ProfileManagementController extends BaseController {
     @Operation(summary = "新增作品", description = "为当前用户添加作品")
     @Log(title = "作品", businessType = BusinessType.INSERT)
     @PostMapping("/work")
-    public R<Void> addWork(@Validated @RequestBody Work work) {
+    public R<Map<String, Object>> addWork(@Validated @RequestBody Work work) {
         Long designerId = permissionUtils.getCurrentDesignerIdSafely();
         if (designerId == null) {
             return R.fail("用户未绑定设计师身份");
         }
-        
         work.setDesignerId(designerId);
-        return toAjax(workService.insertWork(work));
+        boolean result = workService.insertWork(work);
+        if (result && work.getWorkId() != null) {
+            Map<String, Object> data = new HashMap<>();
+            data.put("workId", work.getWorkId());
+            return R.ok(data);
+        } else {
+            return R.fail("新增失败");
+        }
     }
 
     /**
@@ -320,7 +347,9 @@ public class ProfileManagementController extends BaseController {
             return R.fail("无权限删除此作品");
         }
         
-        return toAjax(workService.deleteWorkByIds(List.of(workId)));
+        Long currentUserId = LoginHelper.getUserId();
+        Date currentTime = new Date();
+        return toAjax(workService.logicDeleteWorkById(workId, currentUserId, currentTime));
     }
 
     /**
@@ -365,14 +394,20 @@ public class ProfileManagementController extends BaseController {
     @Operation(summary = "新增获奖记录", description = "为当前用户添加获奖记录")
     @Log(title = "获奖记录", businessType = BusinessType.INSERT)
     @PostMapping("/award")
-    public R<Void> addAward(@Validated @RequestBody Award award) {
+    public R<Map<String, Object>> addAward(@Validated @RequestBody Award award) {
         Long designerId = permissionUtils.getCurrentDesignerIdSafely();
         if (designerId == null) {
             return R.fail("用户未绑定设计师身份");
         }
-        
         award.setDesignerId(designerId);
-        return toAjax(awardService.insertAward(award));
+        boolean result = awardService.insertAward(award);
+        if (result && award.getAwardId() != null) {
+            Map<String, Object> data = new HashMap<>();
+            data.put("awardId", award.getAwardId());
+            return R.ok(data);
+        } else {
+            return R.fail("新增失败");
+        }
     }
 
     /**
@@ -416,7 +451,9 @@ public class ProfileManagementController extends BaseController {
             return R.fail("无权限删除此获奖记录");
         }
         
-        return toAjax(awardService.deleteAwardByIds(List.of(awardId)));
+        Long currentUserId = LoginHelper.getUserId();
+        Date currentTime = new Date();
+        return toAjax(awardService.logicDeleteAwardById(awardId, currentUserId, currentTime));
     }
 
     /**

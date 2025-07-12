@@ -147,6 +147,22 @@ public class WorkExperienceServiceImpl extends ServiceImpl<WorkExperienceMapper,
     }
 
     /**
+     * 逻辑删除单个工作经历
+     */
+    @Override
+    public Boolean logicDeleteWorkExperienceById(Long experienceId, Long currentUserId, Date currentTime) {
+        if (experienceId == null) {
+            return false;
+        }
+        LambdaUpdateWrapper<WorkExperience> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(WorkExperience::getExperienceId, experienceId)
+                .set(WorkExperience::getDelFlag, "1")
+                .set(WorkExperience::getDelTime, currentTime)
+                .set(WorkExperience::getDelBy, currentUserId);
+        return update(wrapper);
+    }
+
+    /**
      * 更新当前工作经历状态
      * 将指定设计师的所有工作经历设置为非当前，除了指定的工作经历ID
      */

@@ -40,7 +40,6 @@ public class AwardServiceImpl extends ServiceImpl<AwardMapper, Award> implements
                 .eq(StringUtils.isNotBlank(award.getLevel()), Award::getLevel, award.getLevel())
                 .eq(StringUtils.isNotBlank(award.getCategory()), Award::getCategory, award.getCategory())
                 .eq(StringUtils.isNotBlank(award.getStatus()), Award::getStatus, award.getStatus())
-                .orderByAsc(Award::getSort)
                 .orderByDesc(Award::getYear)
                 .orderByDesc(Award::getCreateTime);
         
@@ -65,7 +64,6 @@ public class AwardServiceImpl extends ServiceImpl<AwardMapper, Award> implements
         LambdaQueryWrapper<Award> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Award::getDesignerId, designerId)
                 .eq(Award::getStatus, "0")
-                .orderByAsc(Award::getSort)
                 .orderByDesc(Award::getYear);
         return awardMapper.selectList(wrapper);
     }
@@ -75,11 +73,6 @@ public class AwardServiceImpl extends ServiceImpl<AwardMapper, Award> implements
      */
     @Override
     public Boolean insertAward(Award award) {
-        // 如果没有设置排序号，自动设置为最大值+1
-        if (award.getSort() == null || award.getSort() == 0) {
-            award.setSort(getNextSortNumber(award.getDesignerId()));
-        }
-        
         return save(award);
     }
 
@@ -146,15 +139,18 @@ public class AwardServiceImpl extends ServiceImpl<AwardMapper, Award> implements
     }
 
     /**
-     * 获取下一个排序号
+     * 逻辑删除单个获奖记录
      */
-    private Integer getNextSortNumber(Long designerId) {
-        LambdaQueryWrapper<Award> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(Award::getDesignerId, designerId)
-                .orderByDesc(Award::getSort)
-                .last("LIMIT 1");
-        
-        Award lastAward = awardMapper.selectOne(wrapper);
-        return lastAward != null && lastAward.getSort() != null ? lastAward.getSort() + 1 : 1;
+    @Override
+    public Boolean logicDeleteAwardById(Long awardId, Long currentUserId, Date currentTime) {
+        if (awardId == null) {
+            return false;
+        }
+        LambdaUpdateWrapper<Award> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(Award::getAwardId, awardId)
+                .set(Award::getDelFlag, "1")
+                .set(Award::getDelTime, currentTime)
+                .set(Award::getDelBy, currentUserId);
+        return update(wrapper);
     }
 } 

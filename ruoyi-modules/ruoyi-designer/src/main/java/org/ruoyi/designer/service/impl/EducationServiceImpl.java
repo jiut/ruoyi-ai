@@ -136,4 +136,22 @@ public class EducationServiceImpl extends ServiceImpl<EducationMapper, Education
         
         return update(wrapper);
     }
+
+    /**
+     * 逻辑删除教育背景
+     */
+    @Override
+    public Boolean logicDeleteEducationById(Long educationId, Long currentUserId, Date currentTime) {
+        if (educationId == null) {
+            return false;
+        }
+        
+        LambdaUpdateWrapper<Education> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(Education::getEducationId, educationId)
+                .set(Education::getDelFlag, "1")
+                .set(Education::getDelTime, currentTime)
+                .set(Education::getDelBy, currentUserId);
+        
+        return update(wrapper);
+    }
 } 

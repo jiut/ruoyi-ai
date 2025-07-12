@@ -55,3 +55,5 @@ nbdist/
 .flattened-pom.xml
 
 script/sql/ruoyi.sql
+
+测试.json

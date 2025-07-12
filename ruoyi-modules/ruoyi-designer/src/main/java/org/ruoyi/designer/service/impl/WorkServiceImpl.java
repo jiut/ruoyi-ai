@@ -238,4 +238,20 @@ public class WorkServiceImpl extends ServiceImpl<WorkMapper, Work> implements IW
         
         return update(wrapper);
     }
+
+    /**
+     * 逻辑删除单个作品
+     */
+    @Override
+    public Boolean logicDeleteWorkById(Long workId, Long currentUserId, Date currentTime) {
+        if (workId == null) {
+            return false;
+        }
+        LambdaUpdateWrapper<Work> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(Work::getWorkId, workId)
+                .set(Work::getDelFlag, "1")
+                .set(Work::getDelTime, currentTime)
+                .set(Work::getDelBy, currentUserId);
+        return update(wrapper);
+    }
 } 

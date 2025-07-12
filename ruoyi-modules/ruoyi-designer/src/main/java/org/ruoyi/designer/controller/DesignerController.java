@@ -311,11 +311,10 @@ public class DesignerController extends BaseController {
     public R<Void> edit(@Validated @RequestBody Designer designer) {
         checkAdminPermission();
         // 清除系统自动填充的字段，避免前端误传
-        designer.setCreateTime(null);
-        designer.setUpdateTime(null);
-        designer.setCreateBy(null);
-        designer.setUpdateBy(null);
-        designer.setCreateDept(null);
+        // 注意：createBy 和 createTime 是创建时的审计字段，修改时不应该清除
+        designer.setUpdateTime(null);  // 清除，让系统重新填充当前时间
+        designer.setUpdateBy(null);    // 清除，让系统重新填充当前用户
+        designer.setCreateDept(null);  // 清除，避免前端误传
         
         return toAjax(designerService.updateDesigner(designer));
     }

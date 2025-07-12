@@ -41,7 +41,7 @@ import java.util.List;
 @Validated
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/designer/user")
+@RequestMapping("/designer")
 public class UserRegistrationController extends BaseController {
 
     private final IUserBindingService userBindingService;

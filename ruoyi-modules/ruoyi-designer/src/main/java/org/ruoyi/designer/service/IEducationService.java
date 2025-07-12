@@ -87,4 +87,14 @@ public interface IEducationService extends IService<Education> {
      * @return 结果
      */
     Boolean restoreByDesignerIds(List<Long> designerIds);
+
+    /**
+     * 逻辑删除教育背景
+     *
+     * @param educationId 教育背景ID
+     * @param currentUserId 当前用户ID
+     * @param currentTime 当前时间
+     * @return 结果
+     */
+    Boolean logicDeleteEducationById(Long educationId, Long currentUserId, Date currentTime);
 } 

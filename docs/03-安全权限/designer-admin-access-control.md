@@ -23,7 +23,7 @@
 | 接口路径 | 方法 | 权限注解 | 描述 |
 |---------|------|----------|------|
 | `/designer/designer/list` | GET | `designer:designer:list` | 查询设计师列表 |
-| `/designer/designer/{id}` | GET | `designer:designer:query` | 获取设计师详情 |
+| `/designer/designer/{designerId}` | GET | `designer:designer:query` | 获取设计师详情 |
 | `/designer/designer` | POST | `designer:designer:add` | 新增设计师 |
 | `/designer/designer` | PUT | `designer:designer:edit` | 修改设计师 |
 | `/designer/designer/{ids}` | DELETE | `designer:designer:remove` | 删除设计师 |

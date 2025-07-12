@@ -136,11 +136,19 @@ export async function getSchoolById(id: number) {
 }
 
 /**
- * 更新院校状态
+ * 更新院校状态 - 建议使用统一的状态管理接口格式
  */
-export async function updateSchoolStatus(id: number, status: 'ACTIVE' | 'INACTIVE') {
+export async function updateSchoolStatus(schoolId: number, status: 'ACTIVE' | 'INACTIVE') {
   const backendStatus = convertFrontendStatusToBackend(status);
-  return request.put(`/designer/school/${id}/status`, { status: backendStatus });
+  // 建议统一使用 changeStatus 格式，与设计师状态管理接口保持一致
+  // PUT /designer/school/changeStatus （推荐格式）
+  return request.put('/designer/school/changeStatus', { 
+    schoolId: schoolId,
+    status: backendStatus 
+  });
+  
+  // 或者保持当前格式（如果后端已实现）
+  // return request.put(`/designer/school/${schoolId}/status`, { status: backendStatus });
 }
 ```
 
@@ -260,6 +268,11 @@ function getStatusText(status: string): string {
 - **向后兼容**：支持渐进式迁移，新旧格式并存
 - **错误处理**：添加无效状态值的处理逻辑
 - **测试覆盖**：充分测试各种状态转换场景
+- **接口路径统一性**：建议所有实体的状态管理接口都使用统一格式：
+  - 设计师：`PUT /designer/designer/changeStatus`
+  - 企业：`PUT /designer/enterprise/changeStatus`  
+  - 院校：`PUT /designer/school/changeStatus`
+  - 避免使用：`PUT /designer/{entityType}/{id}/status` 格式，以保持API设计的一致性
 
 ---
 
