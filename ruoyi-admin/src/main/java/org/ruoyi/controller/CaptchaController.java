@@ -25,6 +25,8 @@ import org.ruoyi.common.web.config.properties.CaptchaProperties;
 import org.ruoyi.common.web.enums.CaptchaType;
 import org.ruoyi.system.domain.request.EmailRequest;
 import org.ruoyi.system.domain.vo.CaptchaVo;
+import org.ruoyi.system.service.ISysUserService;
+import org.ruoyi.system.domain.bo.SysUserBo;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
@@ -53,30 +55,115 @@ public class CaptchaController {
     private final CaptchaProperties captchaProperties;
     private final SmsProperties smsProperties;
     private final ConfigService configService;
+    private final ISysUserService userService;
 
     /**
      * 短信验证码
      *
      * @param phonenumber 用户手机号
+     * @param scene 使用场景：register-注册、login-登录、bind-绑定、reset-重置密码
      */
     @GetMapping("/resource/sms/code")
-    public R<Void> smsCode(@NotBlank(message = "{user.phonenumber.not.blank}") String phonenumber) {
+    public R<Void> smsCode(
+        @NotBlank(message = "{user.phonenumber.not.blank}") String phonenumber,
+        String scene) {
+        
         if (!smsProperties.getEnabled()) {
             return R.fail("当前系统没有开启短信功能！");
         }
+        
+        // 验证手机号格式
+        if (!phonenumber.matches("^1[3-9]\\d{9}$")) {
+            return R.fail("手机号格式不正确");
+        }
+        
+        // 根据使用场景验证手机号注册状态
+        String normalizedScene = StringUtils.isBlank(scene) ? "login" : scene.toLowerCase();
+        R<Void> validationResult = validatePhoneForScene(phonenumber, normalizedScene);
+        if (!R.isSuccess(validationResult)) {
+            return validationResult;
+        }
+        
         String key = GlobalConstants.CAPTCHA_CODE_KEY + phonenumber;
         String code = RandomUtil.randomNumbers(4);
         RedisUtils.setCacheObject(key, code, Duration.ofMinutes(Constants.CAPTCHA_EXPIRATION));
-        // 验证码模板id
-        String templateId = "";
+        
+                // 验证码模板id
+        String templateId = "SMS_324450504";
         Map<String, String> map = new HashMap<>(1);
         map.put("code", code);
-        SmsTemplate smsTemplate = SpringUtils.getBean(SmsTemplate.class);
-        SmsResult result = smsTemplate.send(phonenumber, templateId, map);
-        if (!result.isSuccess()) {
-            log.error("验证码短信发送异常 => {}", result);
-            return R.fail(result.getMessage());
+        try {
+            SmsTemplate smsTemplate = SpringUtils.getBean(SmsTemplate.class);
+            log.info("开始发送短信验证码 - phone: {}, scene: {}, templateId: {}, code: {}", phonenumber, normalizedScene, templateId, code);
+            
+            SmsResult result = smsTemplate.send(phonenumber, templateId, map);
+            
+            // 详细记录阿里云API响应
+            log.info("阿里云短信API响应 - phone: {}, success: {}, message: {}, result: {}", 
+                    phonenumber, result.isSuccess(), result.getMessage(), result);
+            
+            if (!result.isSuccess()) {
+                log.error("验证码短信发送失败 - phone: {}, result: {}", phonenumber, result);
+                return R.fail("短信发送失败: " + result.getMessage());
+            }
+            
+            log.info("短信验证码发送成功 - phone: {}, scene: {}, result: {}", 
+                    phonenumber, normalizedScene, result);
+        } catch (Exception e) {
+            log.error("短信服务未正确配置或启用 - phone: {}, scene: {}, error: {}", phonenumber, normalizedScene, e.getMessage(), e);
+            return R.fail("短信服务暂时不可用，请检查系统配置或联系管理员");
         }
+        return R.ok();
+    }
+    
+    /**
+     * 根据使用场景验证手机号状态
+     *
+     * @param phonenumber 手机号
+     * @param scene 使用场景
+     * @return 验证结果
+     */
+    private R<Void> validatePhoneForScene(String phonenumber, String scene) {
+        // 检查手机号是否已被注册
+        SysUserBo userBo = new SysUserBo();
+        userBo.setPhonenumber(phonenumber);
+        boolean phoneExists = !userService.checkPhoneUnique(userBo);
+        
+        switch (scene) {
+            case "register":
+                // 注册场景：手机号不能已被注册
+                if (phoneExists) {
+                    return R.fail("该手机号已被注册，请直接登录或使用其他手机号");
+                }
+                break;
+                
+            case "login":
+                // 登录场景：手机号必须已被注册
+                if (!phoneExists) {
+                    return R.fail("该手机号尚未注册，请先注册或检查手机号是否正确");
+                }
+                break;
+                
+            case "reset":
+                // 重置密码场景：手机号必须已被注册
+                if (!phoneExists) {
+                    return R.fail("该手机号尚未注册，无法重置密码");
+                }
+                break;
+                
+            case "bind":
+                // 绑定场景：手机号不能已被其他用户注册（当前接口不需要用户登录信息，所以只能简单检查）
+                if (phoneExists) {
+                    return R.fail("该手机号已被其他用户使用，请选择其他手机号");
+                }
+                break;
+                
+            default:
+                // 默认场景：不做限制，兼容原有逻辑
+                log.warn("未知的短信验证码使用场景: {}, 跳过手机号验证", scene);
+                break;
+        }
+        
         return R.ok();
     }
 

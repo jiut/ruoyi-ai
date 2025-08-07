@@ -10,7 +10,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum ApplicationStatus {
+public enum JobApplicationStatus {
     
     /**
      * 待审核
@@ -53,8 +53,8 @@ public enum ApplicationStatus {
      * @param code 状态代码
      * @return 对应的枚举，如果不存在则返回null
      */
-    public static ApplicationStatus getByCode(String code) {
-        for (ApplicationStatus status : values()) {
+    public static JobApplicationStatus getByCode(String code) {
+        for (JobApplicationStatus status : values()) {
             if (status.getCode().equals(code)) {
                 return status;
             }
@@ -68,8 +68,8 @@ public enum ApplicationStatus {
      * @param enumName 英文常量名
      * @return 对应的枚举，如果不存在则返回null
      */
-    public static ApplicationStatus getByEnumName(String enumName) {
-        for (ApplicationStatus status : values()) {
+    public static JobApplicationStatus getByEnumName(String enumName) {
+        for (JobApplicationStatus status : values()) {
             if (status.getEnumName().equals(enumName)) {
                 return status;
             }
@@ -84,7 +84,11 @@ public enum ApplicationStatus {
      * @return 数据库代码（如：1），如果不存在则返回原值
      */
     public static String convertEnumNameToCode(String enumName) {
-        ApplicationStatus status = getByEnumName(enumName);
+        if (enumName == null) {
+            return null;
+        }
+        
+        JobApplicationStatus status = getByEnumName(enumName);
         return status != null ? status.getCode() : enumName;
     }
 
@@ -95,7 +99,29 @@ public enum ApplicationStatus {
      * @return 英文常量名（如：APPROVED），如果不存在则返回原值
      */
     public static String convertCodeToEnumName(String code) {
-        ApplicationStatus status = getByCode(code);
+        if (code == null) {
+            return null;
+        }
+        
+        JobApplicationStatus status = getByCode(code);
         return status != null ? status.getEnumName() : code;
+    }
+
+    /**
+     * 检查状态是否为终态（已处理状态）
+     *
+     * @return true-终态，false-非终态
+     */
+    public boolean isTerminal() {
+        return this == APPROVED || this == REJECTED || this == WITHDRAWN;
+    }
+
+    /**
+     * 检查状态是否为成功状态
+     *
+     * @return true-成功，false-非成功
+     */
+    public boolean isSuccess() {
+        return this == APPROVED;
     }
 } 

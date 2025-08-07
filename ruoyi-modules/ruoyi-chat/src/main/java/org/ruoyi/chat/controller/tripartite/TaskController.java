@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
  * @date 2025-05-03
  */
 @Api(tags = "任务查询")
-@RestController
+@RestController("mjTaskController")
 @RequestMapping("/mj/task")
 @RequiredArgsConstructor
 @Slf4j

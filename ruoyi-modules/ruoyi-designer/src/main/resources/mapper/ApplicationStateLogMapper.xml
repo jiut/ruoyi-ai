@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ruoyi.designer.mapper.ApplicationStateLogMapper">
+
+    <resultMap type="org.ruoyi.designer.domain.ApplicationStateLog" id="ApplicationStateLogResult">
+        <result property="logId" column="log_id"/>
+        <result property="applicationId" column="application_id"/>
+        <result property="fromStatus" column="from_status"/>
+        <result property="toStatus" column="to_status"/>
+        <result property="action" column="action"/>
+        <result property="feedback" column="feedback"/>
+        <result property="operatorId" column="operator_id"/>
+        <result property="operatorName" column="operator_name"/>
+        <result property="transitionTime" column="transition_time"/>
+        <result property="reviewMode" column="review_mode"/>
+        <result property="duration" column="duration"/>
+        <result property="clientIp" column="client_ip"/>
+        <result property="userAgent" column="user_agent"/>
+        <result property="metadata" column="metadata"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+    <sql id="selectApplicationStateLogVo">
+        SELECT log_id, application_id, from_status, to_status, action, feedback, operator_id,
+               operator_name, transition_time, review_mode, duration, client_ip, user_agent,
+               metadata, create_by, create_time, update_by, update_time, del_flag
+        FROM des_application_state_log
+    </sql>
+
+    <!-- 查询申请的状态变更历史 -->
+    <select id="selectStateHistoryByApplicationId" resultMap="ApplicationStateLogResult">
+        <include refid="selectApplicationStateLogVo"/>
+        WHERE del_flag = '0'
+          AND application_id = #{applicationId}
+        ORDER BY transition_time ASC, log_id ASC
+    </select>
+
+    <!-- 查询指定时间范围内的审核日志 -->
+    <select id="selectLogsByDateRange" resultMap="ApplicationStateLogResult">
+        <include refid="selectApplicationStateLogVo"/>
+        WHERE del_flag = '0'
+        <if test="startDate != null and endDate != null">
+            AND transition_time BETWEEN #{startDate} AND #{endDate}
+        </if>
+        <if test="action != null">
+            AND action = #{action}
+        </if>
+        ORDER BY transition_time DESC
+    </select>
+
+    <!-- 查询操作人的审核历史 -->
+    <select id="selectLogsByOperator" resultMap="ApplicationStateLogResult">
+        <include refid="selectApplicationStateLogVo"/>
+        WHERE del_flag = '0'
+          AND operator_id = #{operatorId}
+        <if test="startDate != null and endDate != null">
+            AND transition_time BETWEEN #{startDate} AND #{endDate}
+        </if>
+        ORDER BY transition_time DESC
+    </select>
+
+    <!-- 统计审核效率数据 -->
+    <select id="selectReviewEfficiencyStats" resultType="java.util.Map">
+        SELECT 
+            COUNT(*) as total_reviews,
+            AVG(duration) as avg_duration_ms,
+            ROUND(AVG(duration) / 1000, 2) as avg_duration_seconds,
+            MIN(duration) as min_duration_ms,
+            MAX(duration) as max_duration_ms,
+            COUNT(DISTINCT operator_id) as reviewer_count,
+            COUNT(DISTINCT application_id) as application_count
+        FROM des_application_state_log
+        WHERE del_flag = '0'
+        <if test="startDate != null and endDate != null">
+            AND transition_time BETWEEN #{startDate} AND #{endDate}
+        </if>
+        <if test="action != null">
+            AND action = #{action}
+        </if>
+    </select>
+
+    <!-- 查询平均审核时长 -->
+    <select id="selectAverageReviewDuration" resultType="java.lang.Long">
+        SELECT COALESCE(AVG(duration), 0)
+        FROM des_application_state_log
+        WHERE del_flag = '0'
+          AND action = #{action}
+        <if test="startDate != null and endDate != null">
+            AND transition_time BETWEEN #{startDate} AND #{endDate}
+        </if>
+    </select>
+
+    <!-- 查询审核通过率统计 -->
+    <select id="selectApprovalRateStats" resultType="java.util.Map">
+        SELECT 
+            COUNT(*) as total_reviews,
+            SUM(CASE WHEN to_status IN ('1', '3') THEN 1 ELSE 0 END) as approved_count,
+            SUM(CASE WHEN to_status IN ('2', '4') THEN 1 ELSE 0 END) as rejected_count,
+            SUM(CASE WHEN to_status = '5' THEN 1 ELSE 0 END) as withdrawn_count,
+            ROUND(
+                SUM(CASE WHEN to_status IN ('1', '3') THEN 1 ELSE 0 END) * 100.0 / 
+                NULLIF(SUM(CASE WHEN action IN ('ADMIN_REVIEW', 'ENTERPRISE_REVIEW') THEN 1 ELSE 0 END), 0),
+                2
+            ) as approval_rate,
+            ROUND(
+                SUM(CASE WHEN to_status IN ('2', '4') THEN 1 ELSE 0 END) * 100.0 / 
+                NULLIF(SUM(CASE WHEN action IN ('ADMIN_REVIEW', 'ENTERPRISE_REVIEW') THEN 1 ELSE 0 END), 0),
+                2
+            ) as rejection_rate
+        FROM des_application_state_log
+        WHERE del_flag = '0'
+          AND action IN ('ADMIN_REVIEW', 'ENTERPRISE_REVIEW', 'WITHDRAW')
+        <if test="startDate != null and endDate != null">
+            AND transition_time BETWEEN #{startDate} AND #{endDate}
+        </if>
+    </select>
+
+    <!-- 查询最近的状态变更记录 -->
+    <select id="selectLatestStateLog" resultMap="ApplicationStateLogResult">
+        <include refid="selectApplicationStateLogVo"/>
+        WHERE del_flag = '0'
+          AND application_id = #{applicationId}
+        ORDER BY transition_time DESC, log_id DESC
+        LIMIT 1
+    </select>
+
+    <!-- 统计指定操作类型的日志数量 -->
+    <select id="countLogsByAction" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM des_application_state_log
+        WHERE del_flag = '0'
+          AND action = #{action}
+        <if test="startDate != null and endDate != null">
+            AND transition_time BETWEEN #{startDate} AND #{endDate}
+        </if>
+    </select>
+
+    <!-- 查询审核人员工作量统计 -->
+    <select id="selectReviewerWorkloadStats" resultType="java.util.Map">
+        SELECT 
+            operator_id,
+            operator_name,
+            COUNT(*) as review_count,
+            AVG(duration) as avg_duration_ms,
+            MIN(transition_time) as first_review_time,
+            MAX(transition_time) as last_review_time,
+            SUM(CASE WHEN to_status IN ('1', '3') THEN 1 ELSE 0 END) as approved_count,
+            SUM(CASE WHEN to_status IN ('2', '4') THEN 1 ELSE 0 END) as rejected_count
+        FROM des_application_state_log
+        WHERE del_flag = '0'
+          AND action IN ('ADMIN_REVIEW', 'ENTERPRISE_REVIEW')
+        <if test="startDate != null and endDate != null">
+            AND transition_time BETWEEN #{startDate} AND #{endDate}
+        </if>
+        GROUP BY operator_id, operator_name
+        ORDER BY review_count DESC
+    </select>
+
+    <!-- 查询每日审核趋势 -->
+    <select id="selectDailyReviewTrend" resultType="java.util.Map">
+        SELECT 
+            DATE(transition_time) as review_date,
+            COUNT(*) as total_reviews,
+            SUM(CASE WHEN action = 'ADMIN_REVIEW' THEN 1 ELSE 0 END) as admin_reviews,
+            SUM(CASE WHEN action = 'ENTERPRISE_REVIEW' THEN 1 ELSE 0 END) as enterprise_reviews,
+            SUM(CASE WHEN to_status IN ('1', '3') THEN 1 ELSE 0 END) as approved_count,
+            AVG(duration) as avg_duration_ms
+        FROM des_application_state_log
+        WHERE del_flag = '0'
+          AND action IN ('ADMIN_REVIEW', 'ENTERPRISE_REVIEW')
+        <if test="startDate != null and endDate != null">
+            AND transition_time BETWEEN #{startDate} AND #{endDate}
+        </if>
+        GROUP BY DATE(transition_time)
+        ORDER BY review_date DESC
+    </select>
+
+</mapper> 

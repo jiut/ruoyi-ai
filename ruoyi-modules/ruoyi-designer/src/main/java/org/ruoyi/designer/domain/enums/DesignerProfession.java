@@ -25,7 +25,8 @@ public enum DesignerProfession {
     MOTION_DESIGNER("MOTION_DESIGNER", "动效设计师"),
     INTERIOR_DESIGNER("INTERIOR_DESIGNER", "室内设计师"),
     ARCHITECT("ARCHITECT", "建筑师"),
-    LANDSCAPE_DESIGNER("LANDSCAPE_DESIGNER", "景观设计师");
+    LANDSCAPE_DESIGNER("LANDSCAPE_DESIGNER", "景观设计师"),
+    WEB_DESIGNER("WEB_DESIGNER", "网页设计师");
 
     private final String code;
     private final String name;

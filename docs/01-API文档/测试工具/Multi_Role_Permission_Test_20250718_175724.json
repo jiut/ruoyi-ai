@@ -1,0 +1,695 @@
+{
+  "TestSummary": {
+    "TestTime": "2025-07-18 17:57:25",
+    "TestType": "Multi-Role Permission Analysis",
+    "BaseUrl": "http://localhost:6039"
+  },
+  "UserRoleAnalysis": {
+    "enterprise": {
+      "UserId": "1945751182806921217",
+      "RolePermissions": [
+        "enterprise"
+      ],
+      "Roles": [
+        {
+          "roleId": "1932319128081666051",
+          "roleName": "企业管理员",
+          "roleKey": "enterprise",
+          "dataScope": "2"
+        }
+      ],
+      "IsSuperAdmin": false,
+      "RoleKeys": [
+        "enterprise"
+      ],
+      "Token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOiJzeXNfdXNlcjoxOTQ1NzUxMTgyODA2OTIxMjE3Iiwicm5TdHIiOiJqTXA5TlBKVE4wRVJrR2NXZVVveno4T1JpdjVSQTNCTiIsInRlbmFudElkIjoiMDAwMDAwIiwidXNlcklkIjoxOTQ1NzUxMTgyODA2OTIxMjE3fQ._1jGiwusiIaOaRb06dNVN7BAtPEKmVI3Kfi_XIqVKBQ",
+      "MenuPermissions": [
+        "designer:task-payment:list",
+        "designer:task-application:enterprise-review",
+        "designer:task:delete",
+        "designer:task:edit",
+        "designer:task-deliverable:list",
+        "designer:task-deliverable:review",
+        "designer:task-application:list",
+        "designer:task:detail",
+        "designer:enterprise:task:add",
+        "designer:task-application:enterprise-pending",
+        "designer:task:query",
+        "designer:task:add",
+        "designer:task-payment:create",
+        "designer:task:list",
+        "designer:task-application:process"
+      ],
+      "HasWildcardPermission": false,
+      "Username": "enterprise_test",
+      "UserType": "enterprise",
+      "RoleNames": [
+        "企业管理员"
+      ]
+    },
+    "admin": {
+      "UserId": 1,
+      "RolePermissions": [
+        "superadmin"
+      ],
+      "Roles": [
+        {
+          "roleId": 1,
+          "roleName": "超级管理员",
+          "roleKey": "superadmin",
+          "dataScope": "1"
+        },
+        {
+          "roleId": "1729685491108446210",
+          "roleName": "管理员",
+          "roleKey": "admin",
+          "dataScope": "1"
+        }
+      ],
+      "IsSuperAdmin": true,
+      "RoleKeys": [
+        "superadmin",
+        "admin"
+      ],
+      "Token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOiJzeXNfdXNlcjoxIiwicm5TdHIiOiJZZFZua0g3Mk5STUNWRDNXeEVYZGh0UjlDUTRnVmVmViIsInRlbmFudElkIjoiMDAwMDAiLCJ1c2VySWQiOjF9.GTCLDVOP0ksH8Xfg_66A0pYopHpNjovrJj42Dx5o9K0",
+      "MenuPermissions": [
+        "*:*:*"
+      ],
+      "HasWildcardPermission": true,
+      "Username": "admin",
+      "UserType": "admin",
+      "RoleNames": [
+        "超级管理员",
+        "管理员"
+      ]
+    },
+    "designer": {
+      "UserId": "1945751052787691522",
+      "RolePermissions": [
+        "designer"
+      ],
+      "Roles": [
+        {
+          "roleId": "1932319128081666050",
+          "roleName": "设计师",
+          "roleKey": "designer",
+          "dataScope": "5"
+        }
+      ],
+      "IsSuperAdmin": false,
+      "RoleKeys": [
+        "designer"
+      ],
+      "Token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOiJzeXNfdXNlcjoxOTQ1NzUxMDUyNzg3NjkxNTIyIiwicm5TdHIiOiJCT1ljVFRETFRRQ2JQUGhsWlpSOUhLbXJxNkI2RVA3UiIsInRlbmFudElkIjoiMDAwMDAwIiwidXNlcklkIjoxOTQ1NzUxMDUyNzg3NjkxNTIyfQ.c3--FB-JZprXfBvE0ODut0BVvmGjUHtbP4pmsuhiq8E",
+      "MenuPermissions": [
+        "designer:job:list",
+        "designer:task-application:apply",
+        "designer:task:query",
+        "designer:task:list",
+        "designer:task-deliverable:submit",
+        "designer:task-deliverable:list",
+        "designer:task-application:list",
+        "designer:task:detail"
+      ],
+      "HasWildcardPermission": false,
+      "Username": "designer_test",
+      "UserType": "designer",
+      "RoleNames": [
+        "设计师"
+      ]
+    }
+  },
+  "TestResults": {
+    "IntelligentPermission": {
+      "TaskApplication": {
+        "GetApplicationList": {
+          "enterprise": {
+            "ActualSuccess": true,
+            "ExpectedPermission": true,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": true,
+            "BusinessMessage": "查询成功",
+            "BusinessCode": 200,
+            "UserRoleInfo": {
+              "UserId": "1945751182806921217",
+              "RolePermissions": [
+                "enterprise"
+              ],
+              "Roles": [
+                {
+                  "roleId": "1932319128081666051",
+                  "roleName": "企业管理员",
+                  "roleKey": "enterprise",
+                  "dataScope": "2"
+                }
+              ],
+              "IsSuperAdmin": false,
+              "RoleKeys": [
+                "enterprise"
+              ],
+              "Token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOiJzeXNfdXNlcjoxOTQ1NzUxMTgyODA2OTIxMjE3Iiwicm5TdHIiOiJqTXA5TlBKVE4wRVJrR2NXZVVveno4T1JpdjVSQTNCTiIsInRlbmFudElkIjoiMDAwMDAwIiwidXNlcklkIjoxOTQ1NzUxMTgyODA2OTIxMjE3fQ._1jGiwusiIaOaRb06dNVN7BAtPEKmVI3Kfi_XIqVKBQ",
+              "MenuPermissions": [
+                "designer:task-payment:list",
+                "designer:task-application:enterprise-review",
+                "designer:task:delete",
+                "designer:task:edit",
+                "designer:task-deliverable:list",
+                "designer:task-deliverable:review",
+                "designer:task-application:list",
+                "designer:task:detail",
+                "designer:enterprise:task:add",
+                "designer:task-application:enterprise-pending",
+                "designer:task:query",
+                "designer:task:add",
+                "designer:task-payment:create",
+                "designer:task:list",
+                "designer:task-application:process"
+              ],
+              "HasWildcardPermission": false,
+              "Username": "enterprise_test",
+              "UserType": "enterprise",
+              "RoleNames": [
+                "企业管理员"
+              ]
+            }
+          },
+          "admin": {
+            "ActualSuccess": true,
+            "ExpectedPermission": true,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": true,
+            "BusinessMessage": "查询成功",
+            "BusinessCode": 200,
+            "UserRoleInfo": {
+              "UserId": 1,
+              "RolePermissions": [
+                "superadmin"
+              ],
+              "Roles": [
+                {
+                  "roleId": 1,
+                  "roleName": "超级管理员",
+                  "roleKey": "superadmin",
+                  "dataScope": "1"
+                },
+                {
+                  "roleId": "1729685491108446210",
+                  "roleName": "管理员",
+                  "roleKey": "admin",
+                  "dataScope": "1"
+                }
+              ],
+              "IsSuperAdmin": true,
+              "RoleKeys": [
+                "superadmin",
+                "admin"
+              ],
+              "Token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOiJzeXNfdXNlcjoxIiwicm5TdHIiOiJZZFZua0g3Mk5STUNWRDNXeEVYZGh0UjlDUTRnVmVmViIsInRlbmFudElkIjoiMDAwMDAiLCJ1c2VySWQiOjF9.GTCLDVOP0ksH8Xfg_66A0pYopHpNjovrJj42Dx5o9K0",
+              "MenuPermissions": [
+                "*:*:*"
+              ],
+              "HasWildcardPermission": true,
+              "Username": "admin",
+              "UserType": "admin",
+              "RoleNames": [
+                "超级管理员",
+                "管理员"
+              ]
+            }
+          },
+          "designer": {
+            "ActualSuccess": true,
+            "ExpectedPermission": true,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": true,
+            "BusinessMessage": "查询成功",
+            "BusinessCode": 200,
+            "UserRoleInfo": {
+              "UserId": "1945751052787691522",
+              "RolePermissions": [
+                "designer"
+              ],
+              "Roles": [
+                {
+                  "roleId": "1932319128081666050",
+                  "roleName": "设计师",
+                  "roleKey": "designer",
+                  "dataScope": "5"
+                }
+              ],
+              "IsSuperAdmin": false,
+              "RoleKeys": [
+                "designer"
+              ],
+              "Token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOiJzeXNfdXNlcjoxOTQ1NzUxMDUyNzg3NjkxNTIyIiwicm5TdHIiOiJCT1ljVFRETFRRQ2JQUGhsWlpSOUhLbXJxNkI2RVA3UiIsInRlbmFudElkIjoiMDAwMDAwIiwidXNlcklkIjoxOTQ1NzUxMDUyNzg3NjkxNTIyfQ.c3--FB-JZprXfBvE0ODut0BVvmGjUHtbP4pmsuhiq8E",
+              "MenuPermissions": [
+                "designer:job:list",
+                "designer:task-application:apply",
+                "designer:task:query",
+                "designer:task:list",
+                "designer:task-deliverable:submit",
+                "designer:task-deliverable:list",
+                "designer:task-application:list",
+                "designer:task:detail"
+              ],
+              "HasWildcardPermission": false,
+              "Username": "designer_test",
+              "UserType": "designer",
+              "RoleNames": [
+                "设计师"
+              ]
+            }
+          }
+        }
+      },
+      "TaskConfigManagement": {
+        "UpdateReviewMode": {
+          "enterprise": {
+            "ActualSuccess": true,
+            "ExpectedPermission": false,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": false,
+            "BusinessMessage": "审核模式已更新为: 双重审核模式",
+            "BusinessCode": 200,
+            "UserRoleInfo": {
+              "UserId": "1945751182806921217",
+              "RolePermissions": [
+                "enterprise"
+              ],
+              "Roles": [
+                {
+                  "roleId": "1932319128081666051",
+                  "roleName": "企业管理员",
+                  "roleKey": "enterprise",
+                  "dataScope": "2"
+                }
+              ],
+              "IsSuperAdmin": false,
+              "RoleKeys": [
+                "enterprise"
+              ],
+              "Token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOiJzeXNfdXNlcjoxOTQ1NzUxMTgyODA2OTIxMjE3Iiwicm5TdHIiOiJqTXA5TlBKVE4wRVJrR2NXZVVveno4T1JpdjVSQTNCTiIsInRlbmFudElkIjoiMDAwMDAwIiwidXNlcklkIjoxOTQ1NzUxMTgyODA2OTIxMjE3fQ._1jGiwusiIaOaRb06dNVN7BAtPEKmVI3Kfi_XIqVKBQ",
+              "MenuPermissions": [
+                "designer:task-payment:list",
+                "designer:task-application:enterprise-review",
+                "designer:task:delete",
+                "designer:task:edit",
+                "designer:task-deliverable:list",
+                "designer:task-deliverable:review",
+                "designer:task-application:list",
+                "designer:task:detail",
+                "designer:enterprise:task:add",
+                "designer:task-application:enterprise-pending",
+                "designer:task:query",
+                "designer:task:add",
+                "designer:task-payment:create",
+                "designer:task:list",
+                "designer:task-application:process"
+              ],
+              "HasWildcardPermission": false,
+              "Username": "enterprise_test",
+              "UserType": "enterprise",
+              "RoleNames": [
+                "企业管理员"
+              ]
+            }
+          },
+          "admin": {
+            "ActualSuccess": true,
+            "ExpectedPermission": true,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": true,
+            "BusinessMessage": "审核模式已更新为: 双重审核模式",
+            "BusinessCode": 200,
+            "UserRoleInfo": {
+              "UserId": 1,
+              "RolePermissions": [
+                "superadmin"
+              ],
+              "Roles": [
+                {
+                  "roleId": 1,
+                  "roleName": "超级管理员",
+                  "roleKey": "superadmin",
+                  "dataScope": "1"
+                },
+                {
+                  "roleId": "1729685491108446210",
+                  "roleName": "管理员",
+                  "roleKey": "admin",
+                  "dataScope": "1"
+                }
+              ],
+              "IsSuperAdmin": true,
+              "RoleKeys": [
+                "superadmin",
+                "admin"
+              ],
+              "Token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOiJzeXNfdXNlcjoxIiwicm5TdHIiOiJZZFZua0g3Mk5STUNWRDNXeEVYZGh0UjlDUTRnVmVmViIsInRlbmFudElkIjoiMDAwMDAiLCJ1c2VySWQiOjF9.GTCLDVOP0ksH8Xfg_66A0pYopHpNjovrJj42Dx5o9K0",
+              "MenuPermissions": [
+                "*:*:*"
+              ],
+              "HasWildcardPermission": true,
+              "Username": "admin",
+              "UserType": "admin",
+              "RoleNames": [
+                "超级管理员",
+                "管理员"
+              ]
+            }
+          },
+          "designer": {
+            "ActualSuccess": true,
+            "ExpectedPermission": false,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": false,
+            "BusinessMessage": "审核模式已更新为: 双重审核模式",
+            "BusinessCode": 200,
+            "UserRoleInfo": {
+              "UserId": "1945751052787691522",
+              "RolePermissions": [
+                "designer"
+              ],
+              "Roles": [
+                {
+                  "roleId": "1932319128081666050",
+                  "roleName": "设计师",
+                  "roleKey": "designer",
+                  "dataScope": "5"
+                }
+              ],
+              "IsSuperAdmin": false,
+              "RoleKeys": [
+                "designer"
+              ],
+              "Token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOiJzeXNfdXNlcjoxOTQ1NzUxMDUyNzg3NjkxNTIyIiwicm5TdHIiOiJCT1ljVFRETFRRQ2JQUGhsWlpSOUhLbXJxNkI2RVA3UiIsInRlbmFudElkIjoiMDAwMDAwIiwidXNlcklkIjoxOTQ1NzUxMDUyNzg3NjkxNTIyfQ.c3--FB-JZprXfBvE0ODut0BVvmGjUHtbP4pmsuhiq8E",
+              "MenuPermissions": [
+                "designer:job:list",
+                "designer:task-application:apply",
+                "designer:task:query",
+                "designer:task:list",
+                "designer:task-deliverable:submit",
+                "designer:task-deliverable:list",
+                "designer:task-application:list",
+                "designer:task:detail"
+              ],
+              "HasWildcardPermission": false,
+              "Username": "designer_test",
+              "UserType": "designer",
+              "RoleNames": [
+                "设计师"
+              ]
+            }
+          }
+        },
+        "GetTaskConfigInfo": {
+          "enterprise": {
+            "ActualSuccess": true,
+            "ExpectedPermission": false,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": false,
+            "BusinessMessage": "操作成功",
+            "BusinessCode": 200,
+            "UserRoleInfo": {
+              "UserId": "1945751182806921217",
+              "RolePermissions": [
+                "enterprise"
+              ],
+              "Roles": [
+                {
+                  "roleId": "1932319128081666051",
+                  "roleName": "企业管理员",
+                  "roleKey": "enterprise",
+                  "dataScope": "2"
+                }
+              ],
+              "IsSuperAdmin": false,
+              "RoleKeys": [
+                "enterprise"
+              ],
+              "Token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOiJzeXNfdXNlcjoxOTQ1NzUxMTgyODA2OTIxMjE3Iiwicm5TdHIiOiJqTXA5TlBKVE4wRVJrR2NXZVVveno4T1JpdjVSQTNCTiIsInRlbmFudElkIjoiMDAwMDAwIiwidXNlcklkIjoxOTQ1NzUxMTgyODA2OTIxMjE3fQ._1jGiwusiIaOaRb06dNVN7BAtPEKmVI3Kfi_XIqVKBQ",
+              "MenuPermissions": [
+                "designer:task-payment:list",
+                "designer:task-application:enterprise-review",
+                "designer:task:delete",
+                "designer:task:edit",
+                "designer:task-deliverable:list",
+                "designer:task-deliverable:review",
+                "designer:task-application:list",
+                "designer:task:detail",
+                "designer:enterprise:task:add",
+                "designer:task-application:enterprise-pending",
+                "designer:task:query",
+                "designer:task:add",
+                "designer:task-payment:create",
+                "designer:task:list",
+                "designer:task-application:process"
+              ],
+              "HasWildcardPermission": false,
+              "Username": "enterprise_test",
+              "UserType": "enterprise",
+              "RoleNames": [
+                "企业管理员"
+              ]
+            }
+          },
+          "admin": {
+            "ActualSuccess": true,
+            "ExpectedPermission": true,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": true,
+            "BusinessMessage": "操作成功",
+            "BusinessCode": 200,
+            "UserRoleInfo": {
+              "UserId": 1,
+              "RolePermissions": [
+                "superadmin"
+              ],
+              "Roles": [
+                {
+                  "roleId": 1,
+                  "roleName": "超级管理员",
+                  "roleKey": "superadmin",
+                  "dataScope": "1"
+                },
+                {
+                  "roleId": "1729685491108446210",
+                  "roleName": "管理员",
+                  "roleKey": "admin",
+                  "dataScope": "1"
+                }
+              ],
+              "IsSuperAdmin": true,
+              "RoleKeys": [
+                "superadmin",
+                "admin"
+              ],
+              "Token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOiJzeXNfdXNlcjoxIiwicm5TdHIiOiJZZFZua0g3Mk5STUNWRDNXeEVYZGh0UjlDUTRnVmVmViIsInRlbmFudElkIjoiMDAwMDAiLCJ1c2VySWQiOjF9.GTCLDVOP0ksH8Xfg_66A0pYopHpNjovrJj42Dx5o9K0",
+              "MenuPermissions": [
+                "*:*:*"
+              ],
+              "HasWildcardPermission": true,
+              "Username": "admin",
+              "UserType": "admin",
+              "RoleNames": [
+                "超级管理员",
+                "管理员"
+              ]
+            }
+          },
+          "designer": {
+            "ActualSuccess": true,
+            "ExpectedPermission": false,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": false,
+            "BusinessMessage": "操作成功",
+            "BusinessCode": 200,
+            "UserRoleInfo": {
+              "UserId": "1945751052787691522",
+              "RolePermissions": [
+                "designer"
+              ],
+              "Roles": [
+                {
+                  "roleId": "1932319128081666050",
+                  "roleName": "设计师",
+                  "roleKey": "designer",
+                  "dataScope": "5"
+                }
+              ],
+              "IsSuperAdmin": false,
+              "RoleKeys": [
+                "designer"
+              ],
+              "Token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOiJzeXNfdXNlcjoxOTQ1NzUxMDUyNzg3NjkxNTIyIiwicm5TdHIiOiJCT1ljVFRETFRRQ2JQUGhsWlpSOUhLbXJxNkI2RVA3UiIsInRlbmFudElkIjoiMDAwMDAwIiwidXNlcklkIjoxOTQ1NzUxMDUyNzg3NjkxNTIyfQ.c3--FB-JZprXfBvE0ODut0BVvmGjUHtbP4pmsuhiq8E",
+              "MenuPermissions": [
+                "designer:job:list",
+                "designer:task-application:apply",
+                "designer:task:query",
+                "designer:task:list",
+                "designer:task-deliverable:submit",
+                "designer:task-deliverable:list",
+                "designer:task-application:list",
+                "designer:task:detail"
+              ],
+              "HasWildcardPermission": false,
+              "Username": "designer_test",
+              "UserType": "designer",
+              "RoleNames": [
+                "设计师"
+              ]
+            }
+          }
+        }
+      },
+      "TaskManagement": {
+        "GetTaskList": {
+          "enterprise": {
+            "ActualSuccess": true,
+            "ExpectedPermission": true,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": true,
+            "BusinessMessage": "查询成功",
+            "BusinessCode": 200,
+            "UserRoleInfo": {
+              "UserId": "1945751182806921217",
+              "RolePermissions": [
+                "enterprise"
+              ],
+              "Roles": [
+                {
+                  "roleId": "1932319128081666051",
+                  "roleName": "企业管理员",
+                  "roleKey": "enterprise",
+                  "dataScope": "2"
+                }
+              ],
+              "IsSuperAdmin": false,
+              "RoleKeys": [
+                "enterprise"
+              ],
+              "Token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOiJzeXNfdXNlcjoxOTQ1NzUxMTgyODA2OTIxMjE3Iiwicm5TdHIiOiJqTXA5TlBKVE4wRVJrR2NXZVVveno4T1JpdjVSQTNCTiIsInRlbmFudElkIjoiMDAwMDAwIiwidXNlcklkIjoxOTQ1NzUxMTgyODA2OTIxMjE3fQ._1jGiwusiIaOaRb06dNVN7BAtPEKmVI3Kfi_XIqVKBQ",
+              "MenuPermissions": [
+                "designer:task-payment:list",
+                "designer:task-application:enterprise-review",
+                "designer:task:delete",
+                "designer:task:edit",
+                "designer:task-deliverable:list",
+                "designer:task-deliverable:review",
+                "designer:task-application:list",
+                "designer:task:detail",
+                "designer:enterprise:task:add",
+                "designer:task-application:enterprise-pending",
+                "designer:task:query",
+                "designer:task:add",
+                "designer:task-payment:create",
+                "designer:task:list",
+                "designer:task-application:process"
+              ],
+              "HasWildcardPermission": false,
+              "Username": "enterprise_test",
+              "UserType": "enterprise",
+              "RoleNames": [
+                "企业管理员"
+              ]
+            }
+          },
+          "admin": {
+            "ActualSuccess": true,
+            "ExpectedPermission": true,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": true,
+            "BusinessMessage": "查询成功",
+            "BusinessCode": 200,
+            "UserRoleInfo": {
+              "UserId": 1,
+              "RolePermissions": [
+                "superadmin"
+              ],
+              "Roles": [
+                {
+                  "roleId": 1,
+                  "roleName": "超级管理员",
+                  "roleKey": "superadmin",
+                  "dataScope": "1"
+                },
+                {
+                  "roleId": "1729685491108446210",
+                  "roleName": "管理员",
+                  "roleKey": "admin",
+                  "dataScope": "1"
+                }
+              ],
+              "IsSuperAdmin": true,
+              "RoleKeys": [
+                "superadmin",
+                "admin"
+              ],
+              "Token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOiJzeXNfdXNlcjoxIiwicm5TdHIiOiJZZFZua0g3Mk5STUNWRDNXeEVYZGh0UjlDUTRnVmVmViIsInRlbmFudElkIjoiMDAwMDAiLCJ1c2VySWQiOjF9.GTCLDVOP0ksH8Xfg_66A0pYopHpNjovrJj42Dx5o9K0",
+              "MenuPermissions": [
+                "*:*:*"
+              ],
+              "HasWildcardPermission": true,
+              "Username": "admin",
+              "UserType": "admin",
+              "RoleNames": [
+                "超级管理员",
+                "管理员"
+              ]
+            }
+          },
+          "designer": {
+            "ActualSuccess": true,
+            "ExpectedPermission": true,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": true,
+            "BusinessMessage": "查询成功",
+            "BusinessCode": 200,
+            "UserRoleInfo": {
+              "UserId": "1945751052787691522",
+              "RolePermissions": [
+                "designer"
+              ],
+              "Roles": [
+                {
+                  "roleId": "1932319128081666050",
+                  "roleName": "设计师",
+                  "roleKey": "designer",
+                  "dataScope": "5"
+                }
+              ],
+              "IsSuperAdmin": false,
+              "RoleKeys": [
+                "designer"
+              ],
+              "Token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOiJzeXNfdXNlcjoxOTQ1NzUxMDUyNzg3NjkxNTIyIiwicm5TdHIiOiJCT1ljVFRETFRRQ2JQUGhsWlpSOUhLbXJxNkI2RVA3UiIsInRlbmFudElkIjoiMDAwMDAwIiwidXNlcklkIjoxOTQ1NzUxMDUyNzg3NjkxNTIyfQ.c3--FB-JZprXfBvE0ODut0BVvmGjUHtbP4pmsuhiq8E",
+              "MenuPermissions": [
+                "designer:job:list",
+                "designer:task-application:apply",
+                "designer:task:query",
+                "designer:task:list",
+                "designer:task-deliverable:submit",
+                "designer:task-deliverable:list",
+                "designer:task-application:list",
+                "designer:task:detail"
+              ],
+              "HasWildcardPermission": false,
+              "Username": "designer_test",
+              "UserType": "designer",
+              "RoleNames": [
+                "设计师"
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "Statistics": {
+    "OverallPassRate": 66.67,
+    "RegularUserCorrectTests": 4,
+    "TotalPermissionTests": 12,
+    "PassedPermissionTests": 8,
+    "SuperAdminCorrectTests": 4
+  }
+}

@@ -227,4 +227,13 @@ public interface ISysUserService {
      */
     int deleteUserByIds(Long[] userIds);
 
+    /**
+     * 绑定用户手机号
+     *
+     * @param userId 用户ID
+     * @param phonenumber 手机号码
+     * @return 绑定结果
+     */
+    boolean bindUserPhone(Long userId, String phonenumber);
+
 }

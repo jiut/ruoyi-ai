@@ -1,0 +1,1095 @@
+{
+  "Statistics": {
+    "PermissionTests": {
+      "PassRate": 57.47,
+      "Passed": 50,
+      "Total": 87
+    }
+  },
+  "TestResults": {
+    "DataTransparency": {
+      "DesignerApplications": {
+        "ErrorMessage": "",
+        "TestRole": "designer",
+        "Details": {
+          "total": 0,
+          "rows": [],
+          "code": 200,
+          "msg": "查询成功"
+        },
+        "BusinessCode": 200,
+        "BusinessMessage": "查询成功",
+        "HttpSuccess": true,
+        "Method": "GET",
+        "Success": true,
+        "ResponseTime": 9.7832,
+        "PermissionDenied": false,
+        "StatusCode": 200,
+        "Url": "/designer/task-application/list",
+        "EndpointName": "GetApplicationList",
+        "Category": "TaskApplicationManagement",
+        "BusinessSuccess": true
+      },
+      "EnterpriseApplications": {
+        "ErrorMessage": "",
+        "TestRole": "enterprise",
+        "Details": {
+          "code": 200,
+          "msg": "操作成功",
+          "data": []
+        },
+        "BusinessCode": 200,
+        "BusinessMessage": "操作成功",
+        "HttpSuccess": true,
+        "Method": "GET",
+        "Success": true,
+        "ResponseTime": 7.7023,
+        "PermissionDenied": false,
+        "StatusCode": 200,
+        "Url": "/designer/task-application/enterprise/pending",
+        "EndpointName": "GetEnterprisePendingApplications",
+        "Category": "EnterpriseApplicationManagement",
+        "BusinessSuccess": true
+      }
+    },
+    "PermissionMatrix": {
+      "TaskManagement": {
+        "GetTaskList": {
+          "admin": {
+            "StatusCode": 200,
+            "ActualSuccess": true,
+            "BusinessSuccess": true,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 8.193,
+            "BusinessMessage": "查询成功",
+            "BusinessCode": 200,
+            "ExpectedAccess": true
+          },
+          "enterprise": {
+            "StatusCode": 200,
+            "ActualSuccess": true,
+            "BusinessSuccess": true,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 9.6578,
+            "BusinessMessage": "查询成功",
+            "BusinessCode": 200,
+            "ExpectedAccess": true
+          },
+          "designer": {
+            "StatusCode": 200,
+            "ActualSuccess": true,
+            "BusinessSuccess": true,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 10.078,
+            "BusinessMessage": "查询成功",
+            "BusinessCode": 200,
+            "ExpectedAccess": true
+          }
+        },
+        "GetTaskDetail": {
+          "admin": {
+            "StatusCode": 200,
+            "ActualSuccess": true,
+            "BusinessSuccess": true,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 4.7462,
+            "BusinessMessage": "操作成功",
+            "BusinessCode": 200,
+            "ExpectedAccess": true
+          },
+          "enterprise": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": false,
+            "ResponseTime": 3.9873,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": true
+          },
+          "designer": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": false,
+            "ResponseTime": 5.2285,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": true
+          }
+        },
+        "UpdateTask": {
+          "admin": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": false,
+            "ResponseTime": 3.27,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": true
+          },
+          "enterprise": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": false,
+            "ResponseTime": 3.7697,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": true
+          },
+          "designer": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 4.5905,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": false
+          }
+        },
+        "CreateTask": {
+          "admin": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": false,
+            "ResponseTime": 4.1696,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": true
+          },
+          "enterprise": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": false,
+            "ResponseTime": 3.8062,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": true
+          },
+          "designer": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 4.8444,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": false
+          }
+        },
+        "DeleteTask": {
+          "admin": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": false,
+            "ResponseTime": 5.1365,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": true
+          },
+          "enterprise": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": false,
+            "ResponseTime": 3.4497,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": true
+          },
+          "designer": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 4.0368,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": false
+          }
+        }
+      },
+      "TaskConfigManagement": {
+        "GetReviewModes": {
+          "admin": {
+            "StatusCode": 200,
+            "ActualSuccess": true,
+            "BusinessSuccess": true,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 5.1509,
+            "BusinessMessage": "操作成功",
+            "BusinessCode": 200,
+            "ExpectedAccess": true
+          },
+          "enterprise": {
+            "StatusCode": 200,
+            "ActualSuccess": true,
+            "BusinessSuccess": true,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": false,
+            "ResponseTime": 5.9237,
+            "BusinessMessage": "操作成功",
+            "BusinessCode": 200,
+            "ExpectedAccess": false
+          },
+          "designer": {
+            "StatusCode": 200,
+            "ActualSuccess": true,
+            "BusinessSuccess": true,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": false,
+            "ResponseTime": 5.6647,
+            "BusinessMessage": "操作成功",
+            "BusinessCode": 200,
+            "ExpectedAccess": false
+          }
+        },
+        "UpdateReviewMode": {
+          "admin": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": false,
+            "ResponseTime": 4.7721,
+            "BusinessMessage": "无效的审核模式: {mode}，支持的模式: DUAL, ENTERPRISE",
+            "BusinessCode": 500,
+            "ExpectedAccess": true
+          },
+          "enterprise": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 5.237,
+            "BusinessMessage": "无效的审核模式: {mode}，支持的模式: DUAL, ENTERPRISE",
+            "BusinessCode": 500,
+            "ExpectedAccess": false
+          },
+          "designer": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 5.9416,
+            "BusinessMessage": "无效的审核模式: {mode}，支持的模式: DUAL, ENTERPRISE",
+            "BusinessCode": 500,
+            "ExpectedAccess": false
+          }
+        },
+        "GetTaskConfigInfo": {
+          "admin": {
+            "StatusCode": 200,
+            "ActualSuccess": true,
+            "BusinessSuccess": true,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 4.7591,
+            "BusinessMessage": "操作成功",
+            "BusinessCode": 200,
+            "ExpectedAccess": true
+          },
+          "enterprise": {
+            "StatusCode": 200,
+            "ActualSuccess": true,
+            "BusinessSuccess": true,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": false,
+            "ResponseTime": 4.4784,
+            "BusinessMessage": "操作成功",
+            "BusinessCode": 200,
+            "ExpectedAccess": false
+          },
+          "designer": {
+            "StatusCode": 200,
+            "ActualSuccess": true,
+            "BusinessSuccess": true,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": false,
+            "ResponseTime": 5.0037,
+            "BusinessMessage": "操作成功",
+            "BusinessCode": 200,
+            "ExpectedAccess": false
+          }
+        },
+        "ResetConfig": {
+          "admin": {
+            "StatusCode": 200,
+            "ActualSuccess": true,
+            "BusinessSuccess": true,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 5.0802,
+            "BusinessMessage": "配置已重置为默认值",
+            "BusinessCode": 200,
+            "ExpectedAccess": true
+          },
+          "enterprise": {
+            "StatusCode": 200,
+            "ActualSuccess": true,
+            "BusinessSuccess": true,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": false,
+            "ResponseTime": 4.9511,
+            "BusinessMessage": "配置已重置为默认值",
+            "BusinessCode": 200,
+            "ExpectedAccess": false
+          },
+          "designer": {
+            "StatusCode": 200,
+            "ActualSuccess": true,
+            "BusinessSuccess": true,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": false,
+            "ResponseTime": 5.0628,
+            "BusinessMessage": "配置已重置为默认值",
+            "BusinessCode": 200,
+            "ExpectedAccess": false
+          }
+        }
+      },
+      "EnterpriseApplicationManagement": {
+        "GetEnterprisePendingApplications": {
+          "admin": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 4.7378,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": false
+          },
+          "enterprise": {
+            "StatusCode": 200,
+            "ActualSuccess": true,
+            "BusinessSuccess": true,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 8.6574,
+            "BusinessMessage": "操作成功",
+            "BusinessCode": 200,
+            "ExpectedAccess": true
+          },
+          "designer": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 4.9427,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": false
+          }
+        }
+      },
+      "DeliverableManagement": {
+        "SubmitDeliverable": {
+          "admin": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 4.1994,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": false
+          },
+          "enterprise": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 3.562,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": false
+          },
+          "designer": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": false,
+            "ResponseTime": 5.5896,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": true
+          }
+        },
+        "ReviewDeliverable": {
+          "admin": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": false,
+            "ResponseTime": 5.468,
+            "BusinessMessage": "审核状态不能为空",
+            "BusinessCode": 500,
+            "ExpectedAccess": true
+          },
+          "enterprise": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": false,
+            "ResponseTime": 6.8017,
+            "BusinessMessage": "审核状态不能为空",
+            "BusinessCode": 500,
+            "ExpectedAccess": true
+          },
+          "designer": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 4.9735,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": false
+          }
+        },
+        "DeleteDeliverable": {
+          "admin": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": false,
+            "ResponseTime": 7.1534,
+            "BusinessMessage": "交付物不存在",
+            "BusinessCode": 500,
+            "ExpectedAccess": true
+          },
+          "enterprise": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 3.5359,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": false
+          },
+          "designer": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": false,
+            "ResponseTime": 3.4522,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": true
+          }
+        },
+        "UpdateDeliverable": {
+          "admin": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 5.0458,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": false
+          },
+          "enterprise": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 4.0644,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": false
+          },
+          "designer": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": false,
+            "ResponseTime": 4.7643,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": true
+          }
+        },
+        "GetDeliverableList": {
+          "admin": {
+            "StatusCode": 200,
+            "ActualSuccess": true,
+            "BusinessSuccess": true,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 7.9636,
+            "BusinessMessage": "查询成功",
+            "BusinessCode": 200,
+            "ExpectedAccess": true
+          },
+          "enterprise": {
+            "StatusCode": 200,
+            "ActualSuccess": true,
+            "BusinessSuccess": true,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 7.5316,
+            "BusinessMessage": "查询成功",
+            "BusinessCode": 200,
+            "ExpectedAccess": true
+          },
+          "designer": {
+            "StatusCode": 200,
+            "ActualSuccess": true,
+            "BusinessSuccess": true,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 10.4275,
+            "BusinessMessage": "查询成功",
+            "BusinessCode": 200,
+            "ExpectedAccess": true
+          }
+        }
+      },
+      "TaskApplicationManagement": {
+        "GetEnterprisePendingList": {
+          "admin": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": false,
+            "ResponseTime": 5.2235,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": true
+          },
+          "enterprise": {
+            "StatusCode": 200,
+            "ActualSuccess": true,
+            "BusinessSuccess": true,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 7.9328,
+            "BusinessMessage": "操作成功",
+            "BusinessCode": 200,
+            "ExpectedAccess": true
+          },
+          "designer": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 6.2001,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": false
+          }
+        },
+        "EnterpriseReview": {
+          "admin": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": false,
+            "ResponseTime": 4.2646,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": true
+          },
+          "enterprise": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": false,
+            "ResponseTime": 8.4734,
+            "BusinessMessage": "审核决定不能为空",
+            "BusinessCode": 500,
+            "ExpectedAccess": true
+          },
+          "designer": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 4.3225,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": false
+          }
+        },
+        "AdminReview": {
+          "admin": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": false,
+            "ResponseTime": 5.3511,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": true
+          },
+          "enterprise": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 6.9824,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": false
+          },
+          "designer": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 4.8523,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": false
+          }
+        },
+        "ApplyTask": {
+          "admin": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 4.1941,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": false
+          },
+          "enterprise": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 6.0921,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": false
+          },
+          "designer": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": false,
+            "ResponseTime": 8.81,
+            "BusinessMessage": "只有设计师可以申请任务",
+            "BusinessCode": 500,
+            "ExpectedAccess": true
+          }
+        },
+        "GetApplicationDetail": {
+          "admin": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": false,
+            "ResponseTime": 8.7903,
+            "BusinessMessage": "申请不存在",
+            "BusinessCode": 500,
+            "ExpectedAccess": true
+          },
+          "enterprise": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": false,
+            "ResponseTime": 4.7787,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": true
+          },
+          "designer": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": false,
+            "ResponseTime": 5.7186,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": true
+          }
+        },
+        "GetAdminPendingList": {
+          "admin": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": false,
+            "ResponseTime": 5.5865,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": true
+          },
+          "enterprise": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 4.4247,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": false
+          },
+          "designer": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 4.9653,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": false
+          }
+        },
+        "WithdrawApplication": {
+          "admin": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 3.6916,
+            "BusinessMessage": "Request method 'PUT' is not supported",
+            "BusinessCode": 500,
+            "ExpectedAccess": false
+          },
+          "enterprise": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 3.8818,
+            "BusinessMessage": "Request method 'PUT' is not supported",
+            "BusinessCode": 500,
+            "ExpectedAccess": false
+          },
+          "designer": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": false,
+            "ResponseTime": 3.7631,
+            "BusinessMessage": "Request method 'PUT' is not supported",
+            "BusinessCode": 500,
+            "ExpectedAccess": true
+          }
+        },
+        "GetApplicationList": {
+          "admin": {
+            "StatusCode": 200,
+            "ActualSuccess": true,
+            "BusinessSuccess": true,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 10.7251,
+            "BusinessMessage": "查询成功",
+            "BusinessCode": 200,
+            "ExpectedAccess": true
+          },
+          "enterprise": {
+            "StatusCode": 200,
+            "ActualSuccess": true,
+            "BusinessSuccess": true,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 11.2217,
+            "BusinessMessage": "查询成功",
+            "BusinessCode": 200,
+            "ExpectedAccess": true
+          },
+          "designer": {
+            "StatusCode": 200,
+            "ActualSuccess": true,
+            "BusinessSuccess": true,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 9.6526,
+            "BusinessMessage": "查询成功",
+            "BusinessCode": 200,
+            "ExpectedAccess": true
+          }
+        }
+      },
+      "EnterpriseTaskManagement": {
+        "CancelTask": {
+          "admin": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 3.4488,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": false
+          },
+          "enterprise": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": false,
+            "ResponseTime": 3.2333,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": true
+          },
+          "designer": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 3.567,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": false
+          }
+        },
+        "PublishTask": {
+          "admin": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 3.8362,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": false
+          },
+          "enterprise": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": false,
+            "ResponseTime": 3.2011,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": true
+          },
+          "designer": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 3.9117,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": false
+          }
+        },
+        "CreateEnterpriseTask": {
+          "admin": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 3.6445,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": false
+          },
+          "enterprise": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": false,
+            "PermissionCheckPassed": false,
+            "ResponseTime": 9.3694,
+            "BusinessMessage": "\r\n### Error updating database.  Cause: java.sql.SQLException: Field 'task_title' doesn't have a default value\r\n### The error may exist in org/ruoyi/designer/mapper/TaskMapper.java (best guess)\r\n### The error may involve org.ruoyi.designer.mapper.TaskMapper.insert-Inline\r\n### The error occurred while setting parameters\r\n### SQL: INSERT INTO des_task  ( task_id, enterprise_id,        urgent, status,   views, applications,  create_dept, create_by, create_time, update_by, update_time )  VALUES (  ?, ?,        ?, ?,   ?, ?,  ?, ?, ?, ?, ?  )\r\n### Cause: java.sql.SQLException: Field 'task_title' doesn't have a default value\n; Field 'task_title' doesn't have a default value",
+            "BusinessCode": 500,
+            "ExpectedAccess": true
+          },
+          "designer": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 3.1015,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": false
+          }
+        },
+        "GetEnterpriseTaskList": {
+          "admin": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 4.5268,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": false
+          },
+          "enterprise": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": false,
+            "ResponseTime": 3.0432,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": true
+          },
+          "designer": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 4.4493,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": false
+          }
+        },
+        "UpdateEnterpriseTask": {
+          "admin": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 3.5239,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": false
+          },
+          "enterprise": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": false,
+            "ResponseTime": 3.0304,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": true
+          },
+          "designer": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 4.5147,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": false
+          }
+        },
+        "DeleteEnterpriseTask": {
+          "admin": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 4.0555,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": false
+          },
+          "enterprise": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": false,
+            "ResponseTime": 4.4525,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": true
+          },
+          "designer": {
+            "StatusCode": 200,
+            "ActualSuccess": false,
+            "BusinessSuccess": false,
+            "PermissionDenied": true,
+            "PermissionCheckPassed": true,
+            "ResponseTime": 4.3892,
+            "BusinessMessage": "没有访问权限，请联系管理员授权",
+            "BusinessCode": 403,
+            "ExpectedAccess": false
+          }
+        }
+      }
+    },
+    "UserInitialization": {
+      "EnterpriseTokenObtained": true,
+      "AdminTokenObtained": true,
+      "DesignerTokenObtained": true
+    }
+  },
+  "TestSummary": {
+    "BaseUrl": "http://localhost:6039",
+    "TestMode": "PERMISSION",
+    "TestTime": "2025-07-18 17:44:15"
+  }
+}

@@ -230,10 +230,7 @@ public class JobPostingController extends BaseController {
         description = "根据职业要求查询相关岗位",
         parameters = @Parameter(name = "profession", description = "职业类型", required = true, 
                                example = "UI_UX_DESIGNER",
-                               schema = @Schema(allowableValues = {"ILLUSTRATOR", "INTERACTION_DESIGNER", 
-                                                                 "BRAND_DESIGNER", "UI_DESIGNER", "UX_DESIGNER", 
-                                                                 "UI_UX_DESIGNER", "GRAPHIC_DESIGNER", "PRODUCT_DESIGNER", 
-                                                                 "MOTION_DESIGNER", "VISUAL_DESIGNER", "THREE_D_DESIGNER"}))
+                               schema = @Schema(allowableValues = {"UI_DESIGNER", "UX_DESIGNER", "UI_UX_DESIGNER", "VISUAL_DESIGNER", "INTERACTION_DESIGNER", "PRODUCT_DESIGNER", "BRAND_DESIGNER", "MOTION_DESIGNER", "THREE_D_DESIGNER", "GRAPHIC_DESIGNER", "WEB_DESIGNER", "ILLUSTRATOR", "INTERIOR_DESIGNER", "ARCHITECT", "LANDSCAPE_DESIGNER"}))
     )
     @SaCheckPermission("designer:job:query")
     @GetMapping("/profession/{profession}")

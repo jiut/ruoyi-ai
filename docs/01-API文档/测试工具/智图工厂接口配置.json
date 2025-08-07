@@ -1,0 +1,703 @@
+{
+  "metadata": {
+    "name": "智图工厂接口测试配置",
+    "version": "1.0.0",
+    "description": "基于设计文档定义的完整接口测试配置",
+    "baseDocument": "docs/00-重要文档/zhitu-factory-design-guide-clean.md",
+    "lastUpdated": "2025-01-27"
+  },
+  "testEnvironments": {
+    "development": {
+      "baseUrl": "http://localhost:6039",
+      "reviewMode": "DUAL"
+    },
+    "staging": {
+      "baseUrl": "https://staging.ruoyi.vip",
+      "reviewMode": "DUAL"
+    },
+    "production": {
+      "baseUrl": "https://api.ruoyi.vip",
+      "reviewMode": "ENTERPRISE"
+    }
+  },
+  "testUsers": {
+    "designer": {
+      "username": "designer_test",
+      "password": "admin123",
+      "role": "designer",
+      "description": "测试设计师账号"
+    },
+    "enterprise": {
+      "username": "enterprise_test",
+      "password": "admin123",
+      "role": "enterprise",
+      "description": "测试企业管理员账号"
+    },
+    "admin": {
+      "username": "admin",
+      "password": "admin123",
+      "role": "admin",
+      "description": "系统管理员账号"
+    }
+  },
+  "apiGroups": {
+    "taskManagement": {
+      "name": "任务管理接口",
+      "description": "基础任务CRUD操作",
+      "endpoints": {
+        "getTaskList": {
+          "name": "查询任务列表",
+          "method": "GET",
+          "path": "/designer/task/list",
+          "requiredRoles": ["designer", "enterprise", "admin"],
+          "queryParams": {
+            "pageNum": 1,
+            "pageSize": 10,
+            "status": "PUBLISHED"
+          },
+          "expectedResponse": {
+            "code": 200,
+            "dataStructure": {
+              "rows": "array",
+              "total": "number"
+            }
+          },
+          "testPoints": [
+            "分页参数验证",
+            "状态筛选功能",
+            "权限数据隔离",
+            "响应时间 < 500ms"
+          ]
+        },
+        "getTaskDetail": {
+          "name": "获取任务详情",
+          "method": "GET",
+          "path": "/designer/task/{id}",
+          "requiredRoles": ["designer", "enterprise", "admin"],
+          "pathParams": {
+            "id": "taskId"
+          },
+          "expectedResponse": {
+            "code": 200,
+            "dataStructure": {
+              "taskId": "number",
+              "taskTitle": "string",
+              "taskDescription": "string"
+            }
+          },
+          "testPoints": [
+            "有效ID返回详情",
+            "无效ID返回404",
+            "权限验证",
+            "数据完整性"
+          ]
+        },
+        "createTask": {
+          "name": "创建任务",
+          "method": "POST",
+          "path": "/designer/task",
+          "requiredRoles": ["enterprise", "admin"],
+          "requestBody": {
+            "taskTitle": "自动化测试任务",
+            "taskDescription": "这是一个自动化测试创建的任务",
+            "taskType": "LOGO_DESIGN",
+            "skillTags": ["设计", "创意", "LOGO"],
+            "budgetMin": 2000,
+            "budgetMax": 5000,
+            "deadline": "2025-02-15 23:59:59",
+            "deliverables": "LOGO设计文件，包含AI源文件和PNG导出文件"
+          },
+          "expectedResponse": {
+            "code": 200,
+            "dataStructure": {
+              "taskId": "number"
+            }
+          },
+          "testPoints": [
+            "必填字段验证",
+            "数据类型验证",
+            "权限控制",
+            "任务创建成功"
+          ]
+        },
+        "updateTask": {
+          "name": "更新任务",
+          "method": "PUT",
+          "path": "/designer/task/{id}",
+          "requiredRoles": ["enterprise", "admin"],
+          "pathParams": {
+            "id": "taskId"
+          },
+          "requestBody": {
+            "taskTitle": "更新后的任务标题"
+          },
+          "expectedResponse": {
+            "code": 200
+          },
+          "testPoints": [
+            "权限验证",
+            "数据更新",
+            "版本控制"
+          ]
+        },
+        "deleteTask": {
+          "name": "删除任务",
+          "method": "DELETE",
+          "path": "/designer/task/{ids}",
+          "requiredRoles": ["enterprise", "admin"],
+          "pathParams": {
+            "ids": "taskId"
+          },
+          "expectedResponse": {
+            "code": 200
+          },
+          "testPoints": [
+            "权限控制",
+            "级联删除",
+            "数据一致性"
+          ]
+        }
+      }
+    },
+    "enterpriseTaskManagement": {
+      "name": "企业专用任务管理接口",
+      "description": "企业管理员专用的任务管理功能",
+      "endpoints": {
+        "getEnterpriseTaskList": {
+          "name": "获取企业任务列表",
+          "method": "GET",
+          "path": "/designer/enterprise/tasks/list",
+          "requiredRoles": ["enterprise"],
+          "queryParams": {
+            "pageNum": 1,
+            "pageSize": 10
+          },
+          "expectedResponse": {
+            "code": 200
+          },
+          "testPoints": [
+            "企业数据隔离",
+            "只看到自己企业的任务"
+          ]
+        },
+        "createEnterpriseTask": {
+          "name": "企业发布任务",
+          "method": "POST",
+          "path": "/designer/enterprise/tasks",
+          "requiredRoles": ["enterprise"],
+          "requestBody": {
+            "taskTitle": "企业专用测试任务",
+            "taskDescription": "企业管理员创建的测试任务",
+            "taskType": "UI_UX_DESIGN",
+            "skillTags": ["UI", "UX", "原型设计"],
+            "budgetMin": 3000,
+            "budgetMax": 8000,
+            "deadline": "2025-03-01 23:59:59",
+            "deliverables": "UI设计稿和交互原型"
+          },
+          "expectedResponse": {
+            "code": 200,
+            "dataStructure": {
+              "taskId": "number"
+            }
+          },
+          "testPoints": [
+            "任务创建",
+            "状态管理",
+            "企业关联"
+          ]
+        },
+        "publishTask": {
+          "name": "发布任务",
+          "method": "POST",
+          "path": "/designer/enterprise/tasks/{id}/publish",
+          "requiredRoles": ["enterprise"],
+          "pathParams": {
+            "id": "taskId"
+          },
+          "expectedResponse": {
+            "code": 200
+          },
+          "testPoints": [
+            "状态流转",
+            "业务规则验证"
+          ]
+        },
+        "cancelTask": {
+          "name": "取消任务",
+          "method": "POST",
+          "path": "/designer/enterprise/tasks/{id}/cancel",
+          "requiredRoles": ["enterprise"],
+          "pathParams": {
+            "id": "taskId"
+          },
+          "expectedResponse": {
+            "code": 200
+          },
+          "testPoints": [
+            "状态流转",
+            "影响评估"
+          ]
+        }
+      }
+    },
+    "taskApplicationManagement": {
+      "name": "双重审核接口",
+      "description": "任务申请和双重审核流程",
+      "endpoints": {
+        "getApplicationList": {
+          "name": "查询申请列表",
+          "method": "GET",
+          "path": "/designer/task-application/list",
+          "requiredRoles": ["designer", "enterprise", "admin"],
+          "queryParams": {
+            "pageNum": 1,
+            "pageSize": 10
+          },
+          "expectedResponse": {
+            "code": 200
+          },
+          "testPoints": [
+            "数据隔离",
+            "透明性保障",
+            "权限控制"
+          ],
+          "transparencyChecks": {
+            "designer": {
+              "hiddenFields": ["adminReviewStatus", "adminReviewFeedback", "adminReviewTime", "adminReviewBy", "reviewMode"]
+            },
+            "enterprise": {
+              "hiddenFields": ["adminReviewStatus", "adminReviewFeedback", "adminReviewTime", "adminReviewBy", "reviewMode"]
+            }
+          }
+        },
+        "getApplicationDetail": {
+          "name": "获取申请详情",
+          "method": "GET",
+          "path": "/designer/task-application/{id}",
+          "requiredRoles": ["designer", "enterprise", "admin"],
+          "pathParams": {
+            "id": "applicationId"
+          },
+          "expectedResponse": {
+            "code": 200
+          },
+          "testPoints": [
+            "权限控制",
+            "数据完整性"
+          ]
+        },
+        "applyTask": {
+          "name": "申请任务",
+          "method": "POST",
+          "path": "/designer/task-application/apply",
+          "requiredRoles": ["designer"],
+          "requestBody": {
+            "taskId": "{{taskId}}",
+            "proposal": "我对这个项目很感兴趣，具有丰富的设计经验，能够提供高质量的设计作品。我的设计理念注重用户体验和视觉美感的平衡，擅长现代简约风格的设计。",
+            "proposedPrice": 3500,
+            "estimatedDays": 7,
+            "portfolioLinks": ["https://dribbble.com/test", "https://behance.net/test"]
+          },
+          "expectedResponse": {
+            "code": 200,
+            "dataStructure": {
+              "applicationId": "number"
+            }
+          },
+          "testPoints": [
+            "业务规则验证",
+            "重复申请检查",
+            "数据完整性"
+          ]
+        },
+        "withdrawApplication": {
+          "name": "撤回申请",
+          "method": "PUT",
+          "path": "/designer/task-application/withdraw",
+          "requiredRoles": ["designer"],
+          "requestBody": {
+            "applicationId": "{{applicationId}}",
+            "reason": "设计师主动撤回申请"
+          },
+          "expectedResponse": {
+            "code": 200
+          },
+          "testPoints": [
+            "状态验证",
+            "权限控制"
+          ]
+        },
+        "adminReview": {
+          "name": "系统管理员审核",
+          "method": "POST",
+          "path": "/designer/task-application/{id}/admin-review",
+          "requiredRoles": ["admin"],
+          "pathParams": {
+            "id": "applicationId"
+          },
+          "requestBody": {
+            "status": "APPROVED",
+            "feedback": "申请内容详实，设计师作品质量较高，建议通过。经过综合评估，该设计师的专业能力和项目经验符合任务要求。"
+          },
+          "expectedResponse": {
+            "code": 200
+          },
+          "testPoints": [
+            "双重审核逻辑",
+            "状态管理",
+            "权限验证"
+          ]
+        },
+        "enterpriseReview": {
+          "name": "企业管理员审核",
+          "method": "POST",
+          "path": "/designer/task-application/{id}/enterprise-review",
+          "requiredRoles": ["enterprise", "admin"],
+          "pathParams": {
+            "id": "applicationId"
+          },
+          "requestBody": {
+            "status": "APPROVED",
+            "feedback": "设计师专业能力符合要求，价格合理，同意合作。期待高质量的设计作品交付。"
+          },
+          "expectedResponse": {
+            "code": 200
+          },
+          "testPoints": [
+            "审核权限",
+            "状态流转",
+            "业务规则"
+          ]
+        },
+        "getAdminPendingList": {
+          "name": "系统管理员待审核列表",
+          "method": "GET",
+          "path": "/designer/task-application/admin/pending",
+          "requiredRoles": ["admin"],
+          "queryParams": {
+            "pageNum": 1,
+            "pageSize": 10
+          },
+          "expectedResponse": {
+            "code": 200
+          },
+          "testPoints": [
+            "数据过滤",
+            "权限控制"
+          ]
+        },
+        "getEnterprisePendingList": {
+          "name": "企业管理员待审核列表",
+          "method": "GET",
+          "path": "/designer/task-application/enterprise/pending",
+          "requiredRoles": ["enterprise", "admin"],
+          "queryParams": {
+            "pageNum": 1,
+            "pageSize": 10
+          },
+          "expectedResponse": {
+            "code": 200
+          },
+          "testPoints": [
+            "透明性保障",
+            "数据隔离"
+          ]
+        },
+        "getReviewMode": {
+          "name": "获取审核模式",
+          "method": "GET",
+          "path": "/designer/task-application/review-mode",
+          "requiredRoles": ["designer", "enterprise", "admin"],
+          "expectedResponse": {
+            "code": 200,
+            "dataStructure": {
+              "reviewMode": "string",
+              "description": "string"
+            }
+          },
+          "testPoints": [
+            "配置读取",
+            "模式识别"
+          ]
+        }
+      }
+    },
+    "deliverableManagement": {
+      "name": "交付管理接口",
+      "description": "交付物提交和审核功能",
+      "endpoints": {
+        "getDeliverableList": {
+          "name": "查询交付物列表",
+          "method": "GET",
+          "path": "/designer/task-deliverable/list",
+          "requiredRoles": ["designer", "enterprise", "admin"],
+          "queryParams": {
+            "pageNum": 1,
+            "pageSize": 10
+          },
+          "expectedResponse": {
+            "code": 200
+          },
+          "testPoints": [
+            "数据权限",
+            "分页查询"
+          ]
+        },
+        "submitDeliverable": {
+          "name": "提交交付物",
+          "method": "POST",
+          "path": "/designer/task-deliverable",
+          "requiredRoles": ["designer"],
+          "requestBody": {
+            "taskId": "{{taskId}}",
+            "deliverableContent": "设计稿已完成，包含AI源文件和PNG导出文件\n\n百度网盘链接：https://pan.baidu.com/s/1abcdef123456\n提取码：abc123\n\nGitHub发布包：https://github.com/user/project/releases/tag/v1.0\n\n文件说明：\n1. AI源文件在design文件夹中，使用Adobe Illustrator 2024创建\n2. PNG导出文件在assets文件夹中，分辨率为300DPI\n3. 字体文件在fonts文件夹中，请安装后再打开源文件\n4. 配色方案文档在colors文件夹中\n\n注意事项：\n- 源文件使用了全局色板，便于后续调色\n- 所有图层都已命名，便于修改\n- 提供了多种尺寸的导出版本\n\n如有任何问题，请随时联系。",
+            "version": 1
+          },
+          "expectedResponse": {
+            "code": 200,
+            "dataStructure": {
+              "deliverableId": "number"
+            }
+          },
+          "testPoints": [
+            "内容验证",
+            "链接识别",
+            "自然文本格式"
+          ]
+        },
+        "updateDeliverable": {
+          "name": "更新交付物",
+          "method": "PUT",
+          "path": "/designer/task-deliverable/{id}",
+          "requiredRoles": ["designer"],
+          "pathParams": {
+            "id": "deliverableId"
+          },
+          "requestBody": {
+            "deliverableContent": "更新后的交付物内容",
+            "version": 2
+          },
+          "expectedResponse": {
+            "code": 200
+          },
+          "testPoints": [
+            "版本控制",
+            "权限验证"
+          ]
+        },
+        "deleteDeliverable": {
+          "name": "删除交付物",
+          "method": "DELETE",
+          "path": "/designer/task-deliverable/{id}",
+          "requiredRoles": ["designer", "admin"],
+          "pathParams": {
+            "id": "deliverableId"
+          },
+          "expectedResponse": {
+            "code": 200
+          },
+          "testPoints": [
+            "权限控制",
+            "数据清理"
+          ]
+        },
+        "reviewDeliverable": {
+          "name": "审核交付物",
+          "method": "POST",
+          "path": "/designer/task-deliverable/{id}/review",
+          "requiredRoles": ["enterprise", "admin"],
+          "pathParams": {
+            "id": "deliverableId"
+          },
+          "requestBody": {
+            "status": "APPROVED",
+            "reviewFeedback": "交付物质量优秀，完全符合需求。设计风格现代简约，色彩搭配协调，技术实现规范。"
+          },
+          "expectedResponse": {
+            "code": 200
+          },
+          "testPoints": [
+            "审核权限",
+            "状态管理"
+          ]
+        }
+      }
+    },
+    "enterpriseApplicationManagement": {
+      "name": "企业专用申请管理接口",
+      "description": "企业管理员专用申请管理，严格隐藏系统管理员信息",
+      "endpoints": {
+        "getEnterprisePendingApplications": {
+          "name": "企业待审核申请",
+          "method": "GET",
+          "path": "/designer/enterprise/applications/pending",
+          "requiredRoles": ["enterprise"],
+          "queryParams": {
+            "pageNum": 1,
+            "pageSize": 10
+          },
+          "expectedResponse": {
+            "code": 200
+          },
+          "testPoints": [
+            "透明性保障",
+            "数据过滤",
+            "系统管理员信息完全隐藏"
+          ],
+          "transparencyChecks": {
+            "enterprise": {
+              "hiddenFields": ["adminReviewStatus", "adminReviewFeedback", "adminReviewTime", "adminReviewBy", "reviewMode"],
+              "description": "企业管理员完全看不到系统管理员审核相关的任何信息"
+            }
+          }
+        }
+      }
+    }
+  },
+  "testScenarios": {
+    "completeWorkflow": {
+      "name": "完整业务流程测试",
+      "description": "从任务发布到完成的端到端测试",
+      "steps": [
+        {
+          "step": 1,
+          "action": "企业管理员创建任务",
+          "endpoint": "enterpriseTaskManagement.createEnterpriseTask",
+          "role": "enterprise"
+        },
+        {
+          "step": 2,
+          "action": "企业管理员发布任务",
+          "endpoint": "enterpriseTaskManagement.publishTask",
+          "role": "enterprise"
+        },
+        {
+          "step": 3,
+          "action": "设计师申请任务",
+          "endpoint": "taskApplicationManagement.applyTask",
+          "role": "designer"
+        },
+        {
+          "step": 4,
+          "action": "系统管理员审核申请",
+          "endpoint": "taskApplicationManagement.adminReview",
+          "role": "admin",
+          "condition": "reviewMode === 'DUAL'"
+        },
+        {
+          "step": 5,
+          "action": "企业管理员审核申请",
+          "endpoint": "taskApplicationManagement.enterpriseReview",
+          "role": "enterprise"
+        },
+        {
+          "step": 6,
+          "action": "设计师提交交付物",
+          "endpoint": "deliverableManagement.submitDeliverable",
+          "role": "designer"
+        },
+        {
+          "step": 7,
+          "action": "企业管理员审核交付物",
+          "endpoint": "deliverableManagement.reviewDeliverable",
+          "role": "enterprise"
+        }
+      ]
+    },
+    "dualReviewMode": {
+      "name": "双重审核模式测试",
+      "description": "验证双重审核模式的完整流程",
+      "precondition": "VITE_TASK_REVIEW_MODE=DUAL",
+      "steps": [
+        {
+          "step": 1,
+          "action": "验证审核模式",
+          "endpoint": "taskApplicationManagement.getReviewMode",
+          "expectedResult": { "reviewMode": "DUAL" }
+        },
+        {
+          "step": 2,
+          "action": "设计师申请任务",
+          "endpoint": "taskApplicationManagement.applyTask",
+          "role": "designer"
+        },
+        {
+          "step": 3,
+          "action": "系统管理员审核",
+          "endpoint": "taskApplicationManagement.adminReview",
+          "role": "admin"
+        },
+        {
+          "step": 4,
+          "action": "企业管理员审核",
+          "endpoint": "taskApplicationManagement.enterpriseReview",
+          "role": "enterprise"
+        },
+        {
+          "step": 5,
+          "action": "验证透明性",
+          "endpoint": "taskApplicationManagement.getApplicationList",
+          "role": "enterprise",
+          "validation": "不包含系统管理员审核信息"
+        }
+      ]
+    },
+    "permissionMatrix": {
+      "name": "权限矩阵测试",
+      "description": "验证所有角色的权限控制",
+      "testMethod": "对每个接口测试所有角色的访问权限",
+      "expectedResults": {
+        "authorizedAccess": "返回200状态码和正确数据",
+        "unauthorizedAccess": "返回403状态码",
+        "dataIsolation": "只能访问有权限的数据"
+      }
+    },
+    "transparencyValidation": {
+      "name": "数据透明性验证",
+      "description": "确保企业管理员和设计师看不到系统管理员信息",
+      "validationRules": {
+        "enterpriseUser": {
+          "hiddenFields": ["adminReviewStatus", "adminReviewFeedback", "adminReviewTime", "adminReviewBy", "reviewMode"],
+          "description": "企业管理员完全看不到系统管理员相关字段"
+        },
+        "designerUser": {
+          "hiddenFields": ["adminReviewStatus", "adminReviewFeedback", "adminReviewTime", "adminReviewBy", "enterpriseReviewStatus", "enterpriseReviewFeedback", "enterpriseReviewTime", "reviewMode"],
+          "description": "设计师看不到审核内部流程，只看到统一的结果"
+        }
+      }
+    }
+  },
+  "performanceTargets": {
+    "queryEndpoints": {
+      "maxResponseTime": 500,
+      "unit": "ms"
+    },
+    "createEndpoints": {
+      "maxResponseTime": 1000,
+      "unit": "ms"
+    },
+    "reviewEndpoints": {
+      "maxResponseTime": 800,
+      "unit": "ms"
+    },
+    "complexQueries": {
+      "maxResponseTime": 2000,
+      "unit": "ms"
+    }
+  },
+  "securityTests": {
+    "sqlInjection": {
+      "testInputs": ["'; DROP TABLE users; --", "1' OR '1'='1"],
+      "expectedResult": "参数化查询防护，无SQL执行"
+    },
+    "xssProtection": {
+      "testInputs": ["<script>alert('xss')</script>", "javascript:alert(1)"],
+      "expectedResult": "输出编码，脚本不执行"
+    },
+    "authorizationBypass": {
+      "testMethod": "使用无效或过期Token访问",
+      "expectedResult": "返回401或403错误"
+    }
+  }
+} 

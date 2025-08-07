@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ruoyi.designer.mapper.TaskApplicationMapper">
+
+    <resultMap type="org.ruoyi.designer.domain.TaskApplication" id="TaskApplicationResult">
+        <result property="applicationId" column="application_id"/>
+        <result property="taskId" column="task_id"/>
+        <result property="designerId" column="designer_id"/>
+        <result property="proposal" column="proposal"/>
+        <result property="proposedPrice" column="proposed_price"/>
+        <result property="estimatedDays" column="estimated_days"/>
+        <result property="portfolioLinks" column="portfolio_links"/>
+        <result property="status" column="status"/>
+        <result property="feedback" column="feedback"/>
+        <result property="adminReviewStatus" column="admin_review_status"/>
+        <result property="adminReviewFeedback" column="admin_review_feedback"/>
+        <result property="adminReviewTime" column="admin_review_time"/>
+        <result property="adminReviewBy" column="admin_review_by"/>
+        <result property="enterpriseReviewStatus" column="enterprise_review_status"/>
+        <result property="enterpriseReviewFeedback" column="enterprise_review_feedback"/>
+        <result property="enterpriseReviewTime" column="enterprise_review_time"/>
+        <result property="reviewMode" column="review_mode"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="delFlag" column="del_flag"/>
+    </resultMap>
+
+    <sql id="selectTaskApplicationVo">
+        SELECT application_id, task_id, designer_id, proposal, proposed_price, estimated_days, 
+               portfolio_links, status, feedback, admin_review_status, admin_review_feedback,
+               admin_review_time, admin_review_by, enterprise_review_status, enterprise_review_feedback,
+               enterprise_review_time, review_mode, create_by, create_time, update_by, update_time, del_flag
+        FROM des_task_application
+    </sql>
+
+    <!-- 查询待系统管理员审核的申请列表 -->
+    <select id="selectPendingAdminReviewApplications" resultMap="TaskApplicationResult">
+        <include refid="selectTaskApplicationVo"/>
+        WHERE del_flag = '0'
+          AND review_mode = 'DUAL'
+          AND admin_review_status = 'PENDING'
+        ORDER BY create_time ASC
+    </select>
+
+    <!-- 查询待企业管理员审核的申请列表 -->
+    <select id="selectEnterprisePendingApplications" resultMap="TaskApplicationResult">
+        SELECT ta.application_id, ta.task_id, ta.designer_id, ta.proposal, ta.proposed_price, ta.estimated_days, 
+               ta.portfolio_links, ta.status, ta.feedback, ta.admin_review_status, ta.admin_review_feedback,
+               ta.admin_review_time, ta.admin_review_by, ta.enterprise_review_status, ta.enterprise_review_feedback,
+               ta.enterprise_review_time, ta.review_mode, ta.create_by, ta.create_time, ta.update_by, ta.update_time, ta.del_flag
+        FROM des_task_application ta
+        LEFT JOIN des_task t ON ta.task_id = t.task_id
+        WHERE ta.del_flag = '0'
+          AND t.del_flag = '0'
+          AND t.enterprise_id = #{enterpriseId}
+          AND (
+              (ta.review_mode = 'DUAL' AND ta.admin_review_status = 'APPROVED' AND ta.enterprise_review_status = 'PENDING')
+              OR 
+              (ta.review_mode = 'ENTERPRISE' AND ta.enterprise_review_status = 'PENDING')
+          )
+        ORDER BY ta.create_time ASC
+    </select>
+
+    <!-- 查询设计师的申请列表 -->
+    <select id="selectApplicationsByDesignerId" resultMap="TaskApplicationResult">
+        <include refid="selectTaskApplicationVo"/>
+        WHERE del_flag = '0'
+          AND designer_id = #{designerId}
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 查询企业的申请列表（企业管理员视图） -->
+    <select id="selectApplicationsByEnterpriseId" resultMap="TaskApplicationResult">
+        <include refid="selectTaskApplicationVo"/>
+        ta
+        LEFT JOIN des_task t ON ta.task_id = t.task_id
+        WHERE ta.del_flag = '0'
+          AND t.del_flag = '0'
+          AND t.enterprise_id = #{enterpriseId}
+        ORDER BY ta.create_time DESC
+    </select>
+
+    <!-- 查询指定状态的申请数量 -->
+    <select id="countApplicationsByStatus" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM des_task_application
+        WHERE del_flag = '0'
+          AND status = #{status}
+        <if test="reviewMode != null">
+            AND review_mode = #{reviewMode}
+        </if>
+    </select>
+
+    <!-- 查询设计师在指定任务的申请 -->
+    <select id="selectApplicationByTaskAndDesigner" resultMap="TaskApplicationResult">
+        <include refid="selectTaskApplicationVo"/>
+        WHERE del_flag = '0'
+          AND task_id = #{taskId}
+          AND designer_id = #{designerId}
+        LIMIT 1
+    </select>
+
+    <!-- 批量查询申请详情（包含关联的任务和设计师信息） -->
+    <select id="selectApplicationsWithDetails" resultMap="TaskApplicationResult">
+        <include refid="selectTaskApplicationVo"/>
+        WHERE del_flag = '0'
+          AND application_id IN
+        <foreach item="id" collection="applicationIds" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 查询企业管理员审核统计数据 -->
+    <select id="selectEnterpriseReviewStats" resultType="java.util.Map">
+        SELECT 
+            COUNT(*) as total_count,
+            SUM(CASE WHEN ta.enterprise_review_status = 'PENDING' THEN 1 ELSE 0 END) as pending_count,
+            SUM(CASE WHEN ta.enterprise_review_status = 'APPROVED' THEN 1 ELSE 0 END) as approved_count,
+            SUM(CASE WHEN ta.enterprise_review_status = 'REJECTED' THEN 1 ELSE 0 END) as rejected_count,
+            SUM(CASE WHEN DATE(ta.enterprise_review_time) = CURDATE() THEN 1 ELSE 0 END) as reviewed_today,
+            ROUND(AVG(CASE WHEN ta.enterprise_review_status IN ('APPROVED', 'REJECTED') 
+                          THEN TIMESTAMPDIFF(HOUR, ta.create_time, ta.enterprise_review_time) END), 2) as avg_review_hours
+        FROM des_task_application ta
+        LEFT JOIN des_task t ON ta.task_id = t.task_id
+        WHERE ta.del_flag = '0'
+          AND t.del_flag = '0'
+          AND t.enterprise_id = #{enterpriseId}
+        <if test="startDate != null and endDate != null">
+            AND ta.create_time BETWEEN #{startDate} AND #{endDate}
+        </if>
+    </select>
+
+    <!-- 查询系统管理员审核统计数据 -->
+    <select id="selectAdminReviewStats" resultType="java.util.Map">
+        SELECT 
+            COUNT(*) as total_count,
+            SUM(CASE WHEN admin_review_status = 'PENDING' THEN 1 ELSE 0 END) as pending_count,
+            SUM(CASE WHEN admin_review_status = 'APPROVED' THEN 1 ELSE 0 END) as approved_count,
+            SUM(CASE WHEN admin_review_status = 'REJECTED' THEN 1 ELSE 0 END) as rejected_count,
+            SUM(CASE WHEN DATE(admin_review_time) = CURDATE() THEN 1 ELSE 0 END) as reviewed_today,
+            ROUND(AVG(CASE WHEN admin_review_status IN ('APPROVED', 'REJECTED') 
+                          THEN TIMESTAMPDIFF(HOUR, create_time, admin_review_time) END), 2) as avg_review_hours
+        FROM des_task_application
+        WHERE del_flag = '0'
+          AND review_mode = 'DUAL'
+        <if test="startDate != null and endDate != null">
+            AND create_time BETWEEN #{startDate} AND #{endDate}
+        </if>
+    </select>
+
+    <!-- 企业管理员待审核申请查询（严格隐藏系统管理员信息） -->
+    <select id="selectEnterprisePendingApplicationsView" resultType="org.ruoyi.designer.domain.vo.EnterpriseApplicationView">
+        SELECT 
+            ta.application_id as applicationId,
+            ta.task_id as taskId,
+            t.task_title as taskTitle,
+            d.name as designerName,
+            d.avatar as designerAvatar,
+            ta.proposal,
+            ta.proposed_price as proposedPrice,
+            ta.estimated_days as estimatedDays,
+            ta.portfolio_links as portfolioLinks,
+            
+            CASE 
+                WHEN ta.status = '0' THEN 'PENDING'
+                WHEN ta.status = '1' THEN 'PENDING'
+                WHEN ta.status = '2' THEN 'REJECTED'
+                WHEN ta.status = '3' THEN 'APPROVED'
+                WHEN ta.status = '4' THEN 'REJECTED'
+                WHEN ta.status = '5' THEN 'WITHDRAWN'
+                ELSE 'PENDING'
+            END as status,
+            
+            ta.enterprise_review_feedback as feedback,
+            ta.create_time as createTime,
+            ta.enterprise_review_time as reviewTime
+            
+        FROM des_task_application ta
+        JOIN des_task t ON ta.task_id = t.task_id
+        JOIN des_designer d ON ta.designer_id = d.designer_id
+        WHERE t.enterprise_id = #{enterpriseId}
+          AND ta.status IN ('0', '1')
+          AND ta.del_flag = '0'
+          AND t.del_flag = '0'
+          AND d.del_flag = '0'
+        ORDER BY ta.create_time DESC
+        LIMIT #{pageSize} OFFSET #{pageNum}
+    </select>
+
+    <!-- 系统管理员待审核申请查询 -->
+    <select id="selectAdminPendingApplications" resultMap="TaskApplicationResult">
+        SELECT 
+            ta.*,
+            t.task_title,
+            t.task_description,
+            t.budget_min,
+            t.budget_max,
+            e.enterprise_name,
+            d.name as designer_name,
+            d.avatar as designer_avatar
+        FROM des_task_application ta
+        JOIN des_task t ON ta.task_id = t.task_id
+        JOIN des_enterprise e ON t.enterprise_id = e.enterprise_id
+        JOIN des_designer d ON ta.designer_id = d.designer_id
+        WHERE ta.status = '0'
+          AND ta.admin_review_status = 'PENDING'
+          AND ta.del_flag = '0'
+        ORDER BY ta.create_time ASC
+        LIMIT #{pageSize} OFFSET #{pageNum}
+    </select>
+
+    <!-- 企业管理员待审核申请统计 -->
+    <select id="countEnterprisePendingApplications" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM des_task_application ta
+        JOIN des_task t ON ta.task_id = t.task_id
+        WHERE t.enterprise_id = #{enterpriseId}
+          AND ta.status IN ('0', '1')
+          AND ta.del_flag = '0'
+          AND t.del_flag = '0'
+    </select>
+
+    <!-- 系统管理员待审核申请统计 -->
+    <select id="countAdminPendingApplications" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM des_task_application ta
+        WHERE ta.status = '0'
+          AND ta.admin_review_status = 'PENDING'
+          AND ta.del_flag = '0'
+    </select>
+
+</mapper> 

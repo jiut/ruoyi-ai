@@ -75,13 +75,13 @@ redisson:
 
 --- # sms 短信
 sms:
-  enabled: false
+  enabled: true
   # 阿里云 dysmsapi.aliyuncs.com
   # 腾讯云 sms.tencentcloudapi.com
   endpoint: "dysmsapi.aliyuncs.com"
-  accessKeyId: xxxxxxx
-  accessKeySecret: xxxxxx
-  signName: 测试
+  accessKeyId: 
+  accessKeySecret: 
+  signName: 亿思湖北省科技
   # 腾讯专用
   sdkAppId:
 

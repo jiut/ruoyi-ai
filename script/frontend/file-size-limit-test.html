@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文件大小限制测试页面</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .upload-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .upload-card {
+            border: 2px dashed #e0e0e0;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+
+        .upload-card:hover {
+            border-color: #667eea;
+            background: #f5f7ff;
+            transform: translateY(-2px);
+        }
+
+        .upload-card.dragover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+
+        .upload-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .upload-limit {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .upload-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .batch-upload {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+
+        .batch-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .results {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 30px;
+        }
+
+        .results h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .result-item {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .result-success {
+            border-left-color: #28a745;
+        }
+
+        .result-error {
+            border-left-color: #dc3545;
+        }
+
+        .file-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .progress-container {
+            width: 100%;
+            background: #e0e0e0;
+            border-radius: 10px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .size-info {
+            background: #e3f2fd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .size-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .size-table th,
+        .size-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .size-table th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+
+        .size-table tr:hover {
+            background: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📁 文件大小限制测试</h1>
+            <p>测试不同接口的文件大小限制功能</p>
+        </div>
+
+        <div class="content">
+            <!-- 文件大小限制说明 -->
+            <div class="size-info">
+                <h3>📊 各接口文件大小限制</h3>
+                <table class="size-table">
+                    <thead>
+                        <tr>
+                            <th>接口路径</th>
+                            <th>文件类型</th>
+                            <th>大小限制</th>
+                            <th>说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>/resource/oss/upload</td>
+                            <td>所有文件</td>
+                            <td>50MB</td>
+                            <td>普通文件上传</td>
+                        </tr>
+                        <tr>
+                            <td>/resource/oss/upload/image</td>
+                            <td>图片文件</td>
+                            <td>10MB</td>
+                            <td>jpg, png, gif, bmp等</td>
+                        </tr>
+                        <tr>
+                            <td>/resource/oss/upload/video</td>
+                            <td>视频文件</td>
+                            <td>500MB</td>
+                            <td>mp4, avi, mov, wmv等</td>
+                        </tr>
+                        <tr>
+                            <td>/resource/oss/upload/document</td>
+                            <td>文档文件</td>
+                            <td>100MB</td>
+                            <td>pdf, doc, xls, ppt等</td>
+                        </tr>
+                        <tr>
+                            <td>/resource/oss/upload/batch</td>
+                            <td>智能识别</td>
+                            <td>根据类型</td>
+                            <td>自动选择限制</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 单文件上传测试 -->
+            <div class="upload-grid">
+                <div class="upload-card" data-type="general">
+                    <div class="upload-icon">📄</div>
+                    <div class="upload-title">普通文件上传</div>
+                    <div class="upload-limit">最大限制: 50MB</div>
+                    <input type="file" class="file-input" id="general-input">
+                    <button class="upload-btn" onclick="selectFile('general')">选择文件</button>
+                    <button class="upload-btn" onclick="uploadFile('general', '/resource/oss/upload')">上传</button>
+                </div>
+
+                <div class="upload-card" data-type="image">
+                    <div class="upload-icon">🖼️</div>
+                    <div class="upload-title">图片文件上传</div>
+                    <div class="upload-limit">最大限制: 10MB</div>
+                    <input type="file" class="file-input" id="image-input" accept="image/*">
+                    <button class="upload-btn" onclick="selectFile('image')">选择图片</button>
+                    <button class="upload-btn" onclick="uploadFile('image', '/resource/oss/upload/image')">上传</button>
+                </div>
+
+                <div class="upload-card" data-type="video">
+                    <div class="upload-icon">🎥</div>
+                    <div class="upload-title">视频文件上传</div>
+                    <div class="upload-limit">最大限制: 500MB</div>
+                    <input type="file" class="file-input" id="video-input" accept="video/*">
+                    <button class="upload-btn" onclick="selectFile('video')">选择视频</button>
+                    <button class="upload-btn" onclick="uploadVideo()">上传</button>
+                </div>
+
+                <div class="upload-card" data-type="document">
+                    <div class="upload-icon">📃</div>
+                    <div class="upload-title">文档文件上传</div>
+                    <div class="upload-limit">最大限制: 100MB</div>
+                    <input type="file" class="file-input" id="document-input" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx">
+                    <button class="upload-btn" onclick="selectFile('document')">选择文档</button>
+                    <button class="upload-btn" onclick="uploadFile('document', '/resource/oss/upload/document')">上传</button>
+                </div>
+            </div>
+
+            <!-- 批量上传测试 -->
+            <div class="batch-upload">
+                <div class="batch-title">📦 批量上传测试（智能文件大小限制）</div>
+                <p style="margin-bottom: 20px; color: #666;">
+                    批量上传会根据每个文件的类型自动选择相应的大小限制
+                </p>
+                <input type="file" class="file-input" id="batch-input" multiple>
+                <button class="upload-btn" onclick="selectFile('batch')">选择多个文件</button>
+                <button class="upload-btn" onclick="uploadBatch()">批量上传</button>
+                <div id="batch-preview" style="margin-top: 20px;"></div>
+            </div>
+
+            <!-- 上传结果 -->
+            <div class="results">
+                <h2>📊 上传结果</h2>
+                <div id="upload-results">
+                    <p style="color: #666; text-align: center; padding: 20px;">暂无上传记录</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 模拟后端服务地址
+        const API_BASE = 'http://localhost:6039';
+        const TOKEN = 'your-auth-token'; // 请替换为实际的token
+
+        // 选择文件
+        function selectFile(type) {
+            document.getElementById(type + '-input').click();
+        }
+
+        // 文件大小格式化
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            if (bytes < 1024 * 1024 * 1024) return (bytes / 1024 / 1024).toFixed(1) + ' MB';
+            return (bytes / 1024 / 1024 / 1024).toFixed(1) + ' GB';
+        }
+
+        // 添加结果显示
+        function addResult(type, filename, size, status, message, url = null) {
+            const resultsContainer = document.getElementById('upload-results');
+            if (resultsContainer.innerHTML.includes('暂无上传记录')) {
+                resultsContainer.innerHTML = '';
+            }
+
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `result-item ${status === 'success' ? 'result-success' : 'result-error'}`;
+            
+            resultDiv.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <strong>${filename}</strong>
+                    <span style="color: ${status === 'success' ? '#28a745' : '#dc3545'}">
+                        ${status === 'success' ? '✅ 成功' : '❌ 失败'}
+                    </span>
+                </div>
+                <div class="file-info">
+                    <span>类型: ${type}</span>
+                    <span>大小: ${formatFileSize(size)}</span>
+                    <span>时间: ${new Date().toLocaleTimeString()}</span>
+                </div>
+                <div style="margin-top: 10px; color: ${status === 'success' ? '#28a745' : '#dc3545'}">
+                    ${message}
+                </div>
+                ${url ? `<div style="margin-top: 10px;"><a href="${url}" target="_blank" style="color: #667eea;">查看文件</a></div>` : ''}
+            `;
+
+            resultsContainer.insertBefore(resultDiv, resultsContainer.firstChild);
+        }
+
+        // 通用文件上传
+        async function uploadFile(type, endpoint) {
+            const input = document.getElementById(type + '-input');
+            const file = input.files[0];
+
+            if (!file) {
+                alert('请先选择文件');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                addResult(type, file.name, file.size, 'uploading', '正在上传...');
+
+                const response = await fetch(API_BASE + endpoint, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Authorization': 'Bearer ' + TOKEN
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.code === 200) {
+                    addResult(type, file.name, file.size, 'success', '上传成功', result.data.url);
+                } else {
+                    addResult(type, file.name, file.size, 'error', result.msg || '上传失败');
+                }
+            } catch (error) {
+                addResult(type, file.name, file.size, 'error', '网络错误: ' + error.message);
+            }
+
+            // 清空输入
+            input.value = '';
+        }
+
+        // 视频文件上传（包含额外参数）
+        async function uploadVideo() {
+            const input = document.getElementById('video-input');
+            const file = input.files[0];
+
+            if (!file) {
+                alert('请先选择视频文件');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('title', file.name);
+            formData.append('description', '测试视频上传');
+            formData.append('category', '测试');
+            formData.append('tags', '测试,演示');
+            formData.append('isPublic', '1');
+
+            try {
+                addResult('video', file.name, file.size, 'uploading', '正在上传视频...');
+
+                const response = await fetch(API_BASE + '/resource/oss/upload/video', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Authorization': 'Bearer ' + TOKEN
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.code === 200) {
+                    addResult('video', file.name, file.size, 'success', '视频上传成功', result.data.playUrl);
+                } else {
+                    addResult('video', file.name, file.size, 'error', result.msg || '视频上传失败');
+                }
+            } catch (error) {
+                addResult('video', file.name, file.size, 'error', '网络错误: ' + error.message);
+            }
+
+            input.value = '';
+        }
+
+        // 批量上传
+        async function uploadBatch() {
+            const input = document.getElementById('batch-input');
+            const files = Array.from(input.files);
+
+            if (files.length === 0) {
+                alert('请先选择文件');
+                return;
+            }
+
+            const formData = new FormData();
+            files.forEach(file => {
+                formData.append('files', file);
+            });
+
+            try {
+                // 显示批量上传开始
+                files.forEach(file => {
+                    addResult('batch', file.name, file.size, 'uploading', '批量上传中...');
+                });
+
+                const response = await fetch(API_BASE + '/resource/oss/upload/batch', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Authorization': 'Bearer ' + TOKEN
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.code === 200) {
+                    result.data.forEach((uploadedFile, index) => {
+                        const originalFile = files[index];
+                        addResult('batch', originalFile.name, originalFile.size, 'success', '批量上传成功', uploadedFile.url);
+                    });
+                } else {
+                    files.forEach(file => {
+                        addResult('batch', file.name, file.size, 'error', result.msg || '批量上传失败');
+                    });
+                }
+            } catch (error) {
+                files.forEach(file => {
+                    addResult('batch', file.name, file.size, 'error', '网络错误: ' + error.message);
+                });
+            }
+
+            input.value = '';
+            document.getElementById('batch-preview').innerHTML = '';
+        }
+
+        // 监听文件选择变化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 为每个文件输入添加监听
+            ['general', 'image', 'video', 'document'].forEach(type => {
+                const input = document.getElementById(type + '-input');
+                input.addEventListener('change', function() {
+                    const file = this.files[0];
+                    if (file) {
+                        const card = document.querySelector(`.upload-card[data-type="${type}"]`);
+                        const limitDiv = card.querySelector('.upload-limit');
+                        limitDiv.innerHTML = `已选择: ${file.name}<br>大小: ${formatFileSize(file.size)}`;
+                    }
+                });
+            });
+
+            // 批量上传预览
+            document.getElementById('batch-input').addEventListener('change', function() {
+                const files = Array.from(this.files);
+                const preview = document.getElementById('batch-preview');
+                
+                if (files.length > 0) {
+                    preview.innerHTML = `
+                        <div style="background: white; padding: 20px; border-radius: 8px; margin-top: 20px;">
+                            <h4>已选择 ${files.length} 个文件:</h4>
+                            ${files.map(file => `
+                                <div style="display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #eee;">
+                                    <span>${file.name}</span>
+                                    <span>${formatFileSize(file.size)}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                } else {
+                    preview.innerHTML = '';
+                }
+            });
+
+            // 拖拽上传功能
+            document.querySelectorAll('.upload-card').forEach(card => {
+                card.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    this.classList.add('dragover');
+                });
+
+                card.addEventListener('dragleave', function(e) {
+                    e.preventDefault();
+                    this.classList.remove('dragover');
+                });
+
+                card.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    this.classList.remove('dragover');
+                    
+                    const files = e.dataTransfer.files;
+                    if (files.length > 0) {
+                        const type = this.dataset.type;
+                        const input = document.getElementById(type + '-input');
+                        input.files = files;
+                        input.dispatchEvent(new Event('change'));
+                    }
+                });
+            });
+        });
+
+        // 测试不同大小的文件
+        function generateTestFile(sizeMB, type) {
+            const size = sizeMB * 1024 * 1024;
+            const data = new Uint8Array(size);
+            for (let i = 0; i < size; i++) {
+                data[i] = Math.floor(Math.random() * 256);
+            }
+            
+            const blob = new Blob([data], { type: 'application/octet-stream' });
+            return new File([blob], `test-${sizeMB}MB.${type}`, { type: 'application/octet-stream' });
+        }
+
+        // 添加测试按钮（可选）
+        console.log('💡 测试提示:');
+        console.log('1. 可以使用 generateTestFile(50, "txt") 生成测试文件');
+        console.log('2. 请确保后端服务运行在 localhost:6039');
+        console.log('3. 请替换 TOKEN 为实际的认证令牌');
+    </script>
+</body>
+</html> 

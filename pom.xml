@@ -45,8 +45,10 @@
         <!-- OSS 配置 -->
         <aws-java-sdk-s3.version>1.12.400</aws-java-sdk-s3.version>
         <!-- SMS 配置 -->
-        <aliyun.sms.version>2.0.23</aliyun.sms.version>
+        <aliyun.sms.version>4.1.2</aliyun.sms.version>
         <tencent.sms.version>3.1.687</tencent.sms.version>
+        <!-- 支付宝SDK版本 -->
+        <alipay.sdk.version>4.40.333.ALL</alipay.sdk.version>
 
         <!-- 插件版本 -->
         <maven-jar-plugin.version>3.2.2</maven-jar-plugin.version>
@@ -251,6 +253,13 @@
                 <version>${tencent.sms.version}</version>
             </dependency>
 
+            <!-- 支付宝SDK -->
+            <dependency>
+                <groupId>com.alipay.sdk</groupId>
+                <artifactId>alipay-sdk-java</artifactId>
+                <version>${alipay.sdk.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.redisson</groupId>
                 <artifactId>redisson-spring-boot-starter</artifactId>
@@ -338,6 +347,7 @@
                 <artifactId>ruoyi-designer</artifactId>
                 <version>${revision}</version>
             </dependency>
+            
         </dependencies>
     </dependencyManagement>
 

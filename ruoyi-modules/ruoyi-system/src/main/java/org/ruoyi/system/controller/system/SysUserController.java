@@ -2,6 +2,8 @@ package org.ruoyi.system.controller.system;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.secure.BCrypt;
+import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -11,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.ruoyi.common.core.constant.UserConstants;
 import org.ruoyi.common.core.domain.R;
+import org.ruoyi.common.core.domain.dto.RoleDTO;
 import org.ruoyi.common.core.domain.model.LoginUser;
 import org.ruoyi.common.core.utils.MapstructUtils;
 import org.ruoyi.common.core.utils.StreamUtils;
@@ -21,12 +24,16 @@ import org.ruoyi.common.log.annotation.Log;
 import org.ruoyi.common.log.enums.BusinessType;
 import org.ruoyi.common.satoken.utils.LoginHelper;
 import org.ruoyi.common.tenant.helper.TenantHelper;
+import org.ruoyi.common.core.constant.GlobalConstants;
+
+import org.ruoyi.common.redis.utils.RedisUtils;
 import org.ruoyi.common.web.core.BaseController;
 import org.ruoyi.core.page.PageQuery;
 import org.ruoyi.core.page.TableDataInfo;
 import org.ruoyi.system.domain.bo.SysDeptBo;
 import org.ruoyi.system.domain.bo.SysUserBo;
 import org.ruoyi.system.domain.request.UserRequest;
+import org.ruoyi.system.domain.request.BindPhoneRequest;
 import org.ruoyi.system.domain.vo.*;
 import org.ruoyi.system.listener.SysUserImportListener;
 import org.ruoyi.system.service.*;
@@ -62,6 +69,7 @@ public class SysUserController extends BaseController {
     private final ISysDeptService deptService;
     private final ISysTenantService tenantService;
     private final ISysOssService ossService;
+    private final ISysPermissionService permissionService;
     private final SysUserRoleMapper userRoleMapper;
     private final SysRoleMapper roleMapper;
     /**
@@ -328,7 +336,7 @@ public class SysUserController extends BaseController {
      */
     @SaCheckPermission("system:user:list")
     @GetMapping("/deptTree")
-    public R<List> deptTree(SysDeptBo dept) {
+    public R<List<Tree<Long>>> deptTree(SysDeptBo dept) {
         List<Tree<Long>> trees = deptService.selectDeptTreeList(dept);
         return R.ok(trees);
     }
@@ -415,6 +423,9 @@ public class SysUserController extends BaseController {
             userRole.setRoleId(targetRoleId);
             userRoleMapper.insert(userRole);
             
+            // 5. 更新登录用户缓存信息
+            updateLoginUserCache(loginUser);
+            
             log.info("用户角色选择成功 - userId: {}, 从普通角色(common)切换到专业角色: {}", userId, targetRoleId);
             return R.ok("角色选择成功！");
             
@@ -425,11 +436,82 @@ public class SysUserController extends BaseController {
     }
 
     /**
+     * 更新登录用户缓存信息
+     * 在角色选择后刷新用户的角色权限信息
+     */
+    private void updateLoginUserCache(LoginUser loginUser) {
+        try {
+            // 重新获取用户完整信息
+            SysUserVo user = userService.selectUserById(loginUser.getUserId());
+            
+            // 更新角色权限信息
+            loginUser.setRolePermission(permissionService.getRolePermission(loginUser.getUserId()));
+            loginUser.setMenuPermission(permissionService.getMenuPermission(loginUser.getUserId()));
+            
+            // 更新角色对象列表
+            List<RoleDTO> roles = BeanUtil.copyToList(user.getRoles(), RoleDTO.class);
+            loginUser.setRoles(roles);
+            
+            // 更新Sa-Token缓存中的登录用户信息
+            StpUtil.getTokenSession().set(LoginHelper.LOGIN_USER_KEY, loginUser);
+            
+            log.info("登录用户缓存信息已更新 - userId: {}", loginUser.getUserId());
+            
+        } catch (Exception e) {
+            log.error("更新登录用户缓存失败 - userId: {}", loginUser.getUserId(), e);
+        }
+    }
+
+    /**
      * 角色选择请求对象
      */
     @Data
     public static class SelectRoleRequest {
         private Long roleId;
+    }
+
+    /**
+     * 绑定用户手机号
+     * 验证短信验证码后绑定手机号到当前登录用户
+     */
+    @Log(title = "绑定手机号", businessType = BusinessType.UPDATE)
+    @PostMapping("/bind/phone")
+    public R<Void> bindPhone(@Validated @RequestBody BindPhoneRequest request) {
+        try {
+            // 获取当前登录用户
+            LoginUser loginUser = LoginHelper.getLoginUser();
+            Long userId = loginUser.getUserId();
+            
+            // 验证短信验证码
+            String code = RedisUtils.getCacheObject(GlobalConstants.CAPTCHA_CODE_KEY + request.getPhonenumber());
+            if (StringUtils.isBlank(code)) {
+                log.warn("验证码已过期 - userId: {}, phone: {}", userId, request.getPhonenumber());
+                return R.fail("验证码已过期，请重新获取");
+            }
+            
+            if (!code.equals(request.getSmsCode())) {
+                log.warn("验证码错误 - userId: {}, phone: {}, inputCode: {}", userId, request.getPhonenumber(), request.getSmsCode());
+                return R.fail("验证码错误");
+            }
+            
+            // 绑定手机号
+            boolean success = userService.bindUserPhone(userId, request.getPhonenumber());
+            
+            if (success) {
+                // 绑定成功后清除验证码缓存
+                RedisUtils.deleteObject(GlobalConstants.CAPTCHA_CODE_KEY + request.getPhonenumber());
+                
+                log.info("用户手机号绑定成功 - userId: {}, phone: {}", userId, request.getPhonenumber());
+                return R.ok("手机号绑定成功");
+            } else {
+                log.error("用户手机号绑定失败 - userId: {}, phone: {}", userId, request.getPhonenumber());
+                return R.fail("手机号绑定失败，请重试");
+            }
+            
+        } catch (Exception e) {
+            log.error("绑定手机号异常 - request: {}", request, e);
+            return R.fail(e.getMessage());
+        }
     }
 
 }

@@ -1,0 +1,255 @@
+{
+  "Statistics": {
+    "WorkflowTests": {
+      "PassRate": 1500.0,
+      "Passed": 15,
+      "Total": 1
+    }
+  },
+  "TestResults": {
+    "TaskConfiguration": {
+      "GetReviewModes": {
+        "ErrorMessage": "",
+        "TestRole": "admin",
+        "Details": {
+          "code": 200,
+          "msg": "操作成功",
+          "data": {
+            "ENTERPRISE": {
+              "isDual": "false",
+              "name": "企业自主审核模式",
+              "description": "企业管理员直接审核",
+              "isEnterprise": "true"
+            },
+            "DUAL": {
+              "isDual": "true",
+              "name": "双重审核模式",
+              "description": "系统管理员→企业管理员",
+              "isEnterprise": "false"
+            }
+          }
+        },
+        "BusinessCode": 200,
+        "BusinessMessage": "操作成功",
+        "HttpSuccess": true,
+        "Method": "GET",
+        "Success": true,
+        "ResponseTime": 3.4344,
+        "PermissionDenied": false,
+        "StatusCode": 200,
+        "Url": "/designer/task-config/review-modes",
+        "EndpointName": "GetReviewModes",
+        "Category": "TaskConfigManagement",
+        "BusinessSuccess": true
+      },
+      "SwitchToEnterprise": {
+        "ErrorMessage": "",
+        "TestRole": "admin",
+        "Details": {
+          "code": 200,
+          "msg": "审核模式已更新为: 企业自主审核模式",
+          "data": null
+        },
+        "BusinessCode": 200,
+        "BusinessMessage": "审核模式已更新为: 企业自主审核模式",
+        "HttpSuccess": true,
+        "Method": "POST",
+        "Success": true,
+        "ResponseTime": 3.6399,
+        "PermissionDenied": false,
+        "StatusCode": 200,
+        "Url": "/designer/task-config/review-mode/ENTERPRISE",
+        "EndpointName": "UpdateReviewMode",
+        "Category": "TaskConfigManagement",
+        "BusinessSuccess": true
+      },
+      "GetTaskConfigInfo": {
+        "ErrorMessage": "",
+        "TestRole": "admin",
+        "Details": {
+          "code": 200,
+          "msg": "操作成功",
+          "data": {
+            "enterpriseReviewTimeoutHours": 72,
+            "reviewMode": "DUAL",
+            "reviewModeName": "双重审核模式",
+            "adminReviewTimeoutHours": 24,
+            "reviewModeDescription": "系统管理员→企业管理员",
+            "isDualReviewMode": true,
+            "configSummary": "审核模式: 双重审核模式, 系统管理员超时: 24小时, 企业管理员超时: 72小时, 自动撤回: 禁用, 通知: 启用, 日志保留: 365天",
+            "logRetentionDays": 365,
+            "configValid": true,
+            "autoWithdrawEnabled": false,
+            "isEnterpriseReviewMode": false,
+            "notificationEnabled": true
+          }
+        },
+        "BusinessCode": 200,
+        "BusinessMessage": "操作成功",
+        "HttpSuccess": true,
+        "Method": "GET",
+        "Success": true,
+        "ResponseTime": 3.5735,
+        "PermissionDenied": false,
+        "StatusCode": 200,
+        "Url": "/designer/task-config/info",
+        "EndpointName": "GetTaskConfigInfo",
+        "Category": "TaskConfigManagement",
+        "BusinessSuccess": true
+      },
+      "ResetConfig": {
+        "ErrorMessage": "",
+        "TestRole": "admin",
+        "Details": {
+          "code": 200,
+          "msg": "配置已重置为默认值",
+          "data": null
+        },
+        "BusinessCode": 200,
+        "BusinessMessage": "配置已重置为默认值",
+        "HttpSuccess": true,
+        "Method": "POST",
+        "Success": true,
+        "ResponseTime": 3.6071,
+        "PermissionDenied": false,
+        "StatusCode": 200,
+        "Url": "/designer/task-config/reset",
+        "EndpointName": "ResetConfig",
+        "Category": "TaskConfigManagement",
+        "BusinessSuccess": true
+      },
+      "SwitchToDual": {
+        "ErrorMessage": "",
+        "TestRole": "admin",
+        "Details": {
+          "code": 200,
+          "msg": "审核模式已更新为: 双重审核模式",
+          "data": null
+        },
+        "BusinessCode": 200,
+        "BusinessMessage": "审核模式已更新为: 双重审核模式",
+        "HttpSuccess": true,
+        "Method": "POST",
+        "Success": true,
+        "ResponseTime": 3.9932,
+        "PermissionDenied": false,
+        "StatusCode": 200,
+        "Url": "/designer/task-config/review-mode/DUAL",
+        "EndpointName": "UpdateReviewMode",
+        "Category": "TaskConfigManagement",
+        "BusinessSuccess": true
+      }
+    },
+    "UserInitialization": {
+      "EnterpriseTokenObtained": true,
+      "AdminTokenObtained": true,
+      "DesignerTokenObtained": true
+    },
+    "ReviewModes": {
+      "AdminPendingList": {
+        "ErrorMessage": "",
+        "TestRole": "admin",
+        "Details": {
+          "code": 403,
+          "msg": "没有访问权限，请联系管理员授权",
+          "data": null
+        },
+        "BusinessCode": 403,
+        "BusinessMessage": "没有访问权限，请联系管理员授权",
+        "HttpSuccess": true,
+        "Method": "GET",
+        "Success": false,
+        "ResponseTime": 2.8008,
+        "PermissionDenied": true,
+        "StatusCode": 200,
+        "Url": "/designer/task-application/admin/pending",
+        "EndpointName": "GetAdminPendingList",
+        "Category": "TaskApplicationManagement",
+        "BusinessSuccess": false
+      },
+      "GetReviewMode": {
+        "ErrorMessage": "",
+        "TestRole": "admin",
+        "Details": {
+          "code": 200,
+          "msg": "操作成功",
+          "data": {
+            "enterpriseReviewTimeoutHours": 72,
+            "reviewMode": "DUAL",
+            "reviewModeName": "双重审核模式",
+            "adminReviewTimeoutHours": 24,
+            "reviewModeDescription": "系统管理员→企业管理员",
+            "isDualReviewMode": true,
+            "configSummary": "审核模式: 双重审核模式, 系统管理员超时: 24小时, 企业管理员超时: 72小时, 自动撤回: 禁用, 通知: 启用, 日志保留: 365天",
+            "logRetentionDays": 365,
+            "configValid": true,
+            "autoWithdrawEnabled": false,
+            "isEnterpriseReviewMode": false,
+            "notificationEnabled": true
+          }
+        },
+        "BusinessCode": 200,
+        "BusinessMessage": "操作成功",
+        "HttpSuccess": true,
+        "Method": "GET",
+        "Success": true,
+        "ResponseTime": 3.5863,
+        "PermissionDenied": false,
+        "StatusCode": 200,
+        "Url": "/designer/task-config/info",
+        "EndpointName": "GetTaskConfigInfo",
+        "Category": "TaskConfigManagement",
+        "BusinessSuccess": true
+      },
+      "EnterprisePendingList": {
+        "ErrorMessage": "",
+        "TestRole": "enterprise",
+        "Details": {
+          "code": 200,
+          "msg": "操作成功",
+          "data": []
+        },
+        "BusinessCode": 200,
+        "BusinessMessage": "操作成功",
+        "HttpSuccess": true,
+        "Method": "GET",
+        "Success": true,
+        "ResponseTime": 5.2496,
+        "PermissionDenied": false,
+        "StatusCode": 200,
+        "Url": "/designer/task-application/enterprise/pending",
+        "EndpointName": "GetEnterprisePendingList",
+        "Category": "TaskApplicationManagement",
+        "BusinessSuccess": true
+      }
+    },
+    "BusinessWorkflow": {
+      "CreateTask": {
+        "ErrorMessage": "",
+        "TestRole": "enterprise",
+        "Details": {
+          "code": 200,
+          "msg": "操作成功",
+          "data": null
+        },
+        "BusinessCode": 200,
+        "BusinessMessage": "操作成功",
+        "HttpSuccess": true,
+        "Method": "POST",
+        "Success": true,
+        "ResponseTime": 13.2209,
+        "PermissionDenied": false,
+        "StatusCode": 200,
+        "Url": "/designer/enterprise/tasks",
+        "EndpointName": "CreateEnterpriseTask",
+        "Category": "EnterpriseTaskManagement",
+        "BusinessSuccess": true
+      }
+    }
+  },
+  "TestSummary": {
+    "BaseUrl": "http://localhost:6039",
+    "TestMode": "BASIC",
+    "TestTime": "2025-07-18 17:49:29"
+  }
+}

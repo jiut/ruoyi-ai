@@ -23,11 +23,16 @@ public class MimeTypeUtils {
     public static final String[] MEDIA_EXTENSION = {"swf", "flv", "mp3", "wav", "wma", "wmv", "mid", "avi", "mpg",
         "asf", "rm", "rmvb"};
 
-    public static final String[] VIDEO_EXTENSION = {"mp4", "avi", "rmvb"};
+    public static final String[] VIDEO_EXTENSION = {"mp4", "avi", "rmvb", "mov", "wmv", "flv", "webm", "mkv", "m4v", "3gp", "ts"};
     /**
      * 音频扩展名
      */
     public static final String[] AUDIO__EXTENSION = {"mp3", "mp4", "mpeg", "mpga", "m4a", "wav", "webm"};
+
+    /**
+     * 所有视频格式（包含更多格式）
+     */
+    public static final String[] ALL_VIDEO_EXTENSION = {"mp4", "avi", "rmvb", "mov", "wmv", "flv", "webm", "mkv", "m4v", "3gp", "ts", "mpg", "mpeg", "m2v", "asf"};
 
     public static final String[] DEFAULT_ALLOWED_EXTENSION = {
             // 图片
@@ -36,8 +41,8 @@ public class MimeTypeUtils {
             "doc", "docx", "xls", "xlsx", "ppt", "pptx", "html", "htm", "txt",
             // 压缩文件
             "rar", "zip", "gz", "bz2",
-            // 视频格式
-            "mp4", "avi", "rmvb",
+            // 视频格式（扩展支持）
+            "mp4", "avi", "rmvb", "mov", "wmv", "flv", "webm", "mkv", "m4v", "3gp", "ts", "mpg", "mpeg", "m2v", "asf",
             // 音频格式
             "mp3", "mp4", "mpeg", "mpga", "m4a", "wav", "webm",
             // pdf

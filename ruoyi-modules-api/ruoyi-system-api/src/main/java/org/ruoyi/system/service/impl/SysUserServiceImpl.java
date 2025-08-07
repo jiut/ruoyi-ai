@@ -564,4 +564,31 @@ public class SysUserServiceImpl implements ISysUserService, UserService {
                 .eq(SysUser::getUserName, userName));
         return ObjectUtil.isNull(sysUser) ? null : sysUser.getUserBalance().toString();
     }
+
+    /**
+     * 绑定用户手机号
+     *
+     * @param userId 用户ID
+     * @param phonenumber 手机号码
+     * @return 绑定结果
+     */
+    @Override
+    public boolean bindUserPhone(Long userId, String phonenumber) {
+        // 检查手机号是否已被其他用户使用
+        boolean phoneExists = baseMapper.exists(new LambdaQueryWrapper<SysUser>()
+            .eq(SysUser::getPhonenumber, phonenumber)
+            .ne(SysUser::getUserId, userId));
+        
+        if (phoneExists) {
+            throw new ServiceException("该手机号已被其他用户绑定");
+        }
+        
+        // 更新用户手机号
+        int result = baseMapper.update(null,
+            new LambdaUpdateWrapper<SysUser>()
+                .set(SysUser::getPhonenumber, phonenumber)
+                .eq(SysUser::getUserId, userId));
+                
+        return result > 0;
+    }
 }
